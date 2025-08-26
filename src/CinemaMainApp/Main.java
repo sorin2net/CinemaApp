@@ -30,7 +30,6 @@ public class Main {
 
         System.out.print("Alege filmul (introdu numărul): ");
         int alegereFilm = scanner.nextInt();
-        scanner.nextLine(); // consumăm linia rămasă după nextInt()
         if (alegereFilm < 1 || alegereFilm > filme.size()) {
             System.out.println("Alegere invalidă!");
             return;
@@ -47,7 +46,6 @@ public class Main {
 
         System.out.print("Alege ora (introdu numărul): ");
         int alegereOra = scanner.nextInt();
-        scanner.nextLine(); // consumăm linia rămasă
         if (alegereOra < 1 || alegereOra > ore.size()) {
             System.out.println("Alegere invalidă!");
             return;
@@ -57,7 +55,7 @@ public class Main {
 
         // Introducem email-ul utilizatorului
         System.out.print("Introdu email-ul tău: ");
-        String email = scanner.nextLine().trim();
+        String email = scanner.next();
 
         // Încărcăm rezervările existente
         PersistentaRezervari.incarcaRezervari(sala, filmSelectat.getTitlu(), oraSelectata);
@@ -65,35 +63,28 @@ public class Main {
         // Afișăm starea sălii
         afisareSala(sala);
 
-        // Citirea scaunelor de rezervat (0-based)
+        // Citirea scaunelor de rezervat
         while (true) {
-            System.out.print("Introdu randul și coloana scaunului de rezervat (-1 -1 pentru a termina): ");
-            String linie = scanner.nextLine().trim();
-
-            if (linie.isEmpty()) continue;
-
-            String[] parti = linie.split("\\s+");
-            if (parti.length != 2) {
-                System.out.println("Introdu exact două numere separate prin spațiu!");
-                continue;
-            }
-
-            int rand, coloana;
-            try {
-                rand = Integer.parseInt(parti[0]);
-                coloana = Integer.parseInt(parti[1]);
-            } catch (NumberFormatException e) {
-                System.out.println("Trebuie să introduci numere întregi!");
-                continue;
-            }
+            System.out.print("Introdu randul și coloana scaunului de rezervat (-1 -1 pentru a termina, indexare de la 1): ");
+            int rand = scanner.nextInt();
+            int coloana = scanner.nextInt();
 
             if (rand == -1 && coloana == -1) break;
 
-            if (rand >= 0 && rand < sala.getRanduri() && coloana >= 0 && coloana < sala.getColoane()) {
-                Scaun scaun = sala.getScaun(rand, coloana);
+            // validare input uman (de la 1)
+            if (rand >= 1 && rand <= sala.getRanduri() && coloana >= 1 && coloana <= sala.getColoane()) {
+                // conversie la index intern (de la 0)
+                Scaun scaun = sala.getScaun(rand - 1, coloana - 1);
                 if (!scaun.esteRezervat()) {
                     scaun.rezerva();
-                    PersistentaRezervari.salveazaRezervare(filmSelectat.getTitlu(), oraSelectata, rand, coloana, email);
+                    // salvăm cu rand și coloană umane (nu cu -1)
+                    PersistentaRezervari.salveazaRezervare(
+                            filmSelectat.getTitlu(),
+                            oraSelectata,
+                            rand,
+                            coloana,
+                            email
+                    );
                     System.out.println("Scaun rezervat!");
                 } else {
                     System.out.println("Scaun deja rezervat!");
@@ -105,13 +96,23 @@ public class Main {
             afisareSala(sala);
         }
 
-        System.out.println("Rezervările tale pentru filmul " + filmSelectat.getTitlu() + " la ora " + oraSelectata + " au fost salvate.");
+        System.out.println("Rezervările pentru filmul " + filmSelectat.getTitlu() +
+                " la ora " + oraSelectata + " au fost salvate.");
         scanner.close();
     }
 
     public static void afisareSala(Sala sala) {
         System.out.println("\nStarea sălii (X = rezervat, [ ] = liber):");
+
+        // afișăm cu indexare de la 1
+        System.out.print("    ");
+        for (int j = 0; j < sala.getColoane(); j++) {
+            System.out.print((j + 1) + "   ");
+        }
+        System.out.println();
+
         for (int i = 0; i < sala.getRanduri(); i++) {
+            System.out.print((i + 1) + " ");
             for (int j = 0; j < sala.getColoane(); j++) {
                 Scaun scaun = sala.getScaun(i, j);
                 System.out.print(scaun.esteRezervat() ? "[X] " : "[ ] ");

@@ -27,8 +27,9 @@ public class PersistentaRezervari {
 
                 if (!filmJson.equals(film) || !oraJson.equals(ora)) continue;
 
-                int rand = ((Long) rez.get("rand")).intValue();
-                int coloana = ((Long) rez.get("coloana")).intValue();
+                // JSON are indexare de la 1 → convertim la 0 pentru array
+                int rand = ((Long) rez.get("rand")).intValue() - 1;
+                int coloana = ((Long) rez.get("coloana")).intValue() - 1;
 
                 Scaun scaun = sala.getScaun(rand, coloana);
                 if (!scaun.esteRezervat()) {
@@ -53,19 +54,18 @@ public class PersistentaRezervari {
                     if (parsed instanceof JSONArray) {
                         rezervariArray = (JSONArray) parsed;
                     } else if (parsed instanceof JSONObject) {
-                        // dacă era doar un obiect, îl punem într-un array
                         rezervariArray.add(parsed);
                     }
                 }
             }
 
-            // Cream obiectul JSON cu ordinea dorită: email, film, ora, rand, coloana
+            // Cream obiectul JSON cu ordinea dorită: FILM → ORA → RAND → COLOANA → EMAIL
             JSONObject rez = new JSONObject();
-            rez.put("email", email);
             rez.put("film", film);
             rez.put("ora", ora);
-            rez.put("rand", rand);
-            rez.put("coloana", coloana);
+            rez.put("rand", rand);       // salvăm exact ce a introdus userul (1-based)
+            rez.put("coloana", coloana); // salvăm exact ce a introdus userul (1-based)
+            rez.put("email", email);
 
             rezervariArray.add(rez);
 
