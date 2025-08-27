@@ -11,14 +11,14 @@ import java.util.Arrays;
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // inițializăm service-ul
+            // Cream service-ul
             RezervareService service = new RezervareService();
 
-            // facem câteva săli
-            Sala salaMare = new Sala("Sala Mare", 5, 5);
-            Sala salaMica = new Sala("Sala Mică", 4, 4);
+            // Cream sălile
+            Sala salaMare = new Sala("Sala Mare", 5, 10);   // 5 rânduri x 10 coloane
+            Sala salaMica = new Sala("Sala Mică", 4, 8);    // 4 rânduri x 8 coloane
 
-            // filme
+            // Cream filmele
             Film inception = new Film(
                     "Inception",
                     148,
@@ -26,6 +26,7 @@ public class Main {
                     Arrays.asList("18:00", "21:00"),
                     salaMare
             );
+
             Film interstellar = new Film(
                     "Interstellar",
                     169,
@@ -34,11 +35,11 @@ public class Main {
                     salaMica
             );
 
-            // adăugăm filmele în service
+            // Adaugam filmele in service
             service.adaugaFilm(inception);
             service.adaugaFilm(interstellar);
 
-            // pornim GUI-ul
+            // Pornim GUI-ul
             CinemaGUI gui = new CinemaGUI(service);
             gui.setVisible(true);
         });
