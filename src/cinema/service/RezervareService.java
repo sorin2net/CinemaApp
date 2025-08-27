@@ -5,46 +5,40 @@ import cinema.model.Sala;
 import cinema.model.Scaun;
 import cinema.persistence.PersistentaRezervari;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class RezervareService {
-    private Map<Film, Map<String, Sala>> filmeSiOre = new HashMap<>();
+    private List<Film> filme = new ArrayList<>();
+    private Map<String, Map<String, Sala>> saliPeOra = new HashMap<>();
 
     public void adaugaFilm(Film film) {
-        Map<String, Sala> oreMap = new HashMap<>();
+        filme.add(film);
+        Map<String, Sala> mapOre = new HashMap<>();
         for (String ora : film.getOre()) {
-            // creează o copie a sălii pentru fiecare oră
-            Sala salaCopy = new Sala(film.getSala().getNume(),
-                    film.getSala().getRanduri(),
-                    film.getSala().getColoane());
-            // încarcă rezervările existente
+            Sala salaCopy = new Sala(film.getSala().getNume(), film.getSala().getRanduri(), film.getSala().getColoane());
             PersistentaRezervari.incarcaRezervari(salaCopy, film.getTitlu(), ora);
-            oreMap.put(ora, salaCopy);
+            mapOre.put(ora, salaCopy);
         }
-        filmeSiOre.put(film, oreMap);
+        saliPeOra.put(film.getTitlu(), mapOre);
     }
 
     public List<Film> getFilme() {
-        return List.copyOf(filmeSiOre.keySet());
+        return filme;
     }
 
     public Sala getSala(Film film, String ora) {
-        return filmeSiOre.get(film).get(ora);
+        return saliPeOra.get(film.getTitlu()).get(ora);
     }
 
     public void salveazaRezervare(Film film, String ora, String email, Sala sala) {
-        // parcurge toate scaunele și salvează cele rezervate în JSON
-        Scaun[][] scaune = sala.getScaune();
-        for (int r = 0; r < scaune.length; r++) {
-            for (int c = 0; c < scaune[r].length; c++) {
-                if (scaune[r][c].esteRezervat()) {
-                    PersistentaRezervari.salveazaRezervare(film.getTitlu(),
-                            ora,
-                            r + 1,
-                            c + 1,
-                            email);
+        for (int i = 0; i < sala.getRanduri(); i++) {
+            for (int j = 0; j < sala.getColoane(); j++) {
+                Scaun scaun = sala.getScaun(i, j);
+                if (scaun.esteRezervat()) {
+                    PersistentaRezervari.salveazaRezervare(film.getTitlu(), ora, i + 1, j + 1, email);
                 }
             }
         }
