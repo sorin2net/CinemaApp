@@ -14,5 +14,9 @@ public class Scaun {
     public int getRand() { return rand; }
     public int getColoana() { return coloana; }
     public boolean esteRezervat() { return rezervat; }
-    public void rezerva() { this.rezervat = true; }
+
+    // metoda nu ia niciun argument
+    public void rezerva() {
+        this.rezervat = true;
+    }
 }

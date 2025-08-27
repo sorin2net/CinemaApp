@@ -3,7 +3,6 @@ package cinema.service;
 import cinema.model.Film;
 import cinema.model.Sala;
 import cinema.model.Scaun;
-import cinema.persistence.PersistentaRezervari;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,32 +18,23 @@ public class RezervareService {
         return filme;
     }
 
-    // Rezervă un scaun și salvează în JSON
-    public boolean rezervaScaun(Film film, String ora, int rand, int coloana, String email) {
+    // Returnează matricea de scaune pentru un film
+    public Scaun[][] getSala(Film film, String ora) {
         Sala sala = film.getSala();
-        if (sala == null) return false;
-
-        // verificare coordonate valide
-        if (rand < 0 || rand >= sala.getRanduri() || coloana < 0 || coloana >= sala.getColoane()) {
-            return false;
-        }
-
-        Scaun scaun = sala.getScaun(rand, coloana);
-        if (!scaun.esteRezervat()) {
-            scaun.rezerva();
-            PersistentaRezervari.salveazaRezervare(film.getTitlu(), ora, rand + 1, coloana + 1, email);
-            return true;
-        } else {
-            return false;
-        }
+        // Încarcă rezervările existente din JSON
+        cinema.persistence.PersistentaRezervari.incarcaRezervari(sala, film.getTitlu(), ora);
+        return sala.getScaune();
     }
 
-    // Încarcă toate rezervările din JSON la pornire
-    public void incarcaRezervari() {
-        for (Film film : filme) {
-            Sala sala = film.getSala();
-            for (String ora : film.getOre()) {
-                PersistentaRezervari.incarcaRezervari(sala, film.getTitlu(), ora);
+    // Salvează rezervarea în JSON
+    public void salveazaRezervare(Film film, String ora, String email, Scaun[][] scaune) {
+        Sala sala = film.getSala();
+        for (int r = 0; r < sala.getRanduri(); r++) {
+            for (int c = 0; c < sala.getColoane(); c++) {
+                if (scaune[r][c].esteRezervat()) {
+                    cinema.persistence.PersistentaRezervari.salveazaRezervare(
+                            film.getTitlu(), ora, r + 1, c + 1, email);
+                }
             }
         }
     }

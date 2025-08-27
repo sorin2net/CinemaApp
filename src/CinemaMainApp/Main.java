@@ -39,7 +39,7 @@ public class Main {
             service.adaugaFilm(inception);
             service.adaugaFilm(interstellar);
 
-            // Pornim GUI-ul
+            // Pornim GUI-ul cu service-ul
             CinemaGUI gui = new CinemaGUI(service);
             gui.setVisible(true);
         });

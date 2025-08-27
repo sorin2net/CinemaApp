@@ -10,20 +10,15 @@ public class Sala {
         this.nume = nume;
         this.randuri = randuri;
         this.coloane = coloane;
-        this.scaune = new Scaun[randuri][coloane];
-
-        // Inițializare scaune
-        for (int i = 0; i < randuri; i++) {
-            for (int j = 0; j < coloane; j++) {
+        scaune = new Scaun[randuri][coloane];
+        for (int i = 0; i < randuri; i++)
+            for (int j = 0; j < coloane; j++)
                 scaune[i][j] = new Scaun(i, j);
-            }
-        }
     }
 
     public String getNume() { return nume; }
     public int getRanduri() { return randuri; }
     public int getColoane() { return coloane; }
-
+    public Scaun[][] getScaune() { return scaune; }
     public Scaun getScaun(int rand, int coloana) { return scaune[rand][coloana]; }
-    public Scaun[][] getScaune() { return scaune; } // getter pentru matricea de scaune
 }

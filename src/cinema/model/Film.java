@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Film {
     private String titlu;
-    private int durata; // minute
+    private int durata;
     private String imaginePath;
-    private List<String> ore; // orele de difuzare
-    private Sala sala; // sala asociată filmului
+    private List<String> ore;
+    private Sala sala;
 
     public Film(String titlu, int durata, String imaginePath, List<String> ore, Sala sala) {
         this.titlu = titlu;
@@ -21,5 +21,5 @@ public class Film {
     public int getDurata() { return durata; }
     public String getImaginePath() { return imaginePath; }
     public List<String> getOre() { return ore; }
-    public Sala getSala() { return sala; } // getter Sala
+    public Sala getSala() { return sala; }
 }
