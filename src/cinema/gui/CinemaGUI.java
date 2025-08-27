@@ -1,78 +1,44 @@
 package cinema.gui;
 
 import cinema.model.Film;
+import cinema.model.Sala;
 import cinema.model.Scaun;
 import cinema.service.RezervareService;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CinemaGUI extends JFrame {
-
     private RezervareService service;
-    private JPanel filmePanel;
-    private JTextField searchField;
 
     public CinemaGUI(RezervareService service) {
         this.service = service;
 
         setTitle("Cinema Reservation System");
-        setSize(1200, 700);
+        setSize(1000, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Top panel cu search
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        topPanel.add(new JLabel("Caută film sau oră:"));
-        searchField = new JTextField(20);
-        topPanel.add(searchField);
-        JButton searchBtn = new JButton("Caută");
-        searchBtn.addActionListener(e -> updateFilmePanel(searchField.getText()));
-        topPanel.add(searchBtn);
-        add(topPanel, BorderLayout.NORTH);
-
         // Panel stânga pentru filme și ore
-        filmePanel = new JPanel();
+        JPanel filmePanel = new JPanel();
         filmePanel.setLayout(new BoxLayout(filmePanel, BoxLayout.Y_AXIS));
-        JScrollPane scroll = new JScrollPane(filmePanel);
-        scroll.setPreferredSize(new Dimension(300, 0));
-        add(scroll, BorderLayout.WEST);
 
-        // Inițializare filme
-        updateFilmePanel("");
-
-        setVisible(true);
-    }
-
-    private void updateFilmePanel(String filter) {
-        filmePanel.removeAll();
-
-        List<Film> filmeFiltrate = service.getFilme().stream()
-                .filter(f -> f.getTitlu().toLowerCase().contains(filter.toLowerCase())
-                        || f.getOre().stream().anyMatch(o -> o.contains(filter)))
-                .collect(Collectors.toList());
-
-        for (Film film : filmeFiltrate) {
+        for (Film film : service.getFilme()) {
             JPanel filmPanel = new JPanel();
             filmPanel.setLayout(new BoxLayout(filmPanel, BoxLayout.Y_AXIS));
             filmPanel.setBorder(BorderFactory.createTitledBorder(film.getTitlu()));
 
             for (String ora : film.getOre()) {
                 JButton oraBtn = new JButton("Rezervă la " + ora);
-                oraBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
                 oraBtn.addActionListener(e -> deschideEcranScaune(film, ora));
                 filmPanel.add(oraBtn);
             }
-            filmPanel.add(Box.createVerticalStrut(10));
+
             filmePanel.add(filmPanel);
         }
 
-        filmePanel.revalidate();
-        filmePanel.repaint();
+        JScrollPane scroll = new JScrollPane(filmePanel);
+        add(scroll, BorderLayout.WEST);
     }
 
     private void deschideEcranScaune(Film film, String ora) {
@@ -80,40 +46,56 @@ public class CinemaGUI extends JFrame {
         scauneFrame.setSize(900, 600);
         scauneFrame.setLayout(new BorderLayout());
 
-        JPanel scaunePanel = new JPanel(new GridBagLayout());
-        scaunePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        // Preia sala pentru ora selectată
+        Sala sala = service.getSala(film, ora);
+        Scaun[][] scaune = sala.getScaune();
 
-        Scaun[][] scaune = service.getSala(film, ora);
+        // Top: reprezentare ecran
+        JPanel screenPanel = new JPanel();
+        screenPanel.setBackground(Color.LIGHT_GRAY);
+        screenPanel.setPreferredSize(new Dimension(0, 50));
+        screenPanel.add(new JLabel("ECRAN"));
+        scauneFrame.add(screenPanel, BorderLayout.NORTH);
+
+        // Panel central pentru scaune
+        JPanel scaunePanel = new JPanel(new GridLayout(
+                sala.getRanduri(),
+                sala.getColoane() + 2, // +2 coloane goale în mijloc pentru culoar
+                5, 5));
 
         for (int r = 0; r < scaune.length; r++) {
-            for (int c = 0; c < scaune[r].length; c++) {
-                Scaun sc = scaune[r][c];
-                JButton btn = new JButton();
-                btn.setPreferredSize(new Dimension(50, 50));
+            // Label pentru rând (A, B, C...)
+            scaunePanel.add(new JLabel(Character.toString((char) ('A' + r)), SwingConstants.CENTER));
 
-                // Iconițe sau culoare
-                if (sc.esteRezervat()) {
-                    btn.setBackground(Color.RED);
+            for (int c = 0; c < sala.getColoane(); c++) {
+                if (c == sala.getColoane() / 2) { // culoar de 2 locuri
+                    scaunePanel.add(new JLabel(" "));
+                    scaunePanel.add(new JLabel(" "));
+                }
+
+                JButton btn = new JButton(String.valueOf(c + 1));
+                Scaun scaun = scaune[r][c];
+
+                if (scaun.esteRezervat()) {
                     btn.setEnabled(false);
+                    btn.setBackground(Color.RED);
                 } else {
                     btn.setBackground(Color.GREEN);
-                    btn.addActionListener(e -> {
-                        sc.rezerva();
-                        btn.setBackground(Color.ORANGE); // selectat
+                    btn.addActionListener(ae -> {
+                        scaun.rezerva();
+                        btn.setBackground(Color.ORANGE);
                     });
                 }
 
-                btn.setToolTipText("Rând " + (r + 1) + ", Scaun " + (c + 1) + ", Ora " + ora);
-                gbc.gridx = c;
-                gbc.gridy = r;
-                scaunePanel.add(btn, gbc);
+                btn.setToolTipText("Rând " + (char) ('A' + r) + ", Loc " + (c + 1) + ", Ora " + ora);
+                scaunePanel.add(btn);
             }
         }
 
+        scauneFrame.add(new JScrollPane(scaunePanel), BorderLayout.CENTER);
+
         // Panel jos pentru email și buton rezervare
-        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel bottom = new JPanel();
         JTextField emailField = new JTextField(20);
         JButton rezervaBtn = new JButton("Rezervă");
 
@@ -122,7 +104,7 @@ public class CinemaGUI extends JFrame {
                 JOptionPane.showMessageDialog(scauneFrame, "Introduceți un email valid!");
                 return;
             }
-            service.salveazaRezervare(film, ora, emailField.getText(), scaune);
+            service.salveazaRezervare(film, ora, emailField.getText(), sala);
             JOptionPane.showMessageDialog(scauneFrame, "Rezervare efectuată!");
             scauneFrame.dispose();
         });
@@ -131,7 +113,6 @@ public class CinemaGUI extends JFrame {
         bottom.add(emailField);
         bottom.add(rezervaBtn);
 
-        scauneFrame.add(new JScrollPane(scaunePanel), BorderLayout.CENTER);
         scauneFrame.add(bottom, BorderLayout.SOUTH);
         scauneFrame.setVisible(true);
     }
