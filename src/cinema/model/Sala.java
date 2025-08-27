@@ -10,7 +10,7 @@ public class Sala {
         this.nume = nume;
         this.randuri = randuri;
         this.coloane = coloane;
-        this.scaune = new Scaun[randuri][coloane];
+        scaune = new Scaun[randuri][coloane];
         for (int r = 0; r < randuri; r++) {
             for (int c = 0; c < coloane; c++) {
                 scaune[r][c] = new Scaun();
@@ -22,25 +22,6 @@ public class Sala {
         return nume;
     }
 
-    public Scaun[][] getScaune() {
-        return scaune;
-    }
-
-    // Deep copy pentru ziua diferită
-    public Sala cloneSala() {
-        Sala copie = new Sala(this.nume, this.randuri, this.coloane);
-        for (int r = 0; r < this.randuri; r++) {
-            for (int c = 0; c < this.coloane; c++) {
-                copie.scaune[r][c] = new Scaun(); // scaune noi, neocupate
-            }
-        }
-        return copie;
-    }
-    public Scaun getScaun(int rand, int coloana) {
-        if (rand < 0 || rand >= randuri || coloana < 0 || coloana >= coloane)
-            throw new IndexOutOfBoundsException("Rând sau coloană invalidă");
-        return scaune[rand][coloana];
-    }
     public int getRanduri() {
         return randuri;
     }
@@ -49,4 +30,25 @@ public class Sala {
         return coloane;
     }
 
+    public Scaun getScaun(int r, int c) {
+        return scaune[r][c];
+    }
+
+    public Scaun[][] getScaune() {
+        return scaune;
+    }
+
+    // Noua metodă pentru clonare
+    public Sala cloneSala() {
+        Sala copie = new Sala(this.nume, this.randuri, this.coloane);
+        for (int r = 0; r < this.randuri; r++) {
+            for (int c = 0; c < this.coloane; c++) {
+                // copiează starea fiecărui scaun
+                if (this.scaune[r][c].esteRezervat()) {
+                    copie.getScaun(r, c).rezerva();
+                }
+            }
+        }
+        return copie;
+    }
 }

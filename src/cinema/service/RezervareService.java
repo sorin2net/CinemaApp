@@ -9,33 +9,45 @@ import java.util.*;
 
 public class RezervareService {
     private List<Film> filme = new ArrayList<>();
-    // cheia: "titlu-film" -> "zi-ora" -> Sala
-    private Map<String, Map<String, Sala>> saliPeOraSiZi = new HashMap<>();
+    // Cheia: "titlu-film" -> "zi-ora" -> Sala
+    private Map<String, Map<String, Sala>> saliPeZiOra = new HashMap<>();
+    // Lista de ore disponibile per film
+    private Map<String, Set<String>> oreDisponibile = new HashMap<>();
 
     public void adaugaFilm(Film film) {
         filme.add(film);
         Map<String, Sala> mapZiOra = new HashMap<>();
+        Set<String> oreFilm = new TreeSet<>(film.getOre()); // ore ordonate
+        oreDisponibile.put(film.getTitlu(), oreFilm);
+
+        // Inițializare pentru o zi implicită (ex: Luni-1)
         for (String ora : film.getOre()) {
-            // pentru fiecare ora clonăm sala
             Sala salaCopy = film.getSala().cloneSala();
             PersistentaRezervari.incarcaRezervari(salaCopy, film.getTitlu(), ora);
-            mapZiOra.put("Luni-1-" + ora, salaCopy); // inițial zi implicită
+            mapZiOra.put("Luni-1-" + ora, salaCopy);
         }
-        saliPeOraSiZi.put(film.getTitlu(), mapZiOra);
+
+        saliPeZiOra.put(film.getTitlu(), mapZiOra);
     }
 
     public List<Film> getFilme() {
         return filme;
     }
 
+    public Set<String> getOreDisponibile(String titluFilm) {
+        return oreDisponibile.getOrDefault(titluFilm, Collections.emptySet());
+    }
+
     public Sala getSala(Film film, String ora, String zi) {
-        Map<String, Sala> mapZiOra = saliPeOraSiZi.get(film.getTitlu());
-        if (!mapZiOra.containsKey(zi + "-" + ora)) {
-            // clonăm sala dacă nu există încă pentru ziua respectivă
+        Map<String, Sala> mapZiOra = saliPeZiOra.get(film.getTitlu());
+        String key = zi + "-" + ora;
+
+        if (!mapZiOra.containsKey(key)) {
             Sala salaNoua = film.getSala().cloneSala();
-            mapZiOra.put(zi + "-" + ora, salaNoua);
+            mapZiOra.put(key, salaNoua);
         }
-        return mapZiOra.get(zi + "-" + ora);
+
+        return mapZiOra.get(key);
     }
 
     public void salveazaRezervare(Film film, String ora, String email, Sala sala) {
