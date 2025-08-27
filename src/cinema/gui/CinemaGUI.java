@@ -20,11 +20,32 @@ public class CinemaGUI extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Bara de căutare
-        JPanel topPanel = new JPanel(new BorderLayout());
-        JTextField searchField = new JTextField();
-        topPanel.add(new JLabel("Caută film: "), BorderLayout.WEST);
-        topPanel.add(searchField, BorderLayout.CENTER);
+        // Bara de căutare + filtrare ore
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JTextField searchField = new JTextField(20);
+        topPanel.add(new JLabel("Caută film:"));
+        topPanel.add(searchField);
+
+        // ComboBox pentru filtrarea după ore
+        JComboBox<String> oreFilter = new JComboBox<>();
+        oreFilter.addItem("oricand"); // optiune default
+
+        // Adaugăm toate orele disponibile în ComboBox
+        for (Film film : service.getFilme()) {
+            for (String ora : film.getOre()) {
+                boolean exista = false;
+                for (int i = 0; i < oreFilter.getItemCount(); i++) {
+                    if (oreFilter.getItemAt(i).equals(ora)) {
+                        exista = true;
+                        break;
+                    }
+                }
+                if (!exista) oreFilter.addItem(ora);
+            }
+        }
+
+        topPanel.add(new JLabel("Filtrează după oră:"));
+        topPanel.add(oreFilter);
         add(topPanel, BorderLayout.NORTH);
 
         // Panel filme
@@ -33,32 +54,53 @@ public class CinemaGUI extends JFrame {
         JScrollPane scroll = new JScrollPane(filmePanel);
         add(scroll, BorderLayout.WEST);
 
+        // Runnable pentru afișarea filmelor cu filtrare după titlu și oră
         Runnable afiseazaFilme = () -> {
             filmePanel.removeAll();
             String text = searchField.getText().toLowerCase();
-            for (Film film : service.getFilme()) {
-                if (film.getTitlu().toLowerCase().contains(text)) {
-                    JPanel filmPanel = new JPanel();
-                    filmPanel.setLayout(new BoxLayout(filmPanel, BoxLayout.Y_AXIS));
-                    filmPanel.setBorder(BorderFactory.createTitledBorder(film.getTitlu()));
+            String oraSelectata = (String) oreFilter.getSelectedItem();
 
+            for (Film film : service.getFilme()) {
+                // verificăm titlu
+                if (!film.getTitlu().toLowerCase().contains(text)) continue;
+
+                // verificăm ora
+                boolean afiseaza = false;
+                if ("oricand".equals(oraSelectata)) {
+                    afiseaza = true;
+                } else {
                     for (String ora : film.getOre()) {
-                        JButton oraBtn = new JButton("Rezervă la " + ora);
-                        oraBtn.addActionListener(e -> deschideEcranScaune(film, ora));
-                        filmPanel.add(oraBtn);
+                        if (ora.equals(oraSelectata)) {
+                            afiseaza = true;
+                            break;
+                        }
                     }
-                    filmePanel.add(filmPanel);
                 }
+                if (!afiseaza) continue;
+
+                JPanel filmPanel = new JPanel();
+                filmPanel.setLayout(new BoxLayout(filmPanel, BoxLayout.Y_AXIS));
+                filmPanel.setBorder(BorderFactory.createTitledBorder(film.getTitlu()));
+
+                for (String ora : film.getOre()) {
+                    JButton oraBtn = new JButton("Rezervă la " + ora);
+                    oraBtn.addActionListener(e -> deschideEcranScaune(film, ora));
+                    filmPanel.add(oraBtn);
+                }
+                filmePanel.add(filmPanel);
             }
+
             filmePanel.revalidate();
             filmePanel.repaint();
         };
 
+        // Legăm filtrarea la modificările din bara de căutare și dropdown
         searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { afiseazaFilme.run(); }
             @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { afiseazaFilme.run(); }
             @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { afiseazaFilme.run(); }
         });
+        oreFilter.addActionListener(e -> afiseazaFilme.run());
 
         afiseazaFilme.run();
     }
