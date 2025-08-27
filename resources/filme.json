@@ -1,0 +1,24 @@
+[
+  {
+    "titlu": "Inception",
+    "durata": 148,
+    "imaginePath": "imagini/Inception_film_poster.jpg",
+    "ore": ["18:00", "21:00"],
+    "sala": {
+      "nume": "Sala Mare",
+      "randuri": 5,
+      "coloane": 10
+    }
+  },
+  {
+    "titlu": "Interstellar",
+    "durata": 169,
+    "imaginePath": "imagini/Interstellar_film_poster.jpg",
+    "ore": ["17:00", "20:00"],
+    "sala": {
+      "nume": "Sala Mică",
+      "randuri": 4,
+      "coloane": 8
+    }
+  }
+]
