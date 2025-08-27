@@ -61,11 +61,11 @@ public class PersistentaRezervari {
 
             // Cream obiectul JSON cu ordinea dorită: FILM → ORA → RAND → COLOANA → EMAIL
             JSONObject rez = new JSONObject();
+            rez.put("email", email);
             rez.put("film", film);
             rez.put("ora", ora);
-            rez.put("rand", rand);       // salvăm exact ce a introdus userul (1-based)
-            rez.put("coloana", coloana); // salvăm exact ce a introdus userul (1-based)
-            rez.put("email", email);
+            rez.put("rand", rand);
+            rez.put("coloana", coloana);
 
             rezervariArray.add(rez);
 
