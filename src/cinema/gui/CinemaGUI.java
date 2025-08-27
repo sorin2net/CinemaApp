@@ -83,7 +83,7 @@ public class CinemaGUI extends JFrame {
 
         JPanel scaunePanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(3, 3, 3, 3);
+        gbc.insets = new Insets(9, 9, 9, 9); // spațiu între scaune mărit de 3x
 
         char rowLetter = 'A';
         for (int r = 0; r < scaune.length; r++) {
@@ -94,10 +94,17 @@ public class CinemaGUI extends JFrame {
             JLabel rowLabel = new JLabel("" + rowLetter++);
             scaunePanel.add(rowLabel, gbc);
 
+            int middle = scaune[r].length / 2; // punctul central al rândului
             for (int c = 0; c < scaune[r].length; c++) {
-                if (c == scaune[r].length / 2) gbc.gridx += 2; // spațiu central 2 coloane
+                gbc.gridy = r;
 
-                gbc.gridx = c + 1;
+                // Dacă suntem după mijloc, sărim două coloane pentru alee
+                if (c < middle) {
+                    gbc.gridx = c + 1; // înainte de alee
+                } else {
+                    gbc.gridx = c + 3; // după alee
+                }
+
                 JButton btn = new JButton("" + (c + 1));
                 Scaun scaun = scaune[r][c];
 
@@ -115,11 +122,19 @@ public class CinemaGUI extends JFrame {
                 btn.setToolTipText("Rând " + (r + 1) + ", Scaun " + (c + 1) + ", Ora " + ora);
                 scaunePanel.add(btn, gbc);
             }
+
+            // adaugă două coloane goale ca alee centrală
+            for (int empty = 0; empty < 2; empty++) {
+                gbc.gridx = middle + 1 + empty;
+                JLabel spacer = new JLabel();
+                scaunePanel.add(spacer, gbc);
+            }
         }
 
         JScrollPane scroll = new JScrollPane(scaunePanel);
         scauneFrame.add(scroll, BorderLayout.CENTER);
 
+        // Panel jos pentru email și buton rezervare
         JPanel bottom = new JPanel();
         JTextField emailField = new JTextField(20);
         JButton rezervaBtn = new JButton("Rezervă");
@@ -141,4 +156,5 @@ public class CinemaGUI extends JFrame {
 
         scauneFrame.setVisible(true);
     }
+
 }
