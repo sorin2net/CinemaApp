@@ -19,17 +19,12 @@ public class RezervareService {
         return filme;
     }
 
-    // returnează sala unui film
-    public Sala getSala(Film film) {
-        return film.getSala();
-    }
-
-    // rezervare scaun în sala unui film
-    public boolean rezervaScaun(Film film, int rand, int coloana, String email, String ora) {
+    // Rezervă un scaun și salvează în JSON
+    public boolean rezervaScaun(Film film, String ora, int rand, int coloana, String email) {
         Sala sala = film.getSala();
         if (sala == null) return false;
 
-        // validare index
+        // verificare coordonate valide
         if (rand < 0 || rand >= sala.getRanduri() || coloana < 0 || coloana >= sala.getColoane()) {
             return false;
         }
@@ -37,18 +32,20 @@ public class RezervareService {
         Scaun scaun = sala.getScaun(rand, coloana);
         if (!scaun.esteRezervat()) {
             scaun.rezerva();
-
-            // salvăm în JSON
-            PersistentaRezervari.salveazaRezervare(
-                    film.getTitlu(),
-                    ora,
-                    rand + 1,   // +1 pentru index uman
-                    coloana + 1,
-                    email
-            );
+            PersistentaRezervari.salveazaRezervare(film.getTitlu(), ora, rand + 1, coloana + 1, email);
             return true;
         } else {
             return false;
+        }
+    }
+
+    // Încarcă toate rezervările din JSON la pornire
+    public void incarcaRezervari() {
+        for (Film film : filme) {
+            Sala sala = film.getSala();
+            for (String ora : film.getOre()) {
+                PersistentaRezervari.incarcaRezervari(sala, film.getTitlu(), ora);
+            }
         }
     }
 }

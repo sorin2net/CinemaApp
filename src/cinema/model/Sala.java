@@ -20,11 +20,10 @@ public class Sala {
         }
     }
 
-    public Scaun getScaun(int rand, int coloana) {
-        return scaune[rand][coloana];
-    }
-
     public String getNume() { return nume; }
     public int getRanduri() { return randuri; }
     public int getColoane() { return coloane; }
+
+    public Scaun getScaun(int rand, int coloana) { return scaune[rand][coloana]; }
+    public Scaun[][] getScaune() { return scaune; } // getter pentru matricea de scaune
 }

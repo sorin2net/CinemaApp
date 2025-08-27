@@ -7,7 +7,7 @@ public class Film {
     private int durata; // minute
     private String imaginePath;
     private List<String> ore; // orele de difuzare
-    private Sala sala; // adăugat
+    private Sala sala; // sala asociată filmului
 
     public Film(String titlu, int durata, String imaginePath, List<String> ore, Sala sala) {
         this.titlu = titlu;
@@ -21,5 +21,5 @@ public class Film {
     public int getDurata() { return durata; }
     public String getImaginePath() { return imaginePath; }
     public List<String> getOre() { return ore; }
-    public Sala getSala() { return sala; } // getter nou
+    public Sala getSala() { return sala; } // getter Sala
 }
