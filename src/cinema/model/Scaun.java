@@ -10,7 +10,9 @@ public class Scaun {
         this.coloana = coloana;
         this.rezervat = false;
     }
-
+    public Scaun() {
+        this.rezervat = false;
+    }
     public int getRand() { return rand; }
     public int getColoana() { return coloana; }
     public boolean esteRezervat() { return rezervat; }

@@ -5,32 +5,37 @@ import cinema.model.Sala;
 import cinema.model.Scaun;
 import cinema.persistence.PersistentaRezervari;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RezervareService {
     private List<Film> filme = new ArrayList<>();
-    private Map<String, Map<String, Sala>> saliPeOra = new HashMap<>();
+    // cheia: "titlu-film" -> "zi-ora" -> Sala
+    private Map<String, Map<String, Sala>> saliPeOraSiZi = new HashMap<>();
 
     public void adaugaFilm(Film film) {
         filme.add(film);
-        Map<String, Sala> mapOre = new HashMap<>();
+        Map<String, Sala> mapZiOra = new HashMap<>();
         for (String ora : film.getOre()) {
-            Sala salaCopy = new Sala(film.getSala().getNume(), film.getSala().getRanduri(), film.getSala().getColoane());
+            // pentru fiecare ora clonăm sala
+            Sala salaCopy = film.getSala().cloneSala();
             PersistentaRezervari.incarcaRezervari(salaCopy, film.getTitlu(), ora);
-            mapOre.put(ora, salaCopy);
+            mapZiOra.put("Luni-1-" + ora, salaCopy); // inițial zi implicită
         }
-        saliPeOra.put(film.getTitlu(), mapOre);
+        saliPeOraSiZi.put(film.getTitlu(), mapZiOra);
     }
 
     public List<Film> getFilme() {
         return filme;
     }
 
-    public Sala getSala(Film film, String ora) {
-        return saliPeOra.get(film.getTitlu()).get(ora);
+    public Sala getSala(Film film, String ora, String zi) {
+        Map<String, Sala> mapZiOra = saliPeOraSiZi.get(film.getTitlu());
+        if (!mapZiOra.containsKey(zi + "-" + ora)) {
+            // clonăm sala dacă nu există încă pentru ziua respectivă
+            Sala salaNoua = film.getSala().cloneSala();
+            mapZiOra.put(zi + "-" + ora, salaNoua);
+        }
+        return mapZiOra.get(zi + "-" + ora);
     }
 
     public void salveazaRezervare(Film film, String ora, String email, Sala sala) {
