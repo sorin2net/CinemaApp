@@ -127,17 +127,44 @@ public class CinemaGUI extends JFrame {
             }
             filmPanel.add(imageLabel, BorderLayout.WEST);
 
-            // Panel titlu + butoane
+            // Panel titlu + gen + varsta + butoane
             JPanel rightPanel = new JPanel();
             rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
             rightPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
 
+            // Titlu + varsta pe acelasi rand
+            JPanel titluVarstaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+            titluVarstaPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            // Titlu
             JLabel titluLabel = new JLabel(film.getTitlu());
             titluLabel.setFont(new Font("Arial", Font.BOLD, 24));
-            titluLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-            rightPanel.add(titluLabel);
+            titluVarstaPanel.add(titluLabel);
+
+            // Varsta
+            JLabel varstaLabel = new JLabel("(" + film.getRestrictieVarsta() + "+)");
+            varstaLabel.setFont(new Font("Arial", Font.BOLD, 20));
+            switch (film.getRestrictieVarsta()) {
+                case 3 -> varstaLabel.setForeground(Color.GREEN);
+                case 7 -> varstaLabel.setForeground(Color.YELLOW);
+                case 12 -> varstaLabel.setForeground(Color.ORANGE);
+                case 15 -> varstaLabel.setForeground(Color.RED);
+                case 18 -> varstaLabel.setForeground(Color.BLACK);
+                default -> varstaLabel.setForeground(Color.GRAY);
+            }
+            titluVarstaPanel.add(varstaLabel);
+
+            rightPanel.add(titluVarstaPanel);
+
+            // Genul filmului sub titlu
+            JLabel genLabel = new JLabel(film.getGen() != null ? film.getGen() : "Gen necunoscut");
+            genLabel.setFont(new Font("Arial", Font.ITALIC, 16));
+            genLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            rightPanel.add(genLabel);
+
             rightPanel.add(Box.createVerticalStrut(15));
 
+            // Butoane rezervare
             JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
             buttonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             for (String ora : film.getOre()) {
@@ -156,6 +183,7 @@ public class CinemaGUI extends JFrame {
         filmePanel.revalidate();
         filmePanel.repaint();
     }
+
 
     private void deschideEcranScaune(Film film, String ora, LocalDate data) {
         JFrame scauneFrame = new JFrame("Rezervare - " + film.getTitlu() + " (" + ora + ") Ziua: " + data);

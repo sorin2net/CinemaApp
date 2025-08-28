@@ -31,7 +31,19 @@ public class CinemaApp {
                 // Convertim în obiecte Film și Sala
                 for (FilmJson fj : filmeJson) {
                     Sala sala = new Sala(fj.sala.nume, fj.sala.randuri, fj.sala.coloane);
-                    Film film = new Film(fj.titlu, fj.durata, fj.imaginePath, fj.ore, fj.zile, sala);
+                    Film film = new Film(
+                            fj.titlu,
+                            fj.durata,
+                            fj.imaginePath,
+                            fj.ore,
+                            fj.restrictieVarsta,
+                            fj.gen
+                    );
+
+                    // Păstrăm lista de zile și sala pentru rezervări
+                    film.setZile(fj.zile);
+                    film.setSala(sala);
+
                     service.adaugaFilm(film);
                 }
 
@@ -52,8 +64,10 @@ public class CinemaApp {
         int durata;
         String imaginePath;
         List<String> ore;
-        List<Integer> zile; // lista de zile când rulează filmul
+        List<Integer> zile;
         SalaJson sala;
+        int restrictieVarsta;
+        String gen;
     }
 
     private static class SalaJson {

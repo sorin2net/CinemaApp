@@ -4,25 +4,46 @@ import java.util.List;
 
 public class Film {
     private String titlu;
-    private int durata; // minute
+    private int durata;
     private String imaginePath;
-    private List<String> ore; // orele de difuzare
-    private List<Integer> zile; // zilele în care se difuzează
-    private Sala sala;
+    private List<String> ore;
+    private int restrictieVarsta;
+    private String gen;
+    private List<Integer> zile; // adăugat
+    private Sala sala;          // adăugat
 
-    public Film(String titlu, int durata, String imaginePath, List<String> ore, List<Integer> zile, Sala sala) {
+    public Film(String titlu, int durata, String imaginePath, List<String> ore, int restrictieVarsta, String gen) {
         this.titlu = titlu;
         this.durata = durata;
         this.imaginePath = imaginePath;
         this.ore = ore;
+        this.restrictieVarsta = restrictieVarsta;
+        this.gen = gen;
+    }
+
+    // --- getter și setter pentru zile ---
+    public List<Integer> getZile() {
+        return zile;
+    }
+
+    public void setZile(List<Integer> zile) {
         this.zile = zile;
+    }
+
+    // --- getter și setter pentru sala ---
+    public Sala getSala() {
+        return sala;
+    }
+
+    public void setSala(Sala sala) {
         this.sala = sala;
     }
 
+    // --- restul getter-elor ---
     public String getTitlu() { return titlu; }
     public int getDurata() { return durata; }
     public String getImaginePath() { return imaginePath; }
     public List<String> getOre() { return ore; }
-    public List<Integer> getZile() { return zile; } // nou
-    public Sala getSala() { return sala; }
+    public int getRestrictieVarsta() { return restrictieVarsta; }
+    public String getGen() { return gen; }
 }
