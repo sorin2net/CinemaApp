@@ -127,42 +127,41 @@ public class CinemaGUI extends JFrame {
             }
             filmPanel.add(imageLabel, BorderLayout.WEST);
 
-            // Panel titlu + gen + varsta + butoane
+            // Panel pentru titlu + gen + butoane
             JPanel rightPanel = new JPanel();
             rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
             rightPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
 
-            // Titlu + varsta pe acelasi rand
-            JPanel titluVarstaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-            titluVarstaPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            // --- Panel pentru titlu + gen ---
+            JPanel titluGenPanel = new JPanel();
+            titluGenPanel.setLayout(new BoxLayout(titluGenPanel, BoxLayout.Y_AXIS));
+            titluGenPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-            // Titlu
-            JLabel titluLabel = new JLabel(film.getTitlu());
-            titluLabel.setFont(new Font("Arial", Font.BOLD, 24));
-            titluVarstaPanel.add(titluLabel);
+            // JLabel pentru titlu + varsta (doar varsta colorată)
+            int varsta = film.getRestrictieVarsta();
+            String culoareVarsta;
+            if (varsta == 3) culoareVarsta = "green";
+            else if (varsta == 7) culoareVarsta = "yellow";
+            else if (varsta == 12) culoareVarsta = "orange";
+            else if (varsta == 15) culoareVarsta = "red";
+            else if (varsta == 18) culoareVarsta = "black";
+            else culoareVarsta = "gray";
 
-            // Varsta
-            JLabel varstaLabel = new JLabel("(" + film.getRestrictieVarsta() + "+)");
-            varstaLabel.setFont(new Font("Arial", Font.BOLD, 20));
-            switch (film.getRestrictieVarsta()) {
-                case 3 -> varstaLabel.setForeground(Color.GREEN);
-                case 7 -> varstaLabel.setForeground(Color.YELLOW);
-                case 12 -> varstaLabel.setForeground(Color.ORANGE);
-                case 15 -> varstaLabel.setForeground(Color.RED);
-                case 18 -> varstaLabel.setForeground(Color.BLACK);
-                default -> varstaLabel.setForeground(Color.GRAY);
-            }
-            titluVarstaPanel.add(varstaLabel);
+            String titluVarstaText = "<html>" + film.getTitlu() + " (<span style='color:"
+                    + culoareVarsta + ";'>" + varsta + "+</span>)</html>";
+            JLabel titluVarstaLabel = new JLabel(titluVarstaText);
+            titluVarstaLabel.setFont(new Font("Arial", Font.BOLD, 24));
+            titluGenPanel.add(titluVarstaLabel);
 
-            rightPanel.add(titluVarstaPanel);
-
-            // Genul filmului sub titlu
+            // JLabel pentru gen
             JLabel genLabel = new JLabel(film.getGen() != null ? film.getGen() : "Gen necunoscut");
             genLabel.setFont(new Font("Arial", Font.ITALIC, 16));
             genLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-            rightPanel.add(genLabel);
+            titluGenPanel.add(genLabel);
 
-            rightPanel.add(Box.createVerticalStrut(15));
+            rightPanel.add(titluGenPanel);
+
+            rightPanel.add(Box.createVerticalStrut(15)); // spațiu mic înainte de butoane
 
             // Butoane rezervare
             JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
@@ -184,7 +183,6 @@ public class CinemaGUI extends JFrame {
         filmePanel.repaint();
     }
 
-
     private void deschideEcranScaune(Film film, String ora, LocalDate data) {
         JFrame scauneFrame = new JFrame("Rezervare - " + film.getTitlu() + " (" + ora + ") Ziua: " + data);
         scauneFrame.setSize(1000, 700);
@@ -205,12 +203,10 @@ public class CinemaGUI extends JFrame {
 
         Set<Scaun> scauneSelectate = new HashSet<>();
 
-        // Folosim GridLayout rapid
         int rows = scaune.length;
         int cols = scaune[0].length;
         JPanel scaunePanel = new JPanel(new GridLayout(rows, cols, 5, 5));
 
-        char rowLetter = 'A';
         for (int r = 0; r < scaune.length; r++) {
             int displayNum = 1;
             int middle1 = scaune[r].length / 2 - 1;
@@ -267,7 +263,6 @@ public class CinemaGUI extends JFrame {
             JOptionPane.showMessageDialog(scauneFrame, "Rezervare efectuată!");
             scauneFrame.dispose();
         });
-
 
         bottom.add(new JLabel("Email:"));
         bottom.add(emailField);
