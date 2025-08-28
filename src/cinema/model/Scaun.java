@@ -1,24 +1,33 @@
 package cinema.model;
 
 public class Scaun {
-    private int rand;
-    private int coloana;
     private boolean rezervat;
+    private String emailRezervare; // cine a rezervat locul
 
-    public Scaun(int rand, int coloana) {
-        this.rand = rand;
-        this.coloana = coloana;
-        this.rezervat = false;
-    }
     public Scaun() {
         this.rezervat = false;
+        this.emailRezervare = null;
     }
-    public int getRand() { return rand; }
-    public int getColoana() { return coloana; }
-    public boolean esteRezervat() { return rezervat; }
 
-    // metoda nu ia niciun argument
+    public boolean esteRezervat() {
+        return rezervat;
+    }
+
     public void rezerva() {
         this.rezervat = true;
+    }
+
+    public void anuleaza() {
+        this.rezervat = false;
+        this.emailRezervare = null;
+    }
+
+    // Getter și Setter pentru email
+    public String getEmailRezervare() {
+        return emailRezervare;
+    }
+
+    public void setEmailRezervare(String emailRezervare) {
+        this.emailRezervare = emailRezervare;
     }
 }
