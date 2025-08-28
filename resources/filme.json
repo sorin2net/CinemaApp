@@ -4,10 +4,11 @@
     "durata": 148,
     "imaginePath": "imagini/Inception_film_poster.jpg",
     "ore": ["18:00", "21:00"],
+    "zile": [1, 3, 5, 7, 10],
     "sala": {
-      "nume": "Sala Mare",
-      "randuri": 5,
-      "coloane": 10
+      "nume": "Sala 1",
+      "randuri": 6,
+      "coloane": 12
     }
   },
   {
@@ -15,8 +16,129 @@
     "durata": 169,
     "imaginePath": "imagini/Interstellar_film_poster.jpg",
     "ore": ["17:00", "20:00"],
+    "zile": [2, 4, 8, 12, 15],
     "sala": {
-      "nume": "Sala Mică",
+      "nume": "Sala 2",
+      "randuri": 6,
+      "coloane": 12
+    }
+  },
+  {
+    "titlu": "Shrek",
+    "durata": 90,
+    "imaginePath": "imagini/Shrek_film_poster.jpg",
+    "ore": ["16:00", "19:00"],
+    "zile": [5, 12, 18, 22, 28],
+    "sala": {
+      "nume": "Sala 4",
+      "randuri": 4,
+      "coloane": 8
+    }
+  },
+  {
+    "titlu": "Wall-e",
+    "durata": 98,
+    "imaginePath": "imagini/Wall-e_film_poster.jpg",
+    "ore": ["15:00", "18:00", "21:00"],
+    "zile": [2, 7, 14, 21, 30],
+    "sala": {
+      "nume": "Sala 5",
+      "randuri": 4,
+      "coloane": 8
+    }
+  },
+  {
+    "titlu": "Spider-Man Into the Spider-Verse",
+    "durata": 117,
+    "imaginePath": "imagini/Spider-Man-Into-the_Spider-Verse_film_poster.jpg",
+    "ore": ["17:30", "20:30"],
+    "zile": [1, 7, 10, 20, 27],
+    "sala": {
+      "nume": "Sala 3",
+      "randuri": 6,
+      "coloane": 12
+    }
+  },
+  {
+    "titlu": "Spiderman No Way Home",
+    "durata": 148,
+    "imaginePath": "imagini/Spider-Man-No-Way-Home_film_poster.jpg",
+    "ore": ["18:00", "21:30"],
+    "zile": [1, 7, 10, 20, 27],
+    "sala": {
+      "nume": "Sala 1",
+      "randuri": 6,
+      "coloane": 12
+    }
+  },
+  {
+    "titlu": "Sinister",
+    "durata": 110,
+    "imaginePath": "imagini/Sinister_film_poster.jpg",
+    "ore": ["19:00", "22:00"],
+    "zile": [3, 8, 15, 23, 29],
+    "sala": {
+      "nume": "Sala 2",
+      "randuri": 6,
+      "coloane": 12
+    }
+  },
+  {
+    "titlu": "The Witch",
+    "durata": 92,
+    "imaginePath": "imagini/The-Witch_film_poster.png",
+    "ore": ["17:00", "20:00"],
+    "zile": [4, 9, 16, 24, 30],
+    "sala": {
+      "nume": "Sala 6",
+      "randuri": 4,
+      "coloane": 8
+    }
+  },
+  {
+    "titlu": "Night at the Museum",
+    "durata": 108,
+    "imaginePath": "imagini/Night-at-the-Museum_film_poster.jpg",
+    "ore": ["16:00", "19:00", "22:00"],
+    "zile": [2, 6, 13, 19, 26],
+    "sala": {
+      "nume": "Sala 4",
+      "randuri": 4,
+      "coloane": 8
+    }
+  },
+  {
+    "titlu": "Guardians of the Galaxy",
+    "durata": 121,
+    "imaginePath": "imagini/Guardians_of_the_Galaxy_film_poster.jpg",
+    "ore": ["18:00", "21:00"],
+    "zile": [1, 5, 12, 20, 28],
+    "sala": {
+      "nume": "Sala 3",
+      "randuri": 6,
+      "coloane": 12
+    }
+  },
+  {
+    "titlu": "Caroline",
+    "durata": 105,
+    "imaginePath": "imagini/Caroline_film_poster.jpg",
+    "ore": ["17:00", "20:00"],
+    "zile": [1, 7, 10, 20, 27],
+    "sala": {
+      "nume": "Sala 5",
+      "randuri": 4,
+      "coloane": 8
+    }
+  },
+  {
+    "titlu": "Good Boys",
+    "durata": 100,
+    "imaginePath": "imagini/Good_Boys_film_poster.jpg",
+    "ore": ["16:30", "19:30"],
+    "zile": [3, 8, 14, 21, 29],
+    "sala": {
+      "nume": "Sala 6",
       "randuri": 4,
       "coloane": 8
     }

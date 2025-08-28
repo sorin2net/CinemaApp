@@ -6,12 +6,12 @@ import cinema.model.Sala;
 import cinema.service.RezervareService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import javax.swing.*;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-
-import javax.swing.*;
 
 public class CinemaApp {
 
@@ -24,13 +24,14 @@ public class CinemaApp {
                 String json = new String(Files.readAllBytes(Paths.get("resources/filme.json")));
                 Gson gson = new Gson();
 
-                Type listaFilmeType = new TypeToken<List<FilmJson>>(){}.getType();
+                // Mapăm lista de filme din JSON
+                Type listaFilmeType = new TypeToken<List<FilmJson>>() {}.getType();
                 List<FilmJson> filmeJson = gson.fromJson(json, listaFilmeType);
 
                 // Convertim în obiecte Film și Sala
                 for (FilmJson fj : filmeJson) {
                     Sala sala = new Sala(fj.sala.nume, fj.sala.randuri, fj.sala.coloane);
-                    Film film = new Film(fj.titlu, fj.durata, fj.imaginePath, fj.ore, sala);
+                    Film film = new Film(fj.titlu, fj.durata, fj.imaginePath, fj.ore, fj.zile, sala);
                     service.adaugaFilm(film);
                 }
 
@@ -51,6 +52,7 @@ public class CinemaApp {
         int durata;
         String imaginePath;
         List<String> ore;
+        List<Integer> zile; // lista de zile când rulează filmul
         SalaJson sala;
     }
 
@@ -58,5 +60,9 @@ public class CinemaApp {
         String nume;
         int randuri;
         int coloane;
+    }
+
+    public static void main(String[] args) {
+        new CinemaApp();
     }
 }

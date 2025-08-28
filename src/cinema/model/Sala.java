@@ -1,6 +1,6 @@
 package cinema.model;
 
-public class Sala implements Cloneable {
+public class Sala {
     private String nume;
     private int randuri;
     private int coloane;
@@ -12,16 +12,13 @@ public class Sala implements Cloneable {
         this.coloane = coloane;
         this.scaune = new Scaun[randuri][coloane];
 
-        // inițializăm scaunele
-        for (int i = 0; i < randuri; i++) {
-            for (int j = 0; j < coloane; j++) {
-                scaune[i][j] = new Scaun();
-            }
-        }
+        for (int r = 0; r < randuri; r++)
+            for (int c = 0; c < coloane; c++)
+                scaune[r][c] = new Scaun();
     }
 
-    public String getNume() {
-        return nume;
+    public Scaun[][] getScaune() {
+        return scaune;
     }
 
     public int getRanduri() {
@@ -32,21 +29,17 @@ public class Sala implements Cloneable {
         return coloane;
     }
 
-    public Scaun[][] getScaune() {
-        return scaune;
+    public String getNume() {
+        return nume;
     }
 
+    // Clonare sala pentru fiecare zi/ora, ca să avem sală independentă
+    public Sala cloneSala() {
+        Sala copie = new Sala(this.nume, this.randuri, this.coloane);
+        return copie;
+    }
     public Scaun getScaun(int rand, int coloana) {
         return scaune[rand][coloana];
     }
 
-    /**
-     * Creează o copie completă a sălii cu toate scaunele libere
-     * (fiecare zi/ora primește o sală separată, dar identică ca structură).
-     */
-    public Sala cloneSala() {
-        Sala copie = new Sala(this.nume, this.randuri, this.coloane);
-        // scaunele noi sunt deja inițializate ca libere, deci nu copiem rezervările
-        return copie;
-    }
 }

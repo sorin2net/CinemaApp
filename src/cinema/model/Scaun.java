@@ -1,33 +1,24 @@
 package cinema.model;
 
 public class Scaun {
-    private boolean rezervat;
-    private String emailRezervare; // cine a rezervat locul
-
-    public Scaun() {
-        this.rezervat = false;
-        this.emailRezervare = null;
-    }
+    private boolean rezervat = false;
+    private String emailRezervare; // opțional, dacă vrei să salvezi cine a rezervat
 
     public boolean esteRezervat() {
         return rezervat;
     }
 
-    public void rezerva() {
+    public void rezerva(String email) {
         this.rezervat = true;
+        this.emailRezervare = email;
     }
 
-    public void anuleaza() {
-        this.rezervat = false;
-        this.emailRezervare = null;
-    }
-
-    // Getter și Setter pentru email
     public String getEmailRezervare() {
         return emailRezervare;
     }
 
-    public void setEmailRezervare(String emailRezervare) {
-        this.emailRezervare = emailRezervare;
+    public void reset() {
+        this.rezervat = false;
+        this.emailRezervare = null;
     }
 }
