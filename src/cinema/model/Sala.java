@@ -12,10 +12,13 @@ public class Sala {
         this.coloane = coloane;
         this.scaune = new Scaun[randuri][coloane];
 
-        for (int r = 0; r < randuri; r++)
-            for (int c = 0; c < coloane; c++)
-                scaune[r][c] = new Scaun();
+        for (int r = 0; r < randuri; r++) {
+            for (int c = 0; c < coloane; c++) {
+                scaune[r][c] = new Scaun(r + 1, c + 1); // rand și număr începe de la 1
+            }
+        }
     }
+
 
     public Scaun[][] getScaune() {
         return scaune;

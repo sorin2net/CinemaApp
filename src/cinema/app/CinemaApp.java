@@ -4,6 +4,7 @@ import cinema.gui.CinemaGUI;
 import cinema.model.Film;
 import cinema.model.Sala;
 import cinema.service.RezervareService;
+import cinema.persistence.DatabaseManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -20,6 +21,9 @@ public class CinemaApp {
             RezervareService service = new RezervareService();
 
             try {
+                // Creează tabelul în baza de date dacă nu există
+                DatabaseManager.createTableIfNotExists();
+
                 // Citim JSON-ul
                 String json = new String(Files.readAllBytes(Paths.get("resources/filme.json")));
                 Gson gson = new Gson();

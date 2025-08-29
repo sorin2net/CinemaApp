@@ -1,53 +1,62 @@
 package cinema.persistence;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DatabaseManager {
-    private static final String DB_URL = "jdbc:sqlite:data/cinema.db";
 
-    // Initializează baza de date și tabelul rezervări
-    public static void initDatabase() {
-        // Creează folderul data dacă nu există
-        java.io.File folder = new java.io.File("data");
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
+    private static final String DB_URL = "jdbc:sqlite:cinema.db"; // fișierul .db în proiect
 
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            if (conn != null) {
-                System.out.println("Conexiune SQLite realizată!");
-                createRezervariTable(conn);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Creează tabelul rezervări dacă nu există
-    private static void createRezervariTable(Connection conn) {
-        String sql = "CREATE TABLE IF NOT EXISTS rezervari (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "film TEXT NOT NULL," +
-                "sala TEXT NOT NULL," +
-                "data DATE NOT NULL," +
-                "ora TEXT NOT NULL," +
-                "email TEXT NOT NULL," +
-                "scaune TEXT NOT NULL" + // lista de scaune rezervate, ca text
-                ");";
-
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-            System.out.println("Tabelul rezervari este gata!");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Obține conexiunea la baza de date
+    // 1) Conexiune la baza de date
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
+    }
+
+    // 2) Creare tabel dacă nu există
+    public static void createTableIfNotExists() {
+        String sql = """
+            CREATE TABLE IF NOT EXISTS rezervari (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                titlu TEXT,
+                gen TEXT,
+                varsta INTEGER,
+                data TEXT,
+                ora TEXT,
+                rand INTEGER,
+                coloana INTEGER,
+                email TEXT
+            )
+        """;
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.execute();
+            System.out.println("Tabelul rezervari a fost creat sau există deja.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 3) Inserare rezervare
+    public static void insertRezervare(String titluFilm, String gen, int varsta, String data, String ora, int rand, int coloana, String email) {
+        String sql = "INSERT INTO rezervari (titlu, gen, varsta, data, ora, rand, coloana, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, titluFilm);
+            stmt.setString(2, gen);
+            stmt.setInt(3, varsta);
+            stmt.setString(4, data);
+            stmt.setString(5, ora);
+            stmt.setInt(6, rand);
+            stmt.setInt(7, coloana);
+            stmt.setString(8, email);
+
+            stmt.executeUpdate();
+            System.out.println("Rezervare inserată cu succes în baza de date.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
