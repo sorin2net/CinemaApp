@@ -103,13 +103,43 @@ public class CinemaGUI extends JFrame {
 
         LocalDate data = LocalDate.of(2025, lunaIndex, zi);
         String text = searchField.getText().toLowerCase();
-        String oraSelectata = (String) oreCombo.getSelectedItem();
 
-        List<Film> filmeZi = service.getFilmePentruZi(data).stream()
+        // 1) Filmele pentru ziua curentă (fără filtrul pe oră, ca să putem popula corect orele)
+        List<Film> filmeZiFaraOra = service.getFilmePentruZi(data).stream()
                 .filter(f -> f.getTitlu().toLowerCase().contains(text))
-                .filter(f -> "Oricând".equals(oraSelectata) || f.getOre().contains(oraSelectata))
                 .collect(Collectors.toList());
 
+        // 2) Repopulez oreCombo doar cu orele disponibile în ziua curentă (plus "Oricând")
+        Object selectieAnterioara = oreCombo.getSelectedItem();
+        java.awt.event.ActionListener[] ls = oreCombo.getActionListeners();
+        for (java.awt.event.ActionListener l : ls) oreCombo.removeActionListener(l);
+
+        oreCombo.removeAllItems();
+        oreCombo.addItem("Oricând");
+
+        Set<String> oreDisponibileSet = filmeZiFaraOra.stream()
+                .flatMap(f -> f.getOre().stream())
+                .collect(Collectors.toSet());
+
+        oreDisponibileSet.stream().sorted().forEach(oreCombo::addItem);
+
+        String oraSelectataTemp = selectieAnterioara != null ? selectieAnterioara.toString() : "Oricând";
+        if (!"Oricând".equals(oraSelectataTemp) && !oreDisponibileSet.contains(oraSelectataTemp)) {
+            oraSelectataTemp = "Oricând";
+        }
+        oreCombo.setSelectedItem(oraSelectataTemp);
+
+        for (java.awt.event.ActionListener l : ls) oreCombo.addActionListener(l);
+
+        // Capturăm valoarea într-o variabilă finală pentru a o folosi în lambda
+        final String oraFiltru = oraSelectataTemp;
+
+        // 3) Aplic filtrul pe oră abia acum, după ce oreCombo e corect
+        List<Film> filmeZi = filmeZiFaraOra.stream()
+                .filter(f -> "Oricând".equals(oraFiltru) || f.getOre().contains(oraFiltru))
+                .collect(Collectors.toList());
+
+        // 4) Randare filme
         filmePanel.setLayout(new GridLayout(filmeZi.size(), 1, 0, 10));
 
         for (Film film : filmeZi) {
@@ -145,7 +175,7 @@ public class CinemaGUI extends JFrame {
             titluGenPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             titluGenPanel.setBackground(new Color(60, 60, 60));
 
-            // JLabel pentru titlu + varsta (doar varsta colorată, fără casetă)
+            // Titlu + vârsta (doar vârsta colorată, fără casetă)
             int varsta = film.getRestrictieVarsta();
             String culoareVarsta;
             if (varsta == 3) culoareVarsta = "#4CAF50";
@@ -163,7 +193,7 @@ public class CinemaGUI extends JFrame {
             titluVarstaLabel.setFont(new Font("Arial", Font.BOLD, 24));
             titluGenPanel.add(titluVarstaLabel);
 
-            // JLabel pentru gen
+            // Gen (cu spațiu deasupra)
             JLabel genLabel = new JLabel(
                     "<html><div style='margin-top:10px;'>"
                             + (film.getGen() != null ? film.getGen() : "Gen necunoscut")
@@ -174,20 +204,20 @@ public class CinemaGUI extends JFrame {
             genLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             titluGenPanel.add(genLabel);
 
-
             rightPanel.add(titluGenPanel);
-            rightPanel.add(Box.createVerticalStrut(15)); // spațiu mic înainte de butoane
+            rightPanel.add(Box.createVerticalStrut(15));
 
             // Butoane rezervare (dimensiune adaptivă la text)
             JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
             buttonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             buttonsPanel.setBackground(new Color(60, 60, 60));
             for (String ora : film.getOre()) {
-                JButton oraBtn = new JButton("Rezervă la " + ora);
+                final String oraBtnValue = ora; // capturăm într-o variabilă finală pentru lambda
+                JButton oraBtn = new JButton("Rezervă la " + oraBtnValue);
                 oraBtn.setFont(new Font("Arial", Font.BOLD, 16));
                 oraBtn.setMinimumSize(new Dimension(120, 40));
                 oraBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-                oraBtn.addActionListener(e -> deschideEcranScaune(film, ora, data));
+                oraBtn.addActionListener(e -> deschideEcranScaune(film, oraBtnValue, data));
                 buttonsPanel.add(oraBtn);
             }
             rightPanel.add(buttonsPanel);
@@ -199,6 +229,8 @@ public class CinemaGUI extends JFrame {
         filmePanel.revalidate();
         filmePanel.repaint();
     }
+
+
 
     private void deschideEcranScaune(Film film, String ora, LocalDate data) {
         JFrame scauneFrame = new JFrame("Rezervare - " + film.getTitlu() + " (" + ora + ") Ziua: " + data);
