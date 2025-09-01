@@ -1,6 +1,8 @@
 package cinema.persistence;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DatabaseManager {
 
@@ -15,12 +17,12 @@ public class DatabaseManager {
     public static void createTableIfNotExists() {
         String sql = """
             CREATE TABLE IF NOT EXISTS rezervari (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ora_rezervare TEXT,       -- ora la care s-a făcut rezervarea (prima coloană)
                 titlu TEXT,
                 gen TEXT,
                 varsta INTEGER,
                 data TEXT,
-                ora TEXT,
+                ora_film TEXT,            -- ora filmului (ex: 15:30)
                 rand INTEGER,
                 coloana INTEGER,
                 email TEXT
@@ -37,28 +39,35 @@ public class DatabaseManager {
     }
 
     // 3) Inserare rezervare
-    public static void insertRezervare(String titluFilm, String gen, int varsta, String data, String ora, int rand, int coloana, String email) {
-        String sql = "INSERT INTO rezervari (titlu, gen, varsta, data, ora, rand, coloana, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public static void insertRezervare(String titluFilm, String gen, int varsta,
+                                       String data, String oraFilm, int rand, int coloana, String email) {
+        // Ora curentă a rezervării (HH:mm) pentru prima coloană
+        String oraRezervare = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        String sql = "INSERT INTO rezervari (ora_rezervare, titlu, gen, varsta, data, ora_film, rand, coloana, email) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, titluFilm);
-            stmt.setString(2, gen);
-            stmt.setInt(3, varsta);
-            stmt.setString(4, data);
-            stmt.setString(5, ora);
-            stmt.setInt(6, rand);
-            stmt.setInt(7, coloana);
-            stmt.setString(8, email);
+            stmt.setString(1, oraRezervare);   // prima coloană: ora rezervării
+            stmt.setString(2, titluFilm);
+            stmt.setString(3, gen);
+            stmt.setInt(4, varsta);
+            stmt.setString(5, data);
+            stmt.setString(6, oraFilm);       // ora filmului (ex: 15:30)
+            stmt.setInt(7, rand);
+            stmt.setInt(8, coloana);
+            stmt.setString(9, email);
 
             stmt.executeUpdate();
-
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    // 4) Ștergere toate rezervările
     public static void clearAllRezervari() {
         String sql = "DELETE FROM rezervari";
 
@@ -70,5 +79,4 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
-
 }

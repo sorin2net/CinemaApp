@@ -42,20 +42,20 @@ public class RezervareService {
     }
 
     // Returnează sala pentru un film, dată și oră, încărcând rezervările existente
-    public Sala getSala(Film film, String ora, LocalDate data) {
+    public Sala getSala(Film film, String oraFilm, LocalDate data) {
         Map<String, Sala> mapZiOra = saliPeZiOra.get(film.getTitlu());
-        String key = data.getDayOfMonth() + "-" + ora;
+        String key = data.getDayOfMonth() + "-" + oraFilm;
         if (!mapZiOra.containsKey(key)) {
             mapZiOra.put(key, film.getSala().cloneSala());
         }
 
         Sala sala = mapZiOra.get(key);
-        PersistentaRezervari.incarcaRezervari(sala, film.getTitlu(), data, ora);
+        PersistentaRezervari.incarcaRezervari(sala, film.getTitlu(), data, oraFilm);
         return sala;
     }
 
     // Salvează rezervările selectate pentru un film și sincronizează JSON + DB
-    public void salveazaRezervare(Film film, String ora, LocalDate data, String email,
+    public void salveazaRezervare(Film film, String oraFilm, LocalDate data, String email,
                                   Set<Scaun> scauneSelectate, Sala sala) {
         for (Scaun scaun : scauneSelectate) {
             scaun.rezerva(email);
@@ -78,7 +78,7 @@ public class RezervareService {
                         film.getTitlu(),
                         sala,
                         data,
-                        ora,
+                        oraFilm,          // ora filmului
                         rand,
                         coloana,
                         email,

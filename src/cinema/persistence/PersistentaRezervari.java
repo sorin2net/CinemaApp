@@ -14,7 +14,7 @@ public class PersistentaRezervari {
     private static final String FILE_PATH = "data/rezervari.json";
 
     // Încarcă rezervările existente
-    public static void incarcaRezervari(Sala sala, String film, LocalDate data, String ora) {
+    public static void incarcaRezervari(Sala sala, String film, LocalDate data, String oraFilm) {
         File file = new File(FILE_PATH);
 
         // Dacă JSON-ul nu există sau e gol => ștergem rezervările DB
@@ -35,7 +35,7 @@ public class PersistentaRezervari {
                 long lunaJson = ((Number) rez.get("luna")).longValue();
 
                 if (!filmJson.equals(film)) continue;
-                if (!oraJson.equals(ora)) continue;
+                if (!oraJson.equals(oraFilm)) continue;
                 if (!salaJson.equals(sala.getNume())) continue;
                 if (ziJson != data.getDayOfMonth()) continue;
                 if (lunaJson != data.getMonthValue()) continue;
@@ -54,9 +54,8 @@ public class PersistentaRezervari {
         }
     }
 
-
-    // Salvează o rezervare nouă cu gen și varsta
-    public static void salveazaRezervare(String film, Sala sala, LocalDate data, String ora,
+    // Salvează o rezervare nouă
+    public static void salveazaRezervare(String film, Sala sala, LocalDate data, String oraFilm,
                                          int rand, int coloana, String email,
                                          String gen, int varsta) {
         try {
@@ -79,11 +78,11 @@ public class PersistentaRezervari {
             rez.put("sala", sala.getNume());
             rez.put("luna", data.getMonthValue());
             rez.put("zi", data.getDayOfMonth());
-            rez.put("ora", ora);
+            rez.put("ora", oraFilm);  // ora filmului
             rez.put("rand", rand);
             rez.put("coloana", coloana);
-            rez.put("gen", gen);     // adăugăm genul în JSON
-            rez.put("varsta", varsta); // adăugăm vârsta în JSON
+            rez.put("gen", gen);
+            rez.put("varsta", varsta);
 
             rezervariArray.add(rez);
 
@@ -91,8 +90,17 @@ public class PersistentaRezervari {
                 writer.write(rezervariArray.toJSONString());
             }
 
-            // Sincronizare automată cu baza de date
-            DatabaseManager.insertRezervare(film, gen, varsta, data.toString(), ora, rand, coloana, email);
+            // Sincronizare cu baza de date
+            DatabaseManager.insertRezervare(
+                    film,
+                    gen,
+                    varsta,
+                    data.toString(),
+                    oraFilm,   // ora filmului
+                    rand,
+                    coloana,
+                    email
+            );
 
         } catch (Exception e) {
             e.printStackTrace();
