@@ -4,19 +4,15 @@ import cinema.model.Film;
 import cinema.model.Sala;
 import cinema.model.Scaun;
 import cinema.persistence.PersistentaRezervari;
-import cinema.persistence.DatabaseManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RezervareService {
     private List<Film> filme = new ArrayList<>();
     private Map<String, Map<String, Sala>> saliPeZiOra = new HashMap<>();
 
+    // Adaugă un film și creează clona sălilor pentru fiecare zi și oră
     public void adaugaFilm(Film film) {
         filme.add(film);
         Map<String, Sala> mapZiOra = new HashMap<>();
@@ -28,10 +24,12 @@ public class RezervareService {
         saliPeZiOra.put(film.getTitlu(), mapZiOra);
     }
 
+    // Returnează toate filmele
     public List<Film> getFilme() {
         return filme;
     }
 
+    // Returnează filmele disponibile pentru o anumită zi
     public List<Film> getFilmePentruZi(LocalDate data) {
         int zi = data.getDayOfMonth();
         List<Film> result = new ArrayList<>();
@@ -43,6 +41,7 @@ public class RezervareService {
         return result;
     }
 
+    // Returnează sala pentru un film, dată și oră, încărcând rezervările existente
     public Sala getSala(Film film, String ora, LocalDate data) {
         Map<String, Sala> mapZiOra = saliPeZiOra.get(film.getTitlu());
         String key = data.getDayOfMonth() + "-" + ora;
@@ -52,10 +51,10 @@ public class RezervareService {
 
         Sala sala = mapZiOra.get(key);
         PersistentaRezervari.incarcaRezervari(sala, film.getTitlu(), data, ora);
-
         return sala;
     }
 
+    // Salvează rezervările selectate pentru un film și sincronizează JSON + DB
     public void salveazaRezervare(Film film, String ora, LocalDate data, String email,
                                   Set<Scaun> scauneSelectate, Sala sala) {
         for (Scaun scaun : scauneSelectate) {
@@ -89,7 +88,4 @@ public class RezervareService {
             }
         }
     }
-
-
-
 }

@@ -16,7 +16,12 @@ public class PersistentaRezervari {
     // Încarcă rezervările existente
     public static void incarcaRezervari(Sala sala, String film, LocalDate data, String ora) {
         File file = new File(FILE_PATH);
-        if (!file.exists() || file.length() == 0) return;
+
+        // Dacă JSON-ul nu există sau e gol => ștergem rezervările DB
+        if (!file.exists() || file.length() == 0) {
+            DatabaseManager.clearAllRezervari();
+            return;
+        }
 
         try (Reader reader = new FileReader(file)) {
             JSONArray rezervariArray = (JSONArray) new JSONParser().parse(reader);
@@ -48,6 +53,7 @@ public class PersistentaRezervari {
             e.printStackTrace();
         }
     }
+
 
     // Salvează o rezervare nouă cu gen și varsta
     public static void salveazaRezervare(String film, Sala sala, LocalDate data, String ora,
