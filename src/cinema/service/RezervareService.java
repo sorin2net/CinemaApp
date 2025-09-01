@@ -56,11 +56,11 @@ public class RezervareService {
         return sala;
     }
 
-    public void salveazaRezervare(Film film, String ora, LocalDate data, String email, Set<Scaun> scauneSelectate, Sala sala) {
+    public void salveazaRezervare(Film film, String ora, LocalDate data, String email,
+                                  Set<Scaun> scauneSelectate, Sala sala) {
         for (Scaun scaun : scauneSelectate) {
             scaun.rezerva(email);
 
-            // 1. Salvare în fișier (există deja)
             int rand = -1, coloana = -1;
             Scaun[][] matrice = sala.getScaune();
             for (int r = 0; r < matrice.length; r++) {
@@ -68,29 +68,28 @@ public class RezervareService {
                     if (matrice[r][c] == scaun) {
                         rand = r + 1;
                         coloana = c + 1;
+                        break;
                     }
                 }
-            }
-            if (rand != -1 && coloana != -1) {
-                PersistentaRezervari.salveazaRezervare(film.getTitlu(), sala, data, ora, rand, coloana, email);
+                if (rand != -1) break;
             }
 
-            // 2. Salvare în baza de date
-            try {
-                DatabaseManager.insertRezervare(
+            if (rand != -1 && coloana != -1) {
+                PersistentaRezervari.salveazaRezervare(
                         film.getTitlu(),
-                        film.getGen(),
-                        film.getRestrictieVarsta(),
-                        data.toString(),
+                        sala,
+                        data,
                         ora,
                         rand,
                         coloana,
-                        email
+                        email,
+                        film.getGen(),
+                        film.getRestrictieVarsta()
                 );
-            } catch (Exception ex) {
-                ex.printStackTrace();
             }
         }
     }
+
+
 
 }

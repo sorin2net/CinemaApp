@@ -53,10 +53,22 @@ public class DatabaseManager {
             stmt.setString(8, email);
 
             stmt.executeUpdate();
-            System.out.println("Rezervare inserată cu succes în baza de date.");
+
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    public static void clearAllRezervari() {
+        String sql = "DELETE FROM rezervari";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+            System.out.println("Toate rezervările au fost șterse din baza de date.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
