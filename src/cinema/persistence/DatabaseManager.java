@@ -32,7 +32,6 @@ public class DatabaseManager {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.execute();
-            System.out.println("Tabelul rezervari a fost creat sau există deja.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
