@@ -1,5 +1,6 @@
 package cinema.gui;
-
+import javax.swing.*;
+import java.awt.*;
 import cinema.model.Film;
 import cinema.model.Sala;
 import cinema.model.Scaun;
@@ -14,8 +15,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -379,11 +378,11 @@ public class CinemaGUI extends JFrame {
     private void actualizeazaScauneDinServer() {
         afiseazaFilme();
     }
+
     private void deschideRezervarileMele() {
         String email = JOptionPane.showInputDialog(this, "Introduceți adresa de email:");
         if (email == null || email.isBlank()) return;
 
-        // Verificăm rezervările în baza de date
         java.util.List<String> rezervari = new java.util.ArrayList<>();
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:cinema.db");
              PreparedStatement stmt = conn.prepareStatement(
@@ -411,15 +410,17 @@ public class CinemaGUI extends JFrame {
             return;
         }
 
-        // Cream fereastra cu rezervările
         JFrame fereastra = new JFrame("Rezervările pentru " + email);
-        fereastra.setSize(600, 400);
+        fereastra.setSize(650, 450);
+        fereastra.setLocationRelativeTo(null);
         fereastra.setLayout(new BorderLayout());
+        fereastra.getContentPane().setBackground(new Color(34, 34, 34));
 
         JPanel panelRezervari = new JPanel();
         panelRezervari.setLayout(new BoxLayout(panelRezervari, BoxLayout.Y_AXIS));
+        panelRezervari.setBackground(new Color(34, 34, 34));
+        panelRezervari.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Grupăm rezervările pe film + zi + ora
         java.util.Map<String, java.util.List<String>> grupate = new java.util.LinkedHashMap<>();
         for (String r : rezervari) {
             String[] parts = r.split(" : ");
@@ -429,20 +430,25 @@ public class CinemaGUI extends JFrame {
         }
 
         for (String key : grupate.keySet()) {
-            JPanel filaPanel = new JPanel(new BorderLayout());
-            filaPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-            filaPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+            JPanel card = new JPanel(new BorderLayout());
+            card.setBackground(new Color(50, 50, 50));
+            card.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(100, 100, 100), 1),
+                    BorderFactory.createEmptyBorder(10, 10, 10, 10)
+            ));
+            card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
 
-            String locuri = String.join(", ", grupate.get(key));
-            JLabel lbl = new JLabel("<html>" + key + " - Locuri: " + locuri + "</html>");
-            filaPanel.add(lbl, BorderLayout.CENTER);
+            JLabel lbl = new JLabel("<html><b>" + key + "</b><br/>Locuri: " + String.join(", ", grupate.get(key)) + "</html>");
+            lbl.setForeground(Color.WHITE);
+            lbl.setFont(new Font("Arial", Font.PLAIN, 14));
+            card.add(lbl, BorderLayout.CENTER);
 
             JButton anulareBtn = new JButton("Anulează rezervare");
-            anulareBtn.addActionListener(ev -> {
-                int confirm = JOptionPane.showConfirmDialog(fereastra, "Sigur doriți să anulați rezervarea?");
-                if (confirm != JOptionPane.YES_OPTION) return;
-
-                // Ștergere din baza de date și actualizare JSON
+            anulareBtn.setBackground(new Color(70, 130, 180));
+            anulareBtn.setForeground(Color.WHITE);
+            anulareBtn.setFocusPainted(false);
+            anulareBtn.setFont(new Font("Arial", Font.BOLD, 13));
+            anulareBtn.addActionListener(ev -> new AnulareRezervareFrame("Sigur doriți să anulați rezervarea?", () -> {
                 for (String loc : grupate.get(key)) {
                     String[] rc = loc.replace("R", "").replace("C", "").split("-");
                     int rand = Integer.parseInt(rc[0].trim());
@@ -450,14 +456,12 @@ public class CinemaGUI extends JFrame {
 
                     try {
                         String[] keyParts = key.split(" - ");
-                        String dataRez = keyParts[0];      // data filmului
-                        String oraFilm = keyParts[1];      // ora filmului
-                        String titluFilm = keyParts[2];    // titlul filmului
+                        String dataRez = keyParts[0];
+                        String oraFilm = keyParts[1];
+                        String titluFilm = keyParts[2];
 
-                        // Stergere din baza de date
                         DatabaseManager.stergeRezervare(email, titluFilm, dataRez, oraFilm, rand, coloana);
 
-                        // Stergere din JSON și actualizare stări scaune
                         service.getFilme().forEach(f -> {
                             if (f.getTitlu().equals(titluFilm)) {
                                 java.time.LocalDate dataF = java.time.LocalDate.parse(dataRez);
@@ -469,20 +473,25 @@ public class CinemaGUI extends JFrame {
                         ex.printStackTrace();
                     }
                 }
-
                 JOptionPane.showMessageDialog(fereastra, "Rezervarea a fost anulată!");
                 fereastra.dispose();
-            });
+            }));
 
-            filaPanel.add(anulareBtn, BorderLayout.EAST);
-            panelRezervari.add(filaPanel);
-            panelRezervari.add(Box.createVerticalStrut(5));
+            card.add(anulareBtn, BorderLayout.EAST);
+            panelRezervari.add(card);
+            panelRezervari.add(Box.createVerticalStrut(10));
         }
 
         JScrollPane scroll = new JScrollPane(panelRezervari);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        scroll.setBorder(null);
+        scroll.setBackground(new Color(34, 34, 34));
+
         fereastra.add(scroll, BorderLayout.CENTER);
         fereastra.setVisible(true);
     }
+
+
 
 
 }
