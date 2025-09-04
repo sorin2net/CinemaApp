@@ -4,6 +4,7 @@ import cinema.model.Film;
 import cinema.model.Sala;
 import cinema.model.Scaun;
 import cinema.service.RezervareService;
+import cinema.service.EmailService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -175,7 +176,7 @@ public class CinemaGUI extends JFrame {
             titluGenPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             titluGenPanel.setBackground(new Color(60, 60, 60));
 
-            // Titlu + vârsta (doar vârsta colorată, fără casetă)
+            // Titlu + vârsta
             int varsta = film.getRestrictieVarsta();
             String culoareVarsta;
             if (varsta == 3) culoareVarsta = "#4CAF50";
@@ -193,7 +194,7 @@ public class CinemaGUI extends JFrame {
             titluVarstaLabel.setFont(new Font("Arial", Font.BOLD, 24));
             titluGenPanel.add(titluVarstaLabel);
 
-            // Gen (cu spațiu deasupra)
+            // Gen
             JLabel genLabel = new JLabel(
                     "<html><div style='margin-top:10px;'>"
                             + (film.getGen() != null ? film.getGen() : "Gen necunoscut")
@@ -207,12 +208,12 @@ public class CinemaGUI extends JFrame {
             rightPanel.add(titluGenPanel);
             rightPanel.add(Box.createVerticalStrut(15));
 
-            // Butoane rezervare (dimensiune adaptivă la text)
+            // Butoane rezervare
             JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
             buttonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             buttonsPanel.setBackground(new Color(60, 60, 60));
             for (String ora : film.getOre()) {
-                final String oraBtnValue = ora; // capturăm într-o variabilă finală pentru lambda
+                final String oraBtnValue = ora;
                 JButton oraBtn = new JButton("Rezervă la " + oraBtnValue);
                 oraBtn.setFont(new Font("Arial", Font.BOLD, 16));
                 oraBtn.setMinimumSize(new Dimension(120, 40));
@@ -229,8 +230,6 @@ public class CinemaGUI extends JFrame {
         filmePanel.revalidate();
         filmePanel.repaint();
     }
-
-
 
     private void deschideEcranScaune(Film film, String ora, LocalDate data) {
         JFrame scauneFrame = new JFrame("Rezervare - " + film.getTitlu() + " (" + ora + ") Ziua: " + data);
@@ -293,7 +292,7 @@ public class CinemaGUI extends JFrame {
         }
 
         JScrollPane scroll = new JScrollPane(scaunePanel);
-        scroll.getVerticalScrollBar().setUnitIncrement(20); // scroll rapid
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
         scauneFrame.add(scroll, BorderLayout.CENTER);
 
         // jos: email + buton rezervare
@@ -304,16 +303,30 @@ public class CinemaGUI extends JFrame {
         rezervaBtn.setFont(new Font("Arial", Font.BOLD, 16));
         rezervaBtn.setPreferredSize(new Dimension(120, 40));
 
+        // 🔹 MODIFICARE: integrare EmailService
         rezervaBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
-            if (email.isEmpty()) {
+
+            EmailService emailService = new EmailService();
+            if (!emailService.esteEmailValid(email)) {
                 JOptionPane.showMessageDialog(scauneFrame, "Introduceți un email valid!");
                 return;
             }
 
             service.salveazaRezervare(film, ora, data, email, scauneSelectate, sala);
 
-            JOptionPane.showMessageDialog(scauneFrame, "Rezervare efectuată!");
+            // pregătim lista de scaune pentru email
+            String scauneStr = scauneSelectate.stream()
+                    .sorted((a, b) -> {
+                        int cmp = Integer.compare(a.getRand(), b.getRand());
+                        return (cmp != 0) ? cmp : Integer.compare(a.getNumar(), b.getNumar());
+                    })
+                    .map(s -> "R" + s.getRand() + "-C" + s.getNumar())
+                    .collect(Collectors.joining("; "));
+
+
+
+            JOptionPane.showMessageDialog(scauneFrame, "Rezervare efectuată! Ți-am trimis un email de confirmare.");
             scauneFrame.dispose();
         });
 

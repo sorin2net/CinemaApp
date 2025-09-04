@@ -14,18 +14,20 @@ import java.util.Properties;
 
 public class EmailService {
 
-    // TODO: pune aici adresa ta și App Password-ul (de ex. Gmail)
-    private final String fromEmail = "adresa.ta@gmail.com";
-    private final String password  = "PAROLA_SAU_APP_PASSWORD";
+    // pune aici adresa ta Gmail
+    private final String fromEmail = "denisdumitriu95@gmail.com";
+
+    // pune aici App Password-ul generat în contul Google (nu parola normală!)
+    private final String appPassword = "mnak amow knob lqkm";
 
     /** Validare sigură folosind Jakarta Mail */
     public boolean esteEmailValid(String email) {
         if (email == null || email.isBlank()) return false;
         try {
             InternetAddress addr = new InternetAddress(email);
-            addr.validate();              // poate arunca AddressException
+            addr.validate();
             return true;
-        } catch (AddressException ex) {   // ← IMPORTANT: avem import pentru clasa asta
+        } catch (AddressException ex) {
             return false;
         }
     }
@@ -45,10 +47,11 @@ public class EmailService {
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
 
+        // autentificare cu App Password
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(fromEmail, password);
+                return new PasswordAuthentication(fromEmail, appPassword);
             }
         });
 

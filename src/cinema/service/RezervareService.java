@@ -12,6 +12,8 @@ public class RezervareService {
     private List<Film> filme = new ArrayList<>();
     private Map<String, Map<String, Sala>> saliPeZiOra = new HashMap<>();
 
+    private final EmailService emailService = new EmailService(); // 👈 adăugat
+
     // Adaugă un film și creează clona sălilor pentru fiecare zi și oră
     public void adaugaFilm(Film film) {
         filme.add(film);
@@ -24,12 +26,10 @@ public class RezervareService {
         saliPeZiOra.put(film.getTitlu(), mapZiOra);
     }
 
-    // Returnează toate filmele
     public List<Film> getFilme() {
         return filme;
     }
 
-    // Returnează filmele disponibile pentru o anumită zi
     public List<Film> getFilmePentruZi(LocalDate data) {
         int zi = data.getDayOfMonth();
         List<Film> result = new ArrayList<>();
@@ -41,7 +41,6 @@ public class RezervareService {
         return result;
     }
 
-    // Returnează sala pentru un film, dată și oră, încărcând rezervările existente
     public Sala getSala(Film film, String oraFilm, LocalDate data) {
         Map<String, Sala> mapZiOra = saliPeZiOra.get(film.getTitlu());
         String key = data.getDayOfMonth() + "-" + oraFilm;
@@ -54,9 +53,13 @@ public class RezervareService {
         return sala;
     }
 
-    // Salvează rezervările selectate pentru un film și sincronizează JSON + DB
+    // Salvează rezervările selectate pentru un film + trimite email
     public void salveazaRezervare(Film film, String oraFilm, LocalDate data, String email,
                                   Set<Scaun> scauneSelectate, Sala sala) {
+
+        StringBuilder scauneStr = new StringBuilder();
+
+        // 1️⃣ Rezervăm toate scaunele și salvăm în baza de date
         for (Scaun scaun : scauneSelectate) {
             scaun.rezerva(email);
 
@@ -78,14 +81,27 @@ public class RezervareService {
                         film.getTitlu(),
                         sala,
                         data,
-                        oraFilm,          // ora filmului
+                        oraFilm,
                         rand,
                         coloana,
                         email,
                         film.getGen(),
                         film.getRestrictieVarsta()
                 );
+
+                // adăugăm în string pentru email
+                scauneStr.append("R").append(rand).append("-C").append(coloana).append("; ");
             }
         }
+
+        // 2️⃣ Trimitem un singur email pentru toate scaunele
+        emailService.trimiteConfirmare(
+                email,
+                film.getTitlu(),
+                sala.getNume(),
+                oraFilm,
+                scauneStr.toString()
+        );
     }
+
 }
