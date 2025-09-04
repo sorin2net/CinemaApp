@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 public class DatabaseManager {
 
     private static final String DB_URL = "jdbc:sqlite:cinema.db"; // fișierul .db în proiect
-
+    private static final String URL = "jdbc:sqlite:cinema.db";
     // 1) Conexiune la baza de date
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
@@ -78,4 +78,25 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+    public static void stergeRezervare(String email, String film, String data, String ora, int rand, int coloana) {
+        String sql = "DELETE FROM rezervari WHERE email = ? AND film = ? AND data = ? AND ora = ? AND rand = ? AND coloana = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, email);
+            pstmt.setString(2, film);
+            pstmt.setString(3, data);
+            pstmt.setString(4, ora);
+            pstmt.setInt(5, rand);
+            pstmt.setInt(6, coloana);
+
+            int affected = pstmt.executeUpdate();
+            System.out.println("DatabaseManager: " + affected + " rezervare(s) șterse pentru email=" + email);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

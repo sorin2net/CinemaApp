@@ -7,6 +7,7 @@ import cinema.model.Sala;
 import cinema.model.Scaun;
 import cinema.service.RezervareService;
 import cinema.persistence.DatabaseManager;
+import cinema.persistence.PersistentaRezervari;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -52,6 +53,10 @@ public class ServerCinema {
                     Mesaj raspuns = proceseazaRezervare(msg);
                     out.println(gson.toJson(raspuns));
                     broadcastUpdateSalile();
+                } else if ("cerere_anulare".equals(msg.tip)) {
+                    Mesaj raspuns = proceseazaAnulare(msg);
+                    out.println(gson.toJson(raspuns));
+                    broadcastUpdateSalile();
                 }
             }
         } catch (IOException e) {
@@ -60,7 +65,6 @@ public class ServerCinema {
     }
 
     private synchronized Mesaj proceseazaRezervare(Mesaj cerere) {
-        // 1) film + sală
         Film film = service.getFilme().stream()
                 .filter(f -> f.getTitlu().equals(cerere.film))
                 .findFirst().orElse(null);
@@ -76,7 +80,6 @@ public class ServerCinema {
         LocalDate data = LocalDate.parse(cerere.data);
         Sala sala = service.getSala(film, cerere.ora, data);
 
-        // 2) scaune selectate
         Set<Scaun> scauneSelectate = new HashSet<>();
         for (String s : cerere.scaune) {
             String[] parts = s.replace("R", "").split("-C");
@@ -89,7 +92,6 @@ public class ServerCinema {
             }
         }
 
-        // 3) AICI se salvează în JSON + DB prin service
         service.salveazaRezervare(film, cerere.ora, data, cerere.email, scauneSelectate, sala);
 
         Mesaj raspuns = new Mesaj();
@@ -98,6 +100,61 @@ public class ServerCinema {
         raspuns.mesaj = "Rezervare efectuată cu succes!";
         return raspuns;
     }
+
+    private synchronized Mesaj proceseazaAnulare(Mesaj cerere) {
+        LocalDate data = LocalDate.parse(cerere.data);
+        String email = cerere.email;
+
+        List<Film> filmeZi = service.getFilmePentruZi(data);
+        boolean rezervareGasita = false;
+
+        for (Film film : filmeZi) {
+            for (String ora : film.getOre()) {
+                Sala sala = service.getSala(film, ora, data);
+                Set<Scaun> scauneDeAnulat = new HashSet<>();
+
+                // Găsește toate scaunele rezervate de acest email
+                for (int r = 0; r < sala.getRanduri(); r++) {
+                    for (int c = 0; c < sala.getColoane(); c++) {
+                        Scaun sc = sala.getScaun(r, c);
+                        if (sc.esteRezervat() && email.equals(sc.getEmailRezervare())) {
+                            scauneDeAnulat.add(sc);
+                        }
+                    }
+                }
+
+                if (!scauneDeAnulat.isEmpty()) {
+                    rezervareGasita = true;
+
+                    // marchează scaunele ca libere
+                    for (Scaun sc : scauneDeAnulat) {
+                        sc.anuleazaRezervare();
+                    }
+
+                    // șterge rezervările din JSON și DB
+                    PersistentaRezervari.stergeRezervare(film.getTitlu(), sala.getNume(), data, ora, sala);
+
+                    // trimite email de confirmare anulare
+                    service.getEmailService().trimiteAnulare(email, film.getTitlu(), sala.getNume(), ora, data);
+
+                    System.out.println("[LOG] Rezervare anulată pentru email: " + email + " data: " + data);
+                }
+            }
+        }
+
+        // pregătește mesajul de răspuns către client
+        Mesaj raspuns = new Mesaj();
+        raspuns.tip = "raspuns_anulare";
+        if (rezervareGasita) {
+            raspuns.status = "ok";
+            raspuns.mesaj = "Rezervarea a fost anulată cu succes!";
+        } else {
+            raspuns.status = "eroare";
+            raspuns.mesaj = "Nu s-au găsit rezervări pentru email-ul și data introduse.";
+        }
+        return raspuns;
+    }
+
 
     private void broadcastUpdateSalile() {
         Mesaj update = new Mesaj();
@@ -113,10 +170,8 @@ public class ServerCinema {
     public static void main(String[] args) throws IOException {
         RezervareService service = new RezervareService();
 
-        // Creează tabelul DB dacă nu există
         DatabaseManager.createTableIfNotExists();
 
-        // Încarcă filmele din JSON
         try {
             String json = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get("resources/filme.json")));
             Gson gson = new Gson();
@@ -140,7 +195,6 @@ public class ServerCinema {
         server.start();
     }
 
-    // Clase pentru citirea JSON-ului
     private static class FilmJson {
         String titlu;
         int durata;

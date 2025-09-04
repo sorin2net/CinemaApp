@@ -30,6 +30,10 @@ public class RezervareService {
         return filme;
     }
 
+    public EmailService getEmailService() {
+        return emailService;
+    }
+
     public List<Film> getFilmePentruZi(LocalDate data) {
         int zi = data.getDayOfMonth();
         List<Film> result = new ArrayList<>();

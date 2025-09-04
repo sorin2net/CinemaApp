@@ -8,17 +8,16 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.HashSet;
 
 public class PersistentaRezervari {
 
     private static final String FILE_PATH = "data/rezervari.json";
     private static final String LOG_PATH = "logs/server.log";
 
-    // Încarcă rezervările existente
     public static void incarcaRezervari(Sala sala, String film, LocalDate data, String oraFilm) {
         File file = new File(FILE_PATH);
-
-        // Dacă JSON-ul nu există sau e gol => ștergem rezervările DB
         if (!file.exists() || file.length() == 0) {
             DatabaseManager.clearAllRezervari();
             return;
@@ -55,7 +54,6 @@ public class PersistentaRezervari {
         }
     }
 
-    // Salvează o rezervare nouă
     public static void salveazaRezervare(String film, Sala sala, LocalDate data, String oraFilm,
                                          int rand, int coloana, String email,
                                          String gen, int varsta) {
@@ -79,7 +77,7 @@ public class PersistentaRezervari {
             rez.put("sala", sala.getNume());
             rez.put("luna", data.getMonthValue());
             rez.put("zi", data.getDayOfMonth());
-            rez.put("ora", oraFilm);  // ora filmului
+            rez.put("ora", oraFilm);
             rez.put("rand", rand);
             rez.put("coloana", coloana);
             rez.put("gen", gen);
@@ -91,19 +89,17 @@ public class PersistentaRezervari {
                 writer.write(rezervariArray.toJSONString());
             }
 
-            // Sincronizare cu baza de date
             DatabaseManager.insertRezervare(
                     film,
                     gen,
                     varsta,
                     data.toString(),
-                    oraFilm,   // ora filmului
+                    oraFilm,
                     rand,
                     coloana,
                     email
             );
 
-            // 👇 log în fișier separat
             logRezervare(film, sala.getNume(), data, oraFilm, rand, coloana, email);
 
         } catch (Exception e) {
@@ -111,7 +107,65 @@ public class PersistentaRezervari {
         }
     }
 
-    // Scrie în fișierul de log fiecare rezervare
+    public static Set<Scaun> stergeRezervare(String email, String film, LocalDate data, String oraFilm, Sala sala) {
+        Set<Scaun> scauneSterse = new HashSet<>();
+        File file = new File(FILE_PATH);
+
+        if (!file.exists() || file.length() == 0) return scauneSterse;
+
+        try {
+            JSONArray rezervariArray;
+            try (Reader reader = new FileReader(file)) {
+                Object parsed = new JSONParser().parse(reader);
+                rezervariArray = (parsed instanceof JSONArray) ? (JSONArray) parsed : new JSONArray();
+            }
+
+            JSONArray nouArray = new JSONArray();
+            for (Object obj : rezervariArray) {
+                JSONObject rez = (JSONObject) obj;
+                String emailJson = (String) rez.get("email");
+                String filmJson = (String) rez.get("film");
+                String oraJson = (String) rez.get("ora");
+                String salaJson = (String) rez.get("sala");
+                long ziJson = ((Number) rez.get("zi")).longValue();
+                long lunaJson = ((Number) rez.get("luna")).longValue();
+
+                boolean deStergere = emailJson.equals(email)
+                        && filmJson.equals(film)
+                        && oraJson.equals(oraFilm)
+                        && salaJson.equals(sala.getNume())
+                        && ziJson == data.getDayOfMonth()
+                        && lunaJson == data.getMonthValue();
+
+                if (deStergere) {
+                    int rand = ((Number) rez.get("rand")).intValue() - 1;
+                    int coloana = ((Number) rez.get("coloana")).intValue() - 1;
+                    Scaun scaun = sala.getScaun(rand, coloana);
+                    if (scaun.esteRezervat()) {
+                        scaun.anuleazaRezervare();
+                        scauneSterse.add(scaun);
+                    }
+
+                    // ⚠️ Aici trebuie metoda corespunzătoare în DatabaseManager
+                    DatabaseManager.stergeRezervare(email, film, data.toString(), oraFilm, rand, coloana);
+
+                    logAnulare(film, sala.getNume(), data, oraFilm, rand, coloana, email);
+                } else {
+                    nouArray.add(rez);
+                }
+            }
+
+            try (Writer writer = new FileWriter(file)) {
+                writer.write(nouArray.toJSONString());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return scauneSterse;
+    }
+
     private static void logRezervare(String film, String sala, LocalDate data, String oraFilm,
                                      int rand, int coloana, String email) {
         try {
@@ -128,4 +182,22 @@ public class PersistentaRezervari {
             e.printStackTrace();
         }
     }
+
+    private static void logAnulare(String film, String sala, LocalDate data, String oraFilm,
+                                   int rand, int coloana, String email) {
+        try {
+            File file = new File(LOG_PATH);
+            file.getParentFile().mkdirs();
+
+            try (FileWriter fw = new FileWriter(file, true);
+                 PrintWriter pw = new PrintWriter(fw)) {
+                pw.printf("[%s] Anulare rezervare: film=%s, sala=%s, data=%s, ora=%s, rand=%d, coloana=%d, email=%s%n",
+                        java.time.LocalDateTime.now(),
+                        film, sala, data, oraFilm, rand, coloana, email);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

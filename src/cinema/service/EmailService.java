@@ -12,12 +12,15 @@ import jakarta.mail.internet.MimeMessage;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Properties;
 
 public class EmailService {
 
     private final String fromEmail;
     private final String appPassword;
+
+
 
     public EmailService() {
         Properties props = new Properties();
@@ -53,13 +56,43 @@ public class EmailService {
             return;
         }
 
+        sendEmail(toEmail,
+                "Confirmare rezervare la cinema",
+                "Rezervarea ta a fost înregistrată!\n\n" +
+                        "Film: " + numeFilm + "\n" +
+                        "Sală: " + numeSala + "\n" +
+                        "Ora: " + ora + "\n" +
+                        "Scaune: " + scaune + "\n\n" +
+                        "Mulțumim! Te așteptăm la film."
+        );
+    }
+
+    /** Trimite email pentru anularea rezervării */
+    public void trimiteAnulare(String toEmail, String numeFilm, String numeSala,
+                               String ora, LocalDate data) {
+
+        if (!esteEmailValid(toEmail)) {
+            System.out.println("Adresa de email invalidă: " + toEmail);
+            return;
+        }
+
+        sendEmail(toEmail,
+                "Anulare rezervare la cinema",
+                "Rezervarea ta pentru filmul \"" + numeFilm + "\" din data " + data +
+                        ", ora " + ora + " la sala \"" + numeSala + "\" a fost anulată.\n\n" +
+                        "Mulțumim!"
+        );
+    }
+
+
+    /** Metodă privată comună pentru trimiterea email-urilor */
+    private void sendEmail(String toEmail, String subject, String text) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
 
-        // autentificare cu App Password
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -71,18 +104,11 @@ public class EmailService {
             Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(fromEmail));
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            msg.setSubject("Confirmare rezervare la cinema");
-            msg.setText(
-                    "Rezervarea ta a fost înregistrată!\n\n" +
-                            "Film: " + numeFilm + "\n" +
-                            "Sală: " + numeSala + "\n" +
-                            "Ora: " + ora + "\n" +
-                            "Scaune: " + scaune + "\n\n" +
-                            "Mulțumim! Te așteptăm la film."
-            );
+            msg.setSubject(subject);
+            msg.setText(text);
 
             Transport.send(msg);
-            System.out.println("Email de confirmare trimis către " + toEmail);
+            System.out.println("Email trimis către " + toEmail + " cu subiect: " + subject);
 
         } catch (MessagingException e) {
             e.printStackTrace();
