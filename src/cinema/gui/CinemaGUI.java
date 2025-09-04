@@ -3,10 +3,16 @@ package cinema.gui;
 import cinema.model.Film;
 import cinema.model.Sala;
 import cinema.model.Scaun;
+import cinema.persistence.DatabaseManager;
+import cinema.persistence.PersistentaRezervari;
 import cinema.service.RezervareService;
 import cinema.service.EmailService;
 import cinema.network.ClientCinema;
 import cinema.network.Mesaj;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.swing.*;
 import java.awt.*;
@@ -69,6 +75,15 @@ public class CinemaGUI extends JFrame {
         topPanel.add(new JLabel("Zi:") {{ setForeground(Color.WHITE); }});
         topPanel.add(ziCombo);
 
+        add(topPanel, BorderLayout.NORTH);
+
+        // <<< Aici adaugăm butonul Rezervările mele >>>
+        JButton rezervarileMeleBtn = new JButton("Rezervările mele");
+        rezervarileMeleBtn.setFont(new Font("Arial", Font.BOLD, 14));
+        rezervarileMeleBtn.addActionListener(e -> deschideRezervarileMele());
+        topPanel.add(rezervarileMeleBtn);
+
+        // adăugăm topPanel la frame
         add(topPanel, BorderLayout.NORTH);
 
         // ---------------- filme panel ----------------
@@ -364,4 +379,110 @@ public class CinemaGUI extends JFrame {
     private void actualizeazaScauneDinServer() {
         afiseazaFilme();
     }
+    private void deschideRezervarileMele() {
+        String email = JOptionPane.showInputDialog(this, "Introduceți adresa de email:");
+        if (email == null || email.isBlank()) return;
+
+        // Verificăm rezervările în baza de date
+        java.util.List<String> rezervari = new java.util.ArrayList<>();
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:cinema.db");
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT titlu, data, ora_film, rand, coloana FROM rezervari WHERE email = ? ORDER BY data, ora_film"
+             )) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String film = rs.getString("titlu");
+                    String data = rs.getString("data");
+                    String ora = rs.getString("ora_film");
+                    int rand = rs.getInt("rand");
+                    int coloana = rs.getInt("coloana");
+                    rezervari.add(data + " - " + ora + " - " + film + " : R" + rand + "-C" + coloana);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Eroare la citirea bazei de date!");
+            return;
+        }
+
+        if (rezervari.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nu este nicio înregistrare pe această adresă de mail.");
+            return;
+        }
+
+        // Cream fereastra cu rezervările
+        JFrame fereastra = new JFrame("Rezervările pentru " + email);
+        fereastra.setSize(600, 400);
+        fereastra.setLayout(new BorderLayout());
+
+        JPanel panelRezervari = new JPanel();
+        panelRezervari.setLayout(new BoxLayout(panelRezervari, BoxLayout.Y_AXIS));
+
+        // Grupăm rezervările pe film + zi + ora
+        java.util.Map<String, java.util.List<String>> grupate = new java.util.LinkedHashMap<>();
+        for (String r : rezervari) {
+            String[] parts = r.split(" : ");
+            String key = parts[0];
+            String loc = parts[1];
+            grupate.computeIfAbsent(key, k -> new java.util.ArrayList<>()).add(loc);
+        }
+
+        for (String key : grupate.keySet()) {
+            JPanel filaPanel = new JPanel(new BorderLayout());
+            filaPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+            filaPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+
+            String locuri = String.join(", ", grupate.get(key));
+            JLabel lbl = new JLabel("<html>" + key + " - Locuri: " + locuri + "</html>");
+            filaPanel.add(lbl, BorderLayout.CENTER);
+
+            JButton anulareBtn = new JButton("Anulează rezervare");
+            anulareBtn.addActionListener(ev -> {
+                int confirm = JOptionPane.showConfirmDialog(fereastra, "Sigur doriți să anulați rezervarea?");
+                if (confirm != JOptionPane.YES_OPTION) return;
+
+                // Ștergere din baza de date și actualizare JSON
+                for (String loc : grupate.get(key)) {
+                    String[] rc = loc.replace("R", "").replace("C", "").split("-");
+                    int rand = Integer.parseInt(rc[0].trim());
+                    int coloana = Integer.parseInt(rc[1].trim());
+
+                    try {
+                        String[] keyParts = key.split(" - ");
+                        String dataRez = keyParts[0];      // data filmului
+                        String oraFilm = keyParts[1];      // ora filmului
+                        String titluFilm = keyParts[2];    // titlul filmului
+
+                        // Stergere din baza de date
+                        DatabaseManager.stergeRezervare(email, titluFilm, dataRez, oraFilm, rand, coloana);
+
+                        // Stergere din JSON și actualizare stări scaune
+                        service.getFilme().forEach(f -> {
+                            if (f.getTitlu().equals(titluFilm)) {
+                                java.time.LocalDate dataF = java.time.LocalDate.parse(dataRez);
+                                PersistentaRezervari.stergeRezervare(email, titluFilm, dataF, oraFilm, f.getSala());
+                            }
+                        });
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+                JOptionPane.showMessageDialog(fereastra, "Rezervarea a fost anulată!");
+                fereastra.dispose();
+            });
+
+            filaPanel.add(anulareBtn, BorderLayout.EAST);
+            panelRezervari.add(filaPanel);
+            panelRezervari.add(Box.createVerticalStrut(5));
+        }
+
+        JScrollPane scroll = new JScrollPane(panelRezervari);
+        fereastra.add(scroll, BorderLayout.CENTER);
+        fereastra.setVisible(true);
+    }
+
+
 }

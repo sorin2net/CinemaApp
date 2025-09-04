@@ -1,0 +1,26 @@
+[2025-09-04T22:53:55.962123900] Rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=4, coloana=15, email=tlhchronomark@gmail.com
+[2025-09-04T22:53:56.046615800] Rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=5, coloana=14, email=tlhchronomark@gmail.com
+[2025-09-04T22:53:56.112277200] Rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=5, coloana=15, email=tlhchronomark@gmail.com
+[2025-09-04T22:53:56.187857500] Rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=4, coloana=14, email=tlhchronomark@gmail.com
+[2025-09-04T22:54:55.467983400] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=3, coloana=14, email=tlhchronomark@gmail.com
+[2025-09-04T22:54:55.470960900] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=4, coloana=13, email=tlhchronomark@gmail.com
+[2025-09-04T22:54:55.472952600] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=4, coloana=14, email=tlhchronomark@gmail.com
+[2025-09-04T22:54:55.474952100] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=3, coloana=13, email=tlhchronomark@gmail.com
+[2025-09-04T22:57:45.338330100] Rezervare: film=Spiderman No Way Home, sala=Sala 1, data=2025-09-01, ora=21:30, rand=10, coloana=12, email=tlhchronomark@gmail.com
+[2025-09-04T22:57:45.412495200] Rezervare: film=Spiderman No Way Home, sala=Sala 1, data=2025-09-01, ora=21:30, rand=10, coloana=14, email=tlhchronomark@gmail.com
+[2025-09-04T22:57:45.488165200] Rezervare: film=Spiderman No Way Home, sala=Sala 1, data=2025-09-01, ora=21:30, rand=10, coloana=15, email=tlhchronomark@gmail.com
+[2025-09-04T22:57:45.554908500] Rezervare: film=Spiderman No Way Home, sala=Sala 1, data=2025-09-01, ora=21:30, rand=11, coloana=15, email=tlhchronomark@gmail.com
+[2025-09-04T22:58:03.437417400] Rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=7, coloana=7, email=tlhchronomark@gmail.com
+[2025-09-04T22:58:03.520696400] Rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=9, coloana=7, email=tlhchronomark@gmail.com
+[2025-09-04T22:58:03.587301500] Rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=9, coloana=8, email=tlhchronomark@gmail.com
+[2025-09-04T22:58:03.662856100] Rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=8, coloana=8, email=tlhchronomark@gmail.com
+[2025-09-04T22:58:03.728941] Rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=5, coloana=10, email=tlhchronomark@gmail.com
+[2025-09-04T22:58:03.804932400] Rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=8, coloana=7, email=tlhchronomark@gmail.com
+[2025-09-04T22:58:03.870894900] Rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=3, coloana=9, email=tlhchronomark@gmail.com
+[2025-09-04T22:59:15.803784500] Anulare rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=6, coloana=6, email=tlhchronomark@gmail.com
+[2025-09-04T22:59:15.806633300] Anulare rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=8, coloana=6, email=tlhchronomark@gmail.com
+[2025-09-04T22:59:15.887004600] Anulare rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=8, coloana=7, email=tlhchronomark@gmail.com
+[2025-09-04T22:59:15.889004300] Anulare rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=7, coloana=7, email=tlhchronomark@gmail.com
+[2025-09-04T22:59:15.889004300] Anulare rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=4, coloana=9, email=tlhchronomark@gmail.com
+[2025-09-04T22:59:15.890004400] Anulare rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=7, coloana=6, email=tlhchronomark@gmail.com
+[2025-09-04T22:59:15.891004] Anulare rezervare: film=Shrek, sala=Sala 4, data=2025-12-05, ora=16:00, rand=2, coloana=8, email=tlhchronomark@gmail.com

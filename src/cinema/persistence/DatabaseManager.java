@@ -78,14 +78,14 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
-    public static void stergeRezervare(String email, String film, String data, String ora, int rand, int coloana) {
-        String sql = "DELETE FROM rezervari WHERE email = ? AND film = ? AND data = ? AND ora = ? AND rand = ? AND coloana = ?";
+    public static void stergeRezervare(String email, String titlu, String data, String ora, int rand, int coloana) {
+        String sql = "DELETE FROM rezervari WHERE email = ? AND titlu = ? AND data = ? AND ora_film = ? AND rand = ? AND coloana = ?";
 
         try (Connection conn = DriverManager.getConnection(URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, email);
-            pstmt.setString(2, film);
+            pstmt.setString(2, titlu);
             pstmt.setString(3, data);
             pstmt.setString(4, ora);
             pstmt.setInt(5, rand);
@@ -98,5 +98,6 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
 
 }
