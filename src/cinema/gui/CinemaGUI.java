@@ -103,9 +103,12 @@ public class CinemaGUI extends JFrame {
         });
 
         // ---------------- client server ----------------
+        String host = "192.168.1.141";
+        int port = 12345;
         try {
-            client = new ClientCinema("localhost", 12345);
+            client = new ClientCinema(host,port); // citește host și port din config.properties
 
+            // Callback pentru actualizare GUI când vin mesaje de la server
             new Thread(() -> {
                 try {
                     BufferedReader in = new BufferedReader(new InputStreamReader(client.getSocket().getInputStream()));
@@ -118,10 +121,13 @@ public class CinemaGUI extends JFrame {
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    System.out.println("Conexiune la server pierdută.");
                 }
             }).start();
+
         } catch (Exception e) {
             System.out.println("Nu s-a putut conecta la server, rezervarea va fi locală.");
+            client = null;
         }
 
         actualizeazaZile();
@@ -453,7 +459,7 @@ public class CinemaGUI extends JFrame {
 
             anulareBtn.addActionListener(ev -> {
                 AnulareRezervareFrame confirm = new AnulareRezervareFrame(
-                        "Sigur doriți să anulați rezervarea?\n" ,
+                        "Sigur doriți să anulați rezervarea?\n",
                         () -> {
                             for (String loc : grupate.get(key)) {
                                 String[] rc = loc.replace("R", "").replace("C", "").split("-");
@@ -466,25 +472,30 @@ public class CinemaGUI extends JFrame {
                                     String oraFilm = keyParts[1];
                                     String titluFilm = keyParts[2];
 
-                                    // Stergere din baza de date
-                                    DatabaseManager.stergeRezervare(email, titluFilm, dataRez, oraFilm, rand, coloana);
+                                    java.time.LocalDate dataF = java.time.LocalDate.parse(dataRez);
+                                    Set<String> scauneSet = new HashSet<>();
+                                    scauneSet.add("R" + rand + "-C" + coloana);
 
-                                    // Stergere din JSON + actualizare scaune
-                                    service.getFilme().forEach(f -> {
-                                        if (f.getTitlu().equals(titluFilm)) {
-                                            java.time.LocalDate dataF = java.time.LocalDate.parse(dataRez);
-                                            PersistentaRezervari.stergeRezervare(email, titluFilm, dataF, oraFilm, f.getSala());
-
-                                            // Trimite email de anulare
-                                            emailService.trimiteAnulare(email, titluFilm, f.getSala().getNume(), oraFilm, dataF);
-                                        }
-                                    });
+                                    if (client != null) {
+                                        // trimite cerere de anulare la server
+                                        client.trimiteAnulare(email, titluFilm, oraFilm, dataF.toString(), scauneSet);
+                                        JOptionPane.showMessageDialog(fereastra, "Cerere de anulare trimisă către server!");
+                                    } else {
+                                        // fallback local
+                                        DatabaseManager.stergeRezervare(email, titluFilm, dataRez, oraFilm, rand, coloana);
+                                        service.getFilme().forEach(f -> {
+                                            if (f.getTitlu().equals(titluFilm)) {
+                                                PersistentaRezervari.stergeRezervare(email, titluFilm, dataF, oraFilm, f.getSala());
+                                                emailService.trimiteAnulare(email, titluFilm, f.getSala().getNume(), oraFilm, dataF);
+                                            }
+                                        });
+                                        JOptionPane.showMessageDialog(fereastra, "Rezervarea a fost anulată local!");
+                                    }
 
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                 }
                             }
-                            JOptionPane.showMessageDialog(fereastra, "Rezervarea a fost anulată!");
                             fereastra.dispose();
                         }
                 );
@@ -502,6 +513,7 @@ public class CinemaGUI extends JFrame {
 
         fereastra.setVisible(true);
     }
+
 
 
 

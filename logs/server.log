@@ -66,3 +66,7 @@
 [2025-09-04T23:24:52.697316300] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=7, coloana=5, email=tlhchronomark@gmail.com
 [2025-09-04T23:24:52.698317500] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=6, coloana=5, email=tlhchronomark@gmail.com
 [2025-09-04T23:24:52.699315700] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=9, coloana=5, email=tlhchronomark@gmail.com
+[2025-09-04T23:34:21.640417100] Rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=21:00, rand=4, coloana=5, email=lucydawnxo@gmail.com
+[2025-09-04T23:34:21.714496600] Rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=21:00, rand=4, coloana=6, email=lucydawnxo@gmail.com
+[2025-09-04T23:34:34.472938900] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=21:00, rand=3, coloana=4, email=lucydawnxo@gmail.com
+[2025-09-04T23:34:34.475888300] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=21:00, rand=3, coloana=5, email=lucydawnxo@gmail.com

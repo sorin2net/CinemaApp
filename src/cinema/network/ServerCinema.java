@@ -28,8 +28,26 @@ public class ServerCinema {
     }
 
     public void start() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(port);
+        // Ascultă pe toate interfețele (LAN și Internet)
+        ServerSocket serverSocket = new ServerSocket(port, 50, InetAddress.getByName("0.0.0.0"));
         System.out.println("Server Cinema rulează pe portul " + port);
+
+        // Afișăm IP-urile locale disponibile
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface ni = interfaces.nextElement();
+                Enumeration<InetAddress> addresses = ni.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
+                        System.out.println("Server disponibil la: " + addr.getHostAddress() + ":" + port);
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            System.out.println("Nu am putut obține IP-urile locale.");
+        }
 
         while (true) {
             Socket socket = serverSocket.accept();
@@ -42,6 +60,7 @@ public class ServerCinema {
             new Thread(() -> handleClient(in, out)).start();
         }
     }
+
 
     private void handleClient(BufferedReader in, PrintWriter out) {
         try {
