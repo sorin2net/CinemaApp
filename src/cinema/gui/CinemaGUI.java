@@ -406,21 +406,23 @@ public class CinemaGUI extends JFrame {
         }
 
         if (rezervari.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nu este nicio înregistrare pe această adresă de mail.");
+            JOptionPane.showMessageDialog(this, "Nu există rezervări pe această adresă.");
             return;
         }
 
+        // Email service
+        EmailService emailService = new EmailService();
+
+        // Fereastră modernă
         JFrame fereastra = new JFrame("Rezervările pentru " + email);
-        fereastra.setSize(650, 450);
-        fereastra.setLocationRelativeTo(null);
-        fereastra.setLayout(new BorderLayout());
-        fereastra.getContentPane().setBackground(new Color(34, 34, 34));
+        fereastra.setSize(650, 500);
+        fereastra.setLocationRelativeTo(this);
 
         JPanel panelRezervari = new JPanel();
         panelRezervari.setLayout(new BoxLayout(panelRezervari, BoxLayout.Y_AXIS));
-        panelRezervari.setBackground(new Color(34, 34, 34));
-        panelRezervari.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panelRezervari.setBackground(new Color(40, 40, 40));
 
+        // Grupăm rezervările
         java.util.Map<String, java.util.List<String>> grupate = new java.util.LinkedHashMap<>();
         for (String r : rezervari) {
             String[] parts = r.split(" : ");
@@ -431,65 +433,76 @@ public class CinemaGUI extends JFrame {
 
         for (String key : grupate.keySet()) {
             JPanel card = new JPanel(new BorderLayout());
-            card.setBackground(new Color(50, 50, 50));
+            card.setBackground(new Color(60, 63, 65));
             card.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(new Color(100, 100, 100), 1),
-                    BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                    BorderFactory.createEmptyBorder(10, 10, 10, 10),
+                    BorderFactory.createLineBorder(new Color(100, 100, 100), 1)
             ));
-            card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
+            card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 
-            JLabel lbl = new JLabel("<html><b>" + key + "</b><br/>Locuri: " + String.join(", ", grupate.get(key)) + "</html>");
-            lbl.setForeground(Color.WHITE);
+            String locuri = String.join(", ", grupate.get(key));
+            JLabel lbl = new JLabel("<html><b style='color:#FFFFFF'>" + key + "</b><br><span style='color:#CCCCCC'>Locuri: " + locuri + "</span></html>");
             lbl.setFont(new Font("Arial", Font.PLAIN, 14));
             card.add(lbl, BorderLayout.CENTER);
 
-            JButton anulareBtn = new JButton("Anulează rezervare");
-            anulareBtn.setBackground(new Color(70, 130, 180));
+            JButton anulareBtn = new JButton("Anulează");
+            anulareBtn.setBackground(new Color(178, 34, 34));
             anulareBtn.setForeground(Color.WHITE);
             anulareBtn.setFocusPainted(false);
-            anulareBtn.setFont(new Font("Arial", Font.BOLD, 13));
-            anulareBtn.addActionListener(ev -> new AnulareRezervareFrame("Sigur doriți să anulați rezervarea?", () -> {
-                for (String loc : grupate.get(key)) {
-                    String[] rc = loc.replace("R", "").replace("C", "").split("-");
-                    int rand = Integer.parseInt(rc[0].trim());
-                    int coloana = Integer.parseInt(rc[1].trim());
+            anulareBtn.setFont(new Font("Arial", Font.BOLD, 14));
 
-                    try {
-                        String[] keyParts = key.split(" - ");
-                        String dataRez = keyParts[0];
-                        String oraFilm = keyParts[1];
-                        String titluFilm = keyParts[2];
+            anulareBtn.addActionListener(ev -> {
+                AnulareRezervareFrame confirm = new AnulareRezervareFrame(
+                        "Sigur doriți să anulați rezervarea?\n" ,
+                        () -> {
+                            for (String loc : grupate.get(key)) {
+                                String[] rc = loc.replace("R", "").replace("C", "").split("-");
+                                int rand = Integer.parseInt(rc[0].trim());
+                                int coloana = Integer.parseInt(rc[1].trim());
 
-                        DatabaseManager.stergeRezervare(email, titluFilm, dataRez, oraFilm, rand, coloana);
+                                try {
+                                    String[] keyParts = key.split(" - ");
+                                    String dataRez = keyParts[0];
+                                    String oraFilm = keyParts[1];
+                                    String titluFilm = keyParts[2];
 
-                        service.getFilme().forEach(f -> {
-                            if (f.getTitlu().equals(titluFilm)) {
-                                java.time.LocalDate dataF = java.time.LocalDate.parse(dataRez);
-                                PersistentaRezervari.stergeRezervare(email, titluFilm, dataF, oraFilm, f.getSala());
+                                    // Stergere din baza de date
+                                    DatabaseManager.stergeRezervare(email, titluFilm, dataRez, oraFilm, rand, coloana);
+
+                                    // Stergere din JSON + actualizare scaune
+                                    service.getFilme().forEach(f -> {
+                                        if (f.getTitlu().equals(titluFilm)) {
+                                            java.time.LocalDate dataF = java.time.LocalDate.parse(dataRez);
+                                            PersistentaRezervari.stergeRezervare(email, titluFilm, dataF, oraFilm, f.getSala());
+
+                                            // Trimite email de anulare
+                                            emailService.trimiteAnulare(email, titluFilm, f.getSala().getNume(), oraFilm, dataF);
+                                        }
+                                    });
+
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
                             }
-                        });
-
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-                JOptionPane.showMessageDialog(fereastra, "Rezervarea a fost anulată!");
-                fereastra.dispose();
-            }));
+                            JOptionPane.showMessageDialog(fereastra, "Rezervarea a fost anulată!");
+                            fereastra.dispose();
+                        }
+                );
+                confirm.setVisible(true);
+            });
 
             card.add(anulareBtn, BorderLayout.EAST);
             panelRezervari.add(card);
-            panelRezervari.add(Box.createVerticalStrut(10));
+            panelRezervari.add(Box.createVerticalStrut(8));
         }
 
         JScrollPane scroll = new JScrollPane(panelRezervari);
-        scroll.getVerticalScrollBar().setUnitIncrement(16);
         scroll.setBorder(null);
-        scroll.setBackground(new Color(34, 34, 34));
-
         fereastra.add(scroll, BorderLayout.CENTER);
+
         fereastra.setVisible(true);
     }
+
 
 
 
