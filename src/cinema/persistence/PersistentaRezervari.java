@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class PersistentaRezervari {
 
     private static final String FILE_PATH = "data/rezervari.json";
+    private static final String LOG_PATH = "logs/server.log";
 
     // Încarcă rezervările existente
     public static void incarcaRezervari(Sala sala, String film, LocalDate data, String oraFilm) {
@@ -102,7 +103,28 @@ public class PersistentaRezervari {
                     email
             );
 
+            // 👇 log în fișier separat
+            logRezervare(film, sala.getNume(), data, oraFilm, rand, coloana, email);
+
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Scrie în fișierul de log fiecare rezervare
+    private static void logRezervare(String film, String sala, LocalDate data, String oraFilm,
+                                     int rand, int coloana, String email) {
+        try {
+            File file = new File(LOG_PATH);
+            file.getParentFile().mkdirs();
+
+            try (FileWriter fw = new FileWriter(file, true);
+                 PrintWriter pw = new PrintWriter(fw)) {
+                pw.printf("[%s] Rezervare: film=%s, sala=%s, data=%s, ora=%s, rand=%d, coloana=%d, email=%s%n",
+                        java.time.LocalDateTime.now(),
+                        film, sala, data, oraFilm, rand, coloana, email);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

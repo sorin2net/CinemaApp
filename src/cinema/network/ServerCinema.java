@@ -1,12 +1,15 @@
 package cinema.network;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import cinema.model.Film;
 import cinema.model.Sala;
 import cinema.model.Scaun;
 import cinema.service.RezervareService;
+import cinema.persistence.DatabaseManager;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -56,8 +59,8 @@ public class ServerCinema {
         }
     }
 
-    private Mesaj proceseazaRezervare(Mesaj cerere) {
-        // 1️⃣ Obținem filmul și sala
+    private synchronized Mesaj proceseazaRezervare(Mesaj cerere) {
+        // 1) film + sală
         Film film = service.getFilme().stream()
                 .filter(f -> f.getTitlu().equals(cerere.film))
                 .findFirst().orElse(null);
@@ -73,12 +76,12 @@ public class ServerCinema {
         LocalDate data = LocalDate.parse(cerere.data);
         Sala sala = service.getSala(film, cerere.ora, data);
 
-        // 2️⃣ Rezervăm scaunele
+        // 2) scaune selectate
         Set<Scaun> scauneSelectate = new HashSet<>();
         for (String s : cerere.scaune) {
             String[] parts = s.replace("R", "").split("-C");
             int rand = Integer.parseInt(parts[0]) - 1;
-            int col = Integer.parseInt(parts[1]) - 1;
+            int col  = Integer.parseInt(parts[1]) - 1;
             Scaun scaun = sala.getScaun(rand, col);
             if (!scaun.esteRezervat()) {
                 scaun.rezerva(cerere.email);
@@ -86,6 +89,7 @@ public class ServerCinema {
             }
         }
 
+        // 3) AICI se salvează în JSON + DB prin service
         service.salveazaRezervare(film, cerere.ora, data, cerere.email, scauneSelectate, sala);
 
         Mesaj raspuns = new Mesaj();
@@ -108,8 +112,49 @@ public class ServerCinema {
 
     public static void main(String[] args) throws IOException {
         RezervareService service = new RezervareService();
-        // Încarcă filmele aici ca în CinemaApp
+
+        // Creează tabelul DB dacă nu există
+        DatabaseManager.createTableIfNotExists();
+
+        // Încarcă filmele din JSON
+        try {
+            String json = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get("resources/filme.json")));
+            Gson gson = new Gson();
+            Type listaFilmeType = new TypeToken<List<FilmJson>>() {}.getType();
+            List<FilmJson> filmeJson = gson.fromJson(json, listaFilmeType);
+
+            for (FilmJson fj : filmeJson) {
+                Sala sala = new Sala(fj.sala.nume, fj.sala.randuri, fj.sala.coloane);
+                Film film = new Film(fj.titlu, fj.durata, fj.imaginePath, fj.ore, fj.restrictieVarsta, fj.gen);
+                film.setZile(fj.zile);
+                film.setSala(sala);
+                service.adaugaFilm(film);
+            }
+            System.out.println("Filmele au fost încărcate pe server.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Eroare la încărcarea resources/filme.json pe server!");
+        }
+
         ServerCinema server = new ServerCinema(12345, service);
         server.start();
+    }
+
+    // Clase pentru citirea JSON-ului
+    private static class FilmJson {
+        String titlu;
+        int durata;
+        String imaginePath;
+        List<String> ore;
+        List<Integer> zile;
+        SalaJson sala;
+        int restrictieVarsta;
+        String gen;
+    }
+
+    private static class SalaJson {
+        String nume;
+        int randuri;
+        int coloane;
     }
 }
