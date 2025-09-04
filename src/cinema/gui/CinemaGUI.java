@@ -5,10 +5,15 @@ import cinema.model.Sala;
 import cinema.model.Scaun;
 import cinema.service.RezervareService;
 import cinema.service.EmailService;
+import cinema.network.ClientCinema;
+import cinema.network.Mesaj;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -23,6 +28,7 @@ public class CinemaGUI extends JFrame {
     private JComboBox<Integer> ziCombo;
     private JComboBox<String> oreCombo;
     private JTextField searchField;
+    private ClientCinema client;
 
     public CinemaGUI(RezervareService service) {
         this.service = service;
@@ -82,6 +88,28 @@ public class CinemaGUI extends JFrame {
             @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { afiseazaFilme(); }
         });
 
+        // ---------------- client server ----------------
+        try {
+            client = new ClientCinema("localhost", 12345);
+
+            new Thread(() -> {
+                try {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(client.getSocket().getInputStream()));
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        Mesaj msg = new com.google.gson.Gson().fromJson(line, Mesaj.class);
+                        if ("update_sali".equals(msg.tip)) {
+                            SwingUtilities.invokeLater(this::actualizeazaScauneDinServer);
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }).start();
+        } catch (Exception e) {
+            System.out.println("Nu s-a putut conecta la server, rezervarea va fi locală.");
+        }
+
         actualizeazaZile();
         afiseazaFilme();
     }
@@ -105,7 +133,7 @@ public class CinemaGUI extends JFrame {
         LocalDate data = LocalDate.of(2025, lunaIndex, zi);
         String text = searchField.getText().toLowerCase();
 
-        // 1) Filmele pentru ziua curentă (fără filtrul pe oră, ca să putem popula corect orele)
+        // 1) Filmele pentru ziua curentă
         List<Film> filmeZiFaraOra = service.getFilmePentruZi(data).stream()
                 .filter(f -> f.getTitlu().toLowerCase().contains(text))
                 .collect(Collectors.toList());
@@ -132,10 +160,9 @@ public class CinemaGUI extends JFrame {
 
         for (java.awt.event.ActionListener l : ls) oreCombo.addActionListener(l);
 
-        // Capturăm valoarea într-o variabilă finală pentru a o folosi în lambda
         final String oraFiltru = oraSelectataTemp;
 
-        // 3) Aplic filtrul pe oră abia acum, după ce oreCombo e corect
+        // 3) Aplic filtrul pe oră
         List<Film> filmeZi = filmeZiFaraOra.stream()
                 .filter(f -> "Oricând".equals(oraFiltru) || f.getOre().contains(oraFiltru))
                 .collect(Collectors.toList());
@@ -212,8 +239,7 @@ public class CinemaGUI extends JFrame {
             JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
             buttonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             buttonsPanel.setBackground(new Color(60, 60, 60));
-            for (String ora : film.getOre()) {
-                final String oraBtnValue = ora;
+            for (String oraBtnValue : film.getOre()) {
                 JButton oraBtn = new JButton("Rezervă la " + oraBtnValue);
                 oraBtn.setFont(new Font("Arial", Font.BOLD, 16));
                 oraBtn.setMinimumSize(new Dimension(120, 40));
@@ -303,31 +329,28 @@ public class CinemaGUI extends JFrame {
         rezervaBtn.setFont(new Font("Arial", Font.BOLD, 16));
         rezervaBtn.setPreferredSize(new Dimension(120, 40));
 
-        // 🔹 MODIFICARE: integrare EmailService
+        // MODIFICARE: trimitere rezervare la server
         rezervaBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
-
             EmailService emailService = new EmailService();
             if (!emailService.esteEmailValid(email)) {
                 JOptionPane.showMessageDialog(scauneFrame, "Introduceți un email valid!");
                 return;
             }
 
-            service.salveazaRezervare(film, ora, data, email, scauneSelectate, sala);
-
-            // pregătim lista de scaune pentru email
-            String scauneStr = scauneSelectate.stream()
-                    .sorted((a, b) -> {
-                        int cmp = Integer.compare(a.getRand(), b.getRand());
-                        return (cmp != 0) ? cmp : Integer.compare(a.getNumar(), b.getNumar());
-                    })
+            Set<String> scauneStr = scauneSelectate.stream()
                     .map(s -> "R" + s.getRand() + "-C" + s.getNumar())
-                    .collect(Collectors.joining("; "));
+                    .collect(Collectors.toSet());
 
-
-
-            JOptionPane.showMessageDialog(scauneFrame, "Rezervare efectuată! Ți-am trimis un email de confirmare.");
-            scauneFrame.dispose();
+            if (client != null) {
+                client.trimiteRezervare(film.getTitlu(), ora, data.toString(), scauneStr, email);
+                JOptionPane.showMessageDialog(scauneFrame, "Rezervare trimisă către server!");
+                scauneFrame.dispose();
+            } else {
+                service.salveazaRezervare(film, ora, data, email, scauneSelectate, sala);
+                JOptionPane.showMessageDialog(scauneFrame, "Rezervare efectuată local!");
+                scauneFrame.dispose();
+            }
         });
 
         bottom.add(new JLabel("Email:") {{ setForeground(Color.WHITE); }});
@@ -336,5 +359,9 @@ public class CinemaGUI extends JFrame {
         scauneFrame.add(bottom, BorderLayout.SOUTH);
 
         scauneFrame.setVisible(true);
+    }
+
+    private void actualizeazaScauneDinServer() {
+        afiseazaFilme();
     }
 }

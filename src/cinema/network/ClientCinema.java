@@ -49,4 +49,7 @@ public class ClientCinema {
             e.printStackTrace();
         }
     }
+    public Socket getSocket() {
+        return socket;
+    }
 }
