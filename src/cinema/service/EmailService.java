@@ -10,15 +10,27 @@ import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 public class EmailService {
 
-    // pune aici adresa ta Gmail
-    private final String fromEmail = "denisdumitriu95@gmail.com";
+    private final String fromEmail;
+    private final String appPassword;
 
-    // pune aici App Password-ul generat în contul Google (nu parola normală!)
-    private final String appPassword = "mnak amow knob lqkm";
+    public EmailService() {
+        Properties props = new Properties();
+        try (FileInputStream fis = new FileInputStream("config/email.properties")) {
+            props.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Nu am putut încărca fișierul email.properties!");
+        }
+
+        fromEmail = props.getProperty("fromEmail");
+        appPassword = props.getProperty("appPassword");
+    }
 
     /** Validare sigură folosind Jakarta Mail */
     public boolean esteEmailValid(String email) {
