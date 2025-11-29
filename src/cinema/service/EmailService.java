@@ -30,10 +30,12 @@ public class EmailService {
             e.printStackTrace();
             throw new RuntimeException("Nu am putut încărca fișierul email.properties!");
         }
-
         fromEmail = props.getProperty("fromEmail");
         appPassword = props.getProperty("appPassword");
+
+        //System.out.println("Email: " + fromEmail + ", Password: " + appPassword.substring(0,4) + "****"); // test
     }
+
 
     public boolean esteEmailValid(String email) {
         if (email == null || email.isBlank()) return false;
