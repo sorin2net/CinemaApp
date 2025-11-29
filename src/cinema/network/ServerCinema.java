@@ -74,9 +74,14 @@ public class ServerCinema {
                     broadcastUpdateSalile();
                 } else if ("cerere_anulare".equals(msg.tip)) {
                     Mesaj raspuns = proceseazaAnulare(msg);
-                    out.println(gson.toJson(raspuns));
-                    broadcastUpdateSalile();
+
+
+                    if (raspuns != null) {
+                        out.println(gson.toJson(raspuns));
+                        broadcastUpdateSalile();
+                    }
                 }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,56 +128,46 @@ public class ServerCinema {
     private synchronized Mesaj proceseazaAnulare(Mesaj cerere) {
         LocalDate data = LocalDate.parse(cerere.data);
         String email = cerere.email;
+        String film = cerere.film;
+        String ora = cerere.ora;
 
-        List<Film> filmeZi = service.getFilmePentruZi(data);
-        boolean rezervareGasita = false;
+        Film filmObj = service.getFilme().stream()
+                .filter(f -> f.getTitlu().equals(film))
+                .findFirst().orElse(null);
 
-        for (Film film : filmeZi) {
-            for (String ora : film.getOre()) {
-                Sala sala = service.getSala(film, ora, data);
-                Set<Scaun> scauneDeAnulat = new HashSet<>();
-
-                // Gasește toate scaunele rezervate de acest email
-                for (int r = 0; r < sala.getRanduri(); r++) {
-                    for (int c = 0; c < sala.getColoane(); c++) {
-                        Scaun sc = sala.getScaun(r, c);
-                        if (sc.esteRezervat() && email.equals(sc.getEmailRezervare())) {
-                            scauneDeAnulat.add(sc);
-                        }
-                    }
-                }
-
-                if (!scauneDeAnulat.isEmpty()) {
-                    rezervareGasita = true;
-
-                    // marcheaza scaunele ca libere
-                    for (Scaun sc : scauneDeAnulat) {
-                        sc.anuleazaRezervare();
-                    }
-
-                    // sterge rezervarile din JSON și DB
-                    PersistentaRezervari.stergeRezervare(film.getTitlu(), sala.getNume(), data, ora, sala);
-
-                    // trimite email de confirmare anulare
-                    service.getEmailService().trimiteAnulare(email, film.getTitlu(), sala.getNume(), ora, data);
-
-                    System.out.println("[LOG] Rezervare anulată pentru email: " + email + " data: " + data);
-                }
-            }
+        if (filmObj == null) {
+            Mesaj raspuns = new Mesaj();
+            raspuns.tip = "raspuns_anulare";
+            raspuns.status = "eroare";
+            raspuns.mesaj = "Film inexistent!";
+            return raspuns;
         }
 
-        // pregatește mesajul de raspuns către client
+        Sala sala = service.getSala(filmObj, ora, data);
+
+        Set<Scaun> scauneSterse = PersistentaRezervari.stergeRezervare(email, film, data, ora, sala);
+
         Mesaj raspuns = new Mesaj();
         raspuns.tip = "raspuns_anulare";
-        if (rezervareGasita) {
+
+        if (!scauneSterse.isEmpty()) {
             raspuns.status = "ok";
-            raspuns.mesaj = "Rezervarea a fost anulată cu succes!";
+            raspuns.mesaj = "Rezervare anulată cu succes!";
+
+
+            service.getEmailService().trimiteAnulare(email, film, sala.getNume(), ora, data);
+            System.out.println("[LOG] Rezervarea a fost ștearsă pentru " + email + " la " + film + " ora " + ora);
+
+            return raspuns;
         } else {
             raspuns.status = "eroare";
-            raspuns.mesaj = "Nu s-au găsit rezervări pentru email-ul și data introduse.";
+            raspuns.mesaj = "Nu există rezervare pentru acest film, ora și email.";
+            return raspuns;
         }
-        return raspuns;
     }
+
+
+
 
 
     private void broadcastUpdateSalile() {

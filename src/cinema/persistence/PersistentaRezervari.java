@@ -110,7 +110,6 @@ public class PersistentaRezervari {
     public static Set<Scaun> stergeRezervare(String email, String film, LocalDate data, String oraFilm, Sala sala) {
         Set<Scaun> scauneSterse = new HashSet<>();
         File file = new File(FILE_PATH);
-
         if (!file.exists() || file.length() == 0) return scauneSterse;
 
         try {
@@ -130,12 +129,12 @@ public class PersistentaRezervari {
                 long ziJson = ((Number) rez.get("zi")).longValue();
                 long lunaJson = ((Number) rez.get("luna")).longValue();
 
-                boolean deStergere = emailJson.equals(email)
-                        && filmJson.equals(film)
-                        && oraJson.equals(oraFilm)
-                        && salaJson.equals(sala.getNume())
-                        && ziJson == data.getDayOfMonth()
-                        && lunaJson == data.getMonthValue();
+                boolean deStergere = emailJson.equals(email) &&
+                        filmJson.equals(film) &&
+                        oraJson.equals(oraFilm) &&
+                        salaJson.equals(sala.getNume()) &&
+                        ziJson == data.getDayOfMonth() &&
+                        lunaJson == data.getMonthValue();
 
                 if (deStergere) {
                     int rand = ((Number) rez.get("rand")).intValue() - 1;
@@ -145,15 +144,14 @@ public class PersistentaRezervari {
                         scaun.anuleazaRezervare();
                         scauneSterse.add(scaun);
                     }
-
-
-                    DatabaseManager.stergeRezervare(email, film, data.toString(), oraFilm, rand, coloana);
+                    DatabaseManager.stergeRezervare(email, film, data.toString(), oraFilm, rand + 1, coloana + 1);
 
                     logAnulare(film, sala.getNume(), data, oraFilm, rand, coloana, email);
                 } else {
                     nouArray.add(rez);
                 }
             }
+
 
             try (Writer writer = new FileWriter(file)) {
                 writer.write(nouArray.toJSONString());
@@ -165,6 +163,7 @@ public class PersistentaRezervari {
 
         return scauneSterse;
     }
+
 
     private static void logRezervare(String film, String sala, LocalDate data, String oraFilm,
                                      int rand, int coloana, String email) {
