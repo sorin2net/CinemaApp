@@ -35,7 +35,6 @@ public class EmailService {
         appPassword = props.getProperty("appPassword");
     }
 
-    /** Validare sigură folosind Jakarta Mail */
     public boolean esteEmailValid(String email) {
         if (email == null || email.isBlank()) return false;
         try {
@@ -47,7 +46,6 @@ public class EmailService {
         }
     }
 
-    /** Trimite email text simplu cu detaliile rezervării */
     public void trimiteConfirmare(String toEmail, String numeFilm, String numeSala,
                                   String ora, String scaune) {
 
@@ -67,7 +65,6 @@ public class EmailService {
         );
     }
 
-    /** Trimite email pentru anularea rezervării */
     public void trimiteAnulare(String toEmail, String numeFilm, String numeSala,
                                String ora, LocalDate data) {
 
@@ -85,7 +82,6 @@ public class EmailService {
     }
 
 
-    /** Metodă privată comună pentru trimiterea email-urilor */
     private void sendEmail(String toEmail, String subject, String text) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");

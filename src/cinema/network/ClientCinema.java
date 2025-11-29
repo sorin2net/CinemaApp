@@ -72,7 +72,7 @@ public class ClientCinema {
                     System.out.println("Server: " + msg.mesaj);
                 } else if ("update_sali".equals(msg.tip)) {
                     System.out.println("Server: " + msg.mesaj);
-                    // TODO: aici actualizezi GUI-ul scaunelor
+                    // TODO: aici actualizez GUI-ul scaunelor
                 }
             }
         } catch (IOException e) {

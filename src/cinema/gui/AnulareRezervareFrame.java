@@ -50,7 +50,7 @@ public class AnulareRezervareFrame extends JFrame {
         buttonPanel.add(noButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Acțiuni butoane
+        // Actiuni butoane
         yesButton.addActionListener(e -> {
             if (onYes != null) onYes.run();
             dispose();

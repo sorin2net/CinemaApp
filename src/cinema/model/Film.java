@@ -21,7 +21,6 @@ public class Film {
         this.gen = gen;
     }
 
-    // --- getter și setter pentru zile ---
     public List<Integer> getZile() {
         return zile;
     }
@@ -30,7 +29,6 @@ public class Film {
         this.zile = zile;
     }
 
-    // --- getter și setter pentru sala ---
     public Sala getSala() {
         return sala;
     }
@@ -39,7 +37,6 @@ public class Film {
         this.sala = sala;
     }
 
-    // --- restul getter-elor ---
     public String getTitlu() { return titlu; }
     public int getDurata() { return durata; }
     public String getImaginePath() { return imaginePath; }

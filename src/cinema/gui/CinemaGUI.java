@@ -76,13 +76,13 @@ public class CinemaGUI extends JFrame {
 
         add(topPanel, BorderLayout.NORTH);
 
-        // <<< Aici adaugăm butonul Rezervările mele >>>
+        //   butonul Rezervările mele
         JButton rezervarileMeleBtn = new JButton("Rezervările mele");
         rezervarileMeleBtn.setFont(new Font("Arial", Font.BOLD, 14));
         rezervarileMeleBtn.addActionListener(e -> deschideRezervarileMele());
         topPanel.add(rezervarileMeleBtn);
 
-        // adăugăm topPanel la frame
+        //  topPanel la frame
         add(topPanel, BorderLayout.NORTH);
 
         // ---------------- filme panel ----------------
@@ -106,9 +106,9 @@ public class CinemaGUI extends JFrame {
         String host = "192.168.1.141";
         int port = 12345;
         try {
-            client = new ClientCinema(host,port); // citește host și port din config.properties
+            client = new ClientCinema(host,port); // citeste host și port din config.properties
 
-            // Callback pentru actualizare GUI când vin mesaje de la server
+            // Callback pentru actualizare GUI cand vin mesaje de la server
             new Thread(() -> {
                 try {
                     BufferedReader in = new BufferedReader(new InputStreamReader(client.getSocket().getInputStream()));
@@ -121,12 +121,12 @@ public class CinemaGUI extends JFrame {
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    System.out.println("Conexiune la server pierdută.");
+                    System.out.println("Conexiune la server pierduta.");
                 }
             }).start();
 
         } catch (Exception e) {
-            System.out.println("Nu s-a putut conecta la server, rezervarea va fi locală.");
+            System.out.println("Nu s-a putut conecta la server, rezervarea va fi locala.");
             client = null;
         }
 
@@ -136,7 +136,7 @@ public class CinemaGUI extends JFrame {
 
     private void actualizeazaZile() {
         ziCombo.removeAllItems();
-        int lunaIndex = lunaCombo.getSelectedIndex() + 9; // septembrie = 9
+        int lunaIndex = lunaCombo.getSelectedIndex() + 9;
         YearMonth ym = YearMonth.of(2025, lunaIndex);
         for (int zi = 1; zi <= ym.lengthOfMonth(); zi++) {
             ziCombo.addItem(zi);
@@ -153,12 +153,12 @@ public class CinemaGUI extends JFrame {
         LocalDate data = LocalDate.of(2025, lunaIndex, zi);
         String text = searchField.getText().toLowerCase();
 
-        // 1) Filmele pentru ziua curentă
+        // Filmele pentru ziua curenta
         List<Film> filmeZiFaraOra = service.getFilmePentruZi(data).stream()
                 .filter(f -> f.getTitlu().toLowerCase().contains(text))
                 .collect(Collectors.toList());
 
-        // 2) Repopulez oreCombo doar cu orele disponibile în ziua curentă (plus "Oricând")
+        // repopulez oreCombo doar cu orele disponibile în ziua curenta
         Object selectieAnterioara = oreCombo.getSelectedItem();
         java.awt.event.ActionListener[] ls = oreCombo.getActionListeners();
         for (java.awt.event.ActionListener l : ls) oreCombo.removeActionListener(l);
@@ -182,12 +182,12 @@ public class CinemaGUI extends JFrame {
 
         final String oraFiltru = oraSelectataTemp;
 
-        // 3) Aplic filtrul pe oră
+        // aplic filtrul pe ora
         List<Film> filmeZi = filmeZiFaraOra.stream()
                 .filter(f -> "Oricând".equals(oraFiltru) || f.getOre().contains(oraFiltru))
                 .collect(Collectors.toList());
 
-        // 4) Randare filme
+        // randare filme
         filmePanel.setLayout(new GridLayout(filmeZi.size(), 1, 0, 10));
 
         for (Film film : filmeZi) {
@@ -223,7 +223,7 @@ public class CinemaGUI extends JFrame {
             titluGenPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             titluGenPanel.setBackground(new Color(60, 60, 60));
 
-            // Titlu + vârsta
+            // Titlu + varsta
             int varsta = film.getRestrictieVarsta();
             String culoareVarsta;
             if (varsta == 3) culoareVarsta = "#4CAF50";
@@ -341,7 +341,7 @@ public class CinemaGUI extends JFrame {
         scroll.getVerticalScrollBar().setUnitIncrement(20);
         scauneFrame.add(scroll, BorderLayout.CENTER);
 
-        // jos: email + buton rezervare
+        //  email + buton rezervare
         JPanel bottom = new JPanel();
         bottom.setBackground(new Color(45, 45, 45));
         JTextField emailField = new JTextField(20);
@@ -349,7 +349,7 @@ public class CinemaGUI extends JFrame {
         rezervaBtn.setFont(new Font("Arial", Font.BOLD, 16));
         rezervaBtn.setPreferredSize(new Dimension(120, 40));
 
-        // MODIFICARE: trimitere rezervare la server
+        //  trimitere rezervare la server
         rezervaBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
             EmailService emailService = new EmailService();
@@ -419,7 +419,7 @@ public class CinemaGUI extends JFrame {
         // Email service
         EmailService emailService = new EmailService();
 
-        // Fereastră modernă
+
         JFrame fereastra = new JFrame("Rezervările pentru " + email);
         fereastra.setSize(650, 500);
         fereastra.setLocationRelativeTo(this);
@@ -428,7 +428,7 @@ public class CinemaGUI extends JFrame {
         panelRezervari.setLayout(new BoxLayout(panelRezervari, BoxLayout.Y_AXIS));
         panelRezervari.setBackground(new Color(40, 40, 40));
 
-        // Grupăm rezervările
+        // Grupam rezervarile
         java.util.Map<String, java.util.List<String>> grupate = new java.util.LinkedHashMap<>();
         for (String r : rezervari) {
             String[] parts = r.split(" : ");

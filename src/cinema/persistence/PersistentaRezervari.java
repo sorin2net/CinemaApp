@@ -146,7 +146,7 @@ public class PersistentaRezervari {
                         scauneSterse.add(scaun);
                     }
 
-                    // ⚠️ Aici trebuie metoda corespunzătoare în DatabaseManager
+
                     DatabaseManager.stergeRezervare(email, film, data.toString(), oraFilm, rand, coloana);
 
                     logAnulare(film, sala.getNume(), data, oraFilm, rand, coloana, email);

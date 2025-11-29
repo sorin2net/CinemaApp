@@ -6,23 +6,23 @@ import java.time.format.DateTimeFormatter;
 
 public class DatabaseManager {
 
-    private static final String DB_URL = "jdbc:sqlite:cinema.db"; // fișierul .db în proiect
+    private static final String DB_URL = "jdbc:sqlite:cinema.db";
     private static final String URL = "jdbc:sqlite:cinema.db";
-    // 1) Conexiune la baza de date
+    // conexiune la baza de date
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
     }
 
-    // 2) Creare tabel dacă nu există
+    // 2) Creare tabel
     public static void createTableIfNotExists() {
         String sql = """
             CREATE TABLE IF NOT EXISTS rezervari (
-                ora_rezervare TEXT,       -- ora la care s-a făcut rezervarea (prima coloană)
+                ora_rezervare TEXT,       
                 titlu TEXT,
                 gen TEXT,
                 varsta INTEGER,
                 data TEXT,
-                ora_film TEXT,            -- ora filmului (ex: 15:30)
+                ora_film TEXT,            
                 rand INTEGER,
                 coloana INTEGER,
                 email TEXT
@@ -37,7 +37,7 @@ public class DatabaseManager {
         }
     }
 
-    // 3) Inserare rezervare
+
     public static void insertRezervare(String titluFilm, String gen, int varsta,
                                        String data, String oraFilm, int rand, int coloana, String email) {
         // Ora curentă a rezervării (HH:mm) pentru prima coloană
@@ -49,12 +49,12 @@ public class DatabaseManager {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, oraRezervare);   // prima coloană: ora rezervării
+            stmt.setString(1, oraRezervare);
             stmt.setString(2, titluFilm);
             stmt.setString(3, gen);
             stmt.setInt(4, varsta);
             stmt.setString(5, data);
-            stmt.setString(6, oraFilm);       // ora filmului (ex: 15:30)
+            stmt.setString(6, oraFilm);
             stmt.setInt(7, rand);
             stmt.setInt(8, coloana);
             stmt.setString(9, email);
@@ -66,14 +66,14 @@ public class DatabaseManager {
         }
     }
 
-    // 4) Ștergere toate rezervările
+
     public static void clearAllRezervari() {
         String sql = "DELETE FROM rezervari";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
-            System.out.println("Toate rezervările au fost șterse din baza de date.");
+            System.out.println("Toate rezervarile au fost sterse din baza de date.");
         } catch (SQLException e) {
             e.printStackTrace();
         }

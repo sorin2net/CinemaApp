@@ -36,7 +36,7 @@ public class Sala {
         return nume;
     }
 
-    // Clonare sala pentru fiecare zi/ora, ca să avem sală independentă
+    // Clonare sala pentru fiecare zi/ora ca fiecare sala sa fie independenta
     public Sala cloneSala() {
         Sala copie = new Sala(this.nume, this.randuri, this.coloane);
         return copie;

@@ -28,11 +28,11 @@ public class ServerCinema {
     }
 
     public void start() throws IOException {
-        // Ascultă pe toate interfețele (LAN și Internet)
+        // Asculta pe toate interfetele (LAN și Internet)
         ServerSocket serverSocket = new ServerSocket(port, 50, InetAddress.getByName("0.0.0.0"));
         System.out.println("Server Cinema rulează pe portul " + port);
 
-        // Afișăm IP-urile locale disponibile
+        // Afiasm IP-urile locale disponibile
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
@@ -132,7 +132,7 @@ public class ServerCinema {
                 Sala sala = service.getSala(film, ora, data);
                 Set<Scaun> scauneDeAnulat = new HashSet<>();
 
-                // Găsește toate scaunele rezervate de acest email
+                // Gasește toate scaunele rezervate de acest email
                 for (int r = 0; r < sala.getRanduri(); r++) {
                     for (int c = 0; c < sala.getColoane(); c++) {
                         Scaun sc = sala.getScaun(r, c);
@@ -145,12 +145,12 @@ public class ServerCinema {
                 if (!scauneDeAnulat.isEmpty()) {
                     rezervareGasita = true;
 
-                    // marchează scaunele ca libere
+                    // marcheaza scaunele ca libere
                     for (Scaun sc : scauneDeAnulat) {
                         sc.anuleazaRezervare();
                     }
 
-                    // șterge rezervările din JSON și DB
+                    // sterge rezervarile din JSON și DB
                     PersistentaRezervari.stergeRezervare(film.getTitlu(), sala.getNume(), data, ora, sala);
 
                     // trimite email de confirmare anulare
@@ -161,7 +161,7 @@ public class ServerCinema {
             }
         }
 
-        // pregătește mesajul de răspuns către client
+        // pregatește mesajul de raspuns către client
         Mesaj raspuns = new Mesaj();
         raspuns.tip = "raspuns_anulare";
         if (rezervareGasita) {

@@ -12,9 +12,9 @@ public class RezervareService {
     private List<Film> filme = new ArrayList<>();
     private Map<String, Map<String, Sala>> saliPeZiOra = new HashMap<>();
 
-    private final EmailService emailService = new EmailService(); // 👈 adăugat
+    private final EmailService emailService = new EmailService();
 
-    // Adaugă un film și creează clona sălilor pentru fiecare zi și oră
+    // Adauga un film și creeaza clona salilor pentru fiecare zi si ora
     public void adaugaFilm(Film film) {
         filme.add(film);
         Map<String, Sala> mapZiOra = new HashMap<>();
@@ -57,13 +57,13 @@ public class RezervareService {
         return sala;
     }
 
-    // Salvează rezervările selectate pentru un film + trimite email
+    // Salvează rezervarile selectate pentru un film + trimite email
     public void salveazaRezervare(Film film, String oraFilm, LocalDate data, String email,
                                   Set<Scaun> scauneSelectate, Sala sala) {
 
         StringBuilder scauneStr = new StringBuilder();
 
-        // 1️⃣ Rezervăm toate scaunele și salvăm în baza de date
+        //  Rezervam toate scaunele si salvam in baza de date
         for (Scaun scaun : scauneSelectate) {
             scaun.rezerva(email);
 
@@ -93,12 +93,12 @@ public class RezervareService {
                         film.getRestrictieVarsta()
                 );
 
-                // adăugăm în string pentru email
+                // adaugam in string pentru email
                 scauneStr.append("R").append(rand).append("-C").append(coloana).append("; ");
             }
         }
 
-        // 2️⃣ Trimitem un singur email pentru toate scaunele
+        //  Trimitem un singur email pentru toate scaunele
         emailService.trimiteConfirmare(
                 email,
                 film.getTitlu(),

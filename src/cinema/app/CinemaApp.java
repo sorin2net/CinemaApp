@@ -21,18 +21,17 @@ public class CinemaApp {
             RezervareService service = new RezervareService();
 
             try {
-                // Creează tabelul în baza de date dacă nu există
                 DatabaseManager.createTableIfNotExists();
 
                 // Citim JSON-ul
                 String json = new String(Files.readAllBytes(Paths.get("resources/filme.json")));
                 Gson gson = new Gson();
 
-                // Mapăm lista de filme din JSON
+                // Mapam lista de filme din JSON
                 Type listaFilmeType = new TypeToken<List<FilmJson>>() {}.getType();
                 List<FilmJson> filmeJson = gson.fromJson(json, listaFilmeType);
 
-                // Convertim în obiecte Film și Sala
+                // Convertim in obiecte Film și Sala
                 for (FilmJson fj : filmeJson) {
                     Sala sala = new Sala(fj.sala.nume, fj.sala.randuri, fj.sala.coloane);
                     Film film = new Film(
@@ -44,7 +43,7 @@ public class CinemaApp {
                             fj.gen
                     );
 
-                    // Păstrăm lista de zile și sala pentru rezervări
+                    // Pastram lista de zile si sala pentru rezervari
                     film.setZile(fj.zile);
                     film.setSala(sala);
 
