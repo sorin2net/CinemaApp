@@ -434,10 +434,273 @@
       "randuri": 9,
       "coloane": 11
     }
+  },
+  {
+    "titlu": "Don't Look Up",
+    "durata": 138,
+    "imaginePath": "imagini/Dont-Look-Up_film_poster.jpg",
+    "ore": ["18:00", "21:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 2}, {"luna": 1, "zi": 6}, {"luna": 1, "zi": 10}, {"luna": 1, "zi": 14}, {"luna": 1, "zi": 18},
+      {"luna": 2, "zi": 3}, {"luna": 2, "zi": 7}, {"luna": 2, "zi": 11}, {"luna": 2, "zi": 15}, {"luna": 2, "zi": 19},
+      {"luna": 3, "zi": 1}, {"luna": 3, "zi": 5}, {"luna": 3, "zi": 9}, {"luna": 3, "zi": 13}, {"luna": 3, "zi": 17},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 6}, {"luna": 4, "zi": 10}, {"luna": 4, "zi": 14}, {"luna": 4, "zi": 18}
+    ],
+    "restrictieVarsta": 12,
+    "gen": "Comedie, Dramă, Satiric",
+    "sala": {
+      "nume": "Sala 5",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "The Pianist",
+    "durata": 150,
+    "imaginePath": "imagini/The-Pianist_film_poster.jpg",
+    "ore": ["17:30", "20:30"],
+    "dateRulare": [
+      {"luna": 1, "zi": 3}, {"luna": 1, "zi": 7}, {"luna": 1, "zi": 11}, {"luna": 1, "zi": 15}, {"luna": 1, "zi": 19},
+      {"luna": 2, "zi": 2}, {"luna": 2, "zi": 6}, {"luna": 2, "zi": 10}, {"luna": 2, "zi": 14}, {"luna": 2, "zi": 18},
+      {"luna": 3, "zi": 1}, {"luna": 3, "zi": 5}, {"luna": 3, "zi": 9}, {"luna": 3, "zi": 13}, {"luna": 3, "zi": 17},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 6}, {"luna": 4, "zi": 10}, {"luna": 4, "zi": 14}, {"luna": 4, "zi": 18}
+    ],
+    "restrictieVarsta": 15,
+    "gen": "Biografie, Dramă, Război",
+    "sala": {
+      "nume": "Sala 6",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "Once Upon a Time... in Hollywood",
+    "durata": 161,
+    "imaginePath": "imagini/Once-Upon-a-Time-in-Hollywood_film_poster.jpg",
+    "ore": ["18:00", "21:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 2}, {"luna": 1, "zi": 6}, {"luna": 1, "zi": 10}, {"luna": 1, "zi": 14}, {"luna": 1, "zi": 18},
+      {"luna": 2, "zi": 1}, {"luna": 2, "zi": 5}, {"luna": 2, "zi": 9}, {"luna": 2, "zi": 13}, {"luna": 2, "zi": 17},
+      {"luna": 3, "zi": 3}, {"luna": 3, "zi": 7}, {"luna": 3, "zi": 11}, {"luna": 3, "zi": 15}, {"luna": 3, "zi": 19},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 6}, {"luna": 4, "zi": 10}, {"luna": 4, "zi": 14}, {"luna": 4, "zi": 18}
+    ],
+    "restrictieVarsta": 15,
+    "gen": "Comedie, Dramă, Thriller",
+    "sala": {
+      "nume": "Sala 1",
+      "randuri": 11,
+      "coloane": 15
+    }
+  },
+  {
+    "titlu": "Truman Show",
+    "durata": 103,
+    "imaginePath": "imagini/Truman-Show_film_poster.jpg",
+    "ore": ["17:00", "20:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 3}, {"luna": 1, "zi": 7}, {"luna": 1, "zi": 11}, {"luna": 1, "zi": 15}, {"luna": 1, "zi": 19},
+      {"luna": 2, "zi": 2}, {"luna": 2, "zi": 6}, {"luna": 2, "zi": 10}, {"luna": 2, "zi": 14}, {"luna": 2, "zi": 18},
+      {"luna": 3, "zi": 3}, {"luna": 3, "zi": 7}, {"luna": 3, "zi": 11}, {"luna": 3, "zi": 15}, {"luna": 3, "zi": 19},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 6}, {"luna": 4, "zi": 10}, {"luna": 4, "zi": 14}, {"luna": 4, "zi": 18}
+    ],
+    "restrictieVarsta": 12,
+    "gen": "Comedie, Dramă, Science Fiction",
+    "sala": {
+      "nume": "Sala 2",
+      "randuri": 11,
+      "coloane": 15
+    }
+  },
+  {
+    "titlu": "Patch Adams",
+    "durata": 115,
+    "imaginePath": "imagini/Patch-Adams_film_poster.jpg",
+    "ore": ["16:30", "19:30"],
+    "dateRulare": [
+      {"luna": 1, "zi": 2}, {"luna": 1, "zi": 6}, {"luna": 1, "zi": 10}, {"luna": 1, "zi": 14}, {"luna": 1, "zi": 18},
+      {"luna": 2, "zi": 3}, {"luna": 2, "zi": 7}, {"luna": 2, "zi": 11}, {"luna": 2, "zi": 15}, {"luna": 2, "zi": 19},
+      {"luna": 3, "zi": 4}, {"luna": 3, "zi": 8}, {"luna": 3, "zi": 12}, {"luna": 3, "zi": 16}, {"luna": 3, "zi": 20},
+      {"luna": 4, "zi": 5}, {"luna": 4, "zi": 9}, {"luna": 4, "zi": 13}, {"luna": 4, "zi": 17}, {"luna": 4, "zi": 21}
+    ],
+    "restrictieVarsta": 7,
+    "gen": "Comedie, Dramă",
+    "sala": {
+      "nume": "Sala 3",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "La vita è bella",
+    "durata": 116,
+    "imaginePath": "imagini/La-vita-e-bella_film_poster.jpg",
+    "ore": ["17:00", "20:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 1}, {"luna": 1, "zi": 6}, {"luna": 1, "zi": 11}, {"luna": 1, "zi": 16}, {"luna": 1, "zi": 21},
+      {"luna": 2, "zi": 2}, {"luna": 2, "zi": 7}, {"luna": 2, "zi": 12}, {"luna": 2, "zi": 17}, {"luna": 2, "zi": 22},
+      {"luna": 3, "zi": 3}, {"luna": 3, "zi": 8}, {"luna": 3, "zi": 13}, {"luna": 3, "zi": 18}, {"luna": 3, "zi": 23},
+      {"luna": 4, "zi": 4}, {"luna": 4, "zi": 9}, {"luna": 4, "zi": 14}, {"luna": 4, "zi": 19}, {"luna": 4, "zi": 24}
+    ],
+    "restrictieVarsta": 12,
+    "gen": "Dramă, Comedie, Romantic",
+    "sala": {
+      "nume": "Sala 4",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "Shawshank Redemption",
+    "durata": 142,
+    "imaginePath": "imagini/Shawshank-Redemption_film_poster.jpg",
+    "ore": ["18:00", "21:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 2}, {"luna": 1, "zi": 7}, {"luna": 1, "zi": 12}, {"luna": 1, "zi": 17}, {"luna": 1, "zi": 22},
+      {"luna": 2, "zi": 3}, {"luna": 2, "zi": 8}, {"luna": 2, "zi": 13}, {"luna": 2, "zi": 18}, {"luna": 2, "zi": 23},
+      {"luna": 3, "zi": 4}, {"luna": 3, "zi": 9}, {"luna": 3, "zi": 14}, {"luna": 3, "zi": 19}, {"luna": 3, "zi": 24},
+      {"luna": 4, "zi": 5}, {"luna": 4, "zi": 10}, {"luna": 4, "zi": 15}, {"luna": 4, "zi": 20}, {"luna": 4, "zi": 25}
+    ],
+    "restrictieVarsta": 15,
+    "gen": "Dramă, Crimă",
+    "sala": {
+      "nume": "Sala 1",
+      "randuri": 11,
+      "coloane": 15
+    }
+  },
+  {
+    "titlu": "Puiu mic",
+    "durata": 95,
+    "imaginePath": "imagini/Puiu-mic_film_poster.jpg",
+    "ore": ["16:00", "19:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 1}, {"luna": 1, "zi": 6}, {"luna": 1, "zi": 11}, {"luna": 1, "zi": 16}, {"luna": 1, "zi": 21},
+      {"luna": 2, "zi": 2}, {"luna": 2, "zi": 7}, {"luna": 2, "zi": 12}, {"luna": 2, "zi": 17}, {"luna": 2, "zi": 22},
+      {"luna": 3, "zi": 3}, {"luna": 3, "zi": 8}, {"luna": 3, "zi": 13}, {"luna": 3, "zi": 18}, {"luna": 3, "zi": 23},
+      {"luna": 4, "zi": 4}, {"luna": 4, "zi": 9}, {"luna": 4, "zi": 14}, {"luna": 4, "zi": 19}, {"luna": 4, "zi": 24}
+    ],
+    "restrictieVarsta": 3,
+    "gen": "Animație, Familie",
+    "sala": {
+      "nume": "Sala 4",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "3 idioti",
+    "durata": 170,
+    "imaginePath": "imagini/3-idioti_film_poster.jpg",
+    "ore": ["17:00", "20:30"],
+    "dateRulare": [
+      {"luna": 1, "zi": 2}, {"luna": 1, "zi": 7}, {"luna": 1, "zi": 12}, {"luna": 1, "zi": 17}, {"luna": 1, "zi": 22},
+      {"luna": 2, "zi": 3}, {"luna": 2, "zi": 8}, {"luna": 2, "zi": 13}, {"luna": 2, "zi": 18}, {"luna": 2, "zi": 23},
+      {"luna": 3, "zi": 1}, {"luna": 3, "zi": 6}, {"luna": 3, "zi": 11}, {"luna": 3, "zi": 16}, {"luna": 3, "zi": 21},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 7}, {"luna": 4, "zi": 12}, {"luna": 4, "zi": 17}, {"luna": 4, "zi": 22}
+    ],
+    "restrictieVarsta": 12,
+    "gen": "Comedie, Dramă",
+    "sala": {
+      "nume": "Sala 6",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "Iron Man 3",
+    "durata": 130,
+    "imaginePath": "imagini/Iron-Man-3_film_poster.jpg",
+    "ore": ["18:00", "21:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 3}, {"luna": 1, "zi": 8}, {"luna": 1, "zi": 13}, {"luna": 1, "zi": 18}, {"luna": 1, "zi": 23},
+      {"luna": 2, "zi": 2}, {"luna": 2, "zi": 7}, {"luna": 2, "zi": 12}, {"luna": 2, "zi": 17}, {"luna": 2, "zi": 22},
+      {"luna": 3, "zi": 1}, {"luna": 3, "zi": 6}, {"luna": 3, "zi": 11}, {"luna": 3, "zi": 16}, {"luna": 3, "zi": 21},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 7}, {"luna": 4, "zi": 12}, {"luna": 4, "zi": 17}, {"luna": 4, "zi": 22}
+    ],
+    "restrictieVarsta": 12,
+    "gen": "Acțiune, Aventură, SF",
+    "sala": {
+      "nume": "Sala 1",
+      "randuri": 11,
+      "coloane": 15
+    }
+  },
+  {
+    "titlu": "Aladdin",
+    "durata": 128,
+    "imaginePath": "imagini/Aladdin_film_poster.jpg",
+    "ore": ["17:30", "20:30"],
+    "dateRulare": [
+      {"luna": 1, "zi": 2}, {"luna": 1, "zi": 7}, {"luna": 1, "zi": 12}, {"luna": 1, "zi": 17}, {"luna": 1, "zi": 22},
+      {"luna": 2, "zi": 3}, {"luna": 2, "zi": 8}, {"luna": 2, "zi": 13}, {"luna": 2, "zi": 18}, {"luna": 2, "zi": 23},
+      {"luna": 3, "zi": 1}, {"luna": 3, "zi": 6}, {"luna": 3, "zi": 11}, {"luna": 3, "zi": 16}, {"luna": 3, "zi": 21},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 7}, {"luna": 4, "zi": 12}, {"luna": 4, "zi": 17}, {"luna": 4, "zi": 22}
+    ],
+    "restrictieVarsta": 7,
+    "gen": "Animație, Aventură, Familie",
+    "sala": {
+      "nume": "Sala 2",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "The Menu",
+    "durata": 106,
+    "imaginePath": "imagini/The-Menu_film_poster.jpg",
+    "ore": ["18:00", "21:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 3}, {"luna": 1, "zi": 7}, {"luna": 1, "zi": 11}, {"luna": 1, "zi": 15}, {"luna": 1, "zi": 19},
+      {"luna": 2, "zi": 2}, {"luna": 2, "zi": 6}, {"luna": 2, "zi": 10}, {"luna": 2, "zi": 14}, {"luna": 2, "zi": 18},
+      {"luna": 3, "zi": 1}, {"luna": 3, "zi": 5}, {"luna": 3, "zi": 9}, {"luna": 3, "zi": 13}, {"luna": 3, "zi": 17},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 6}, {"luna": 4, "zi": 10}, {"luna": 4, "zi": 14}, {"luna": 4, "zi": 18}
+    ],
+    "restrictieVarsta": 15,
+    "gen": "Comedie, Thriller",
+    "sala": {
+      "nume": "Sala 3",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "The Boy in the Striped Pajamas",
+    "durata": 94,
+    "imaginePath": "imagini/The-Boy-in-the-Striped-Pajamas_film_poster.jpg",
+    "ore": ["17:00", "20:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 2}, {"luna": 1, "zi": 6}, {"luna": 1, "zi": 10}, {"luna": 1, "zi": 14}, {"luna": 1, "zi": 18},
+      {"luna": 2, "zi": 1}, {"luna": 2, "zi": 5}, {"luna": 2, "zi": 9}, {"luna": 2, "zi": 13}, {"luna": 2, "zi": 17},
+      {"luna": 3, "zi": 2}, {"luna": 3, "zi": 6}, {"luna": 3, "zi": 10}, {"luna": 3, "zi": 14}, {"luna": 3, "zi": 18},
+      {"luna": 4, "zi": 1}, {"luna": 4, "zi": 5}, {"luna": 4, "zi": 9}, {"luna": 4, "zi": 13}, {"luna": 4, "zi": 17}
+    ],
+    "restrictieVarsta": 12,
+    "gen": "Drama, Război",
+    "sala": {
+      "nume": "Sala 4",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "A Street Cat Named Bob",
+    "durata": 103,
+    "imaginePath": "imagini/A-Street-Cat-Named-Bob_film_poster.jpg",
+    "ore": ["16:30", "19:30"],
+    "dateRulare": [
+      {"luna": 1, "zi": 3}, {"luna": 1, "zi": 7}, {"luna": 1, "zi": 11}, {"luna": 1, "zi": 15}, {"luna": 1, "zi": 19},
+      {"luna": 2, "zi": 2}, {"luna": 2, "zi": 6}, {"luna": 2, "zi": 10}, {"luna": 2, "zi": 14}, {"luna": 2, "zi": 18},
+      {"luna": 3, "zi": 1}, {"luna": 3, "zi": 5}, {"luna": 3, "zi": 9}, {"luna": 3, "zi": 13}, {"luna": 3, "zi": 17},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 6}, {"luna": 4, "zi": 10}, {"luna": 4, "zi": 14}, {"luna": 4, "zi": 18}
+    ],
+    "restrictieVarsta": 7,
+    "gen": "Biografie, Familie",
+    "sala": {
+      "nume": "Sala 5",
+      "randuri": 9,
+      "coloane": 11
+    }
   }
-
-
-
 
 
 ]
