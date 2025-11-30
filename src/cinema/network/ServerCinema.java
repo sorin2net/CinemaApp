@@ -210,7 +210,14 @@ public class ServerCinema {
             for (FilmJson fj : filmeJson) {
                 Sala sala = new Sala(fj.sala.nume, fj.sala.randuri, fj.sala.coloane);
                 Film film = new Film(fj.titlu, fj.durata, fj.imaginePath, fj.ore, fj.restrictieVarsta, fj.gen);
-                film.setZile(fj.zile);
+
+                // Convertim dateRulare din JSON în obiecte DataRulare
+                List<Film.DataRulare> dateRulare = new ArrayList<>();
+                for (DataRulareJson drj : fj.dateRulare) {
+                    dateRulare.add(new Film.DataRulare(drj.luna, drj.zi));
+                }
+
+                film.setDateRulare(dateRulare);
                 film.setSala(sala);
                 service.adaugaFilm(film);
             }
@@ -229,10 +236,15 @@ public class ServerCinema {
         int durata;
         String imaginePath;
         List<String> ore;
-        List<Integer> zile;
+        List<DataRulareJson> dateRulare; // MODIFICAT
         SalaJson sala;
         int restrictieVarsta;
         String gen;
+    }
+
+    private static class DataRulareJson {
+        int luna;
+        int zi;
     }
 
     private static class SalaJson {

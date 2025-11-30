@@ -43,8 +43,20 @@ public class CinemaApp {
                             fj.gen
                     );
 
-                    // Pastram lista de zile si sala pentru rezervari
-                    film.setZile(fj.zile);
+                    // Convertim dateRulare din JSON în obiecte DataRulare
+                    List<Film.DataRulare> dateRulare = new java.util.ArrayList<>();
+
+                    System.out.println("Procesare film: " + fj.titlu);
+                    System.out.println("  dateRulare din JSON: " + (fj.dateRulare != null ? fj.dateRulare.size() : "null"));
+
+                    if (fj.dateRulare != null) {
+                        for (DataRulareJson drj : fj.dateRulare) {
+                            dateRulare.add(new Film.DataRulare(drj.luna, drj.zi));
+                            System.out.println("    Adăugat: luna=" + drj.luna + ", zi=" + drj.zi);
+                        }
+                    }
+
+                    film.setDateRulare(dateRulare);
                     film.setSala(sala);
 
                     service.adaugaFilm(film);
@@ -67,10 +79,15 @@ public class CinemaApp {
         int durata;
         String imaginePath;
         List<String> ore;
-        List<Integer> zile;
+        List<DataRulareJson> dateRulare; // MODIFICAT
         SalaJson sala;
         int restrictieVarsta;
         String gen;
+    }
+
+    private static class DataRulareJson {
+        int luna;
+        int zi;
     }
 
     private static class SalaJson {

@@ -91,3 +91,5 @@
 [2025-11-30T11:58:14.673915500] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=2, coloana=8, email=tlhchronomark@gmail.com
 [2025-11-30T11:58:14.740031900] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=0, coloana=8, email=tlhchronomark@gmail.com
 [2025-11-30T11:58:14.808810800] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=1, coloana=8, email=tlhchronomark@gmail.com
+[2025-11-30T12:08:01.780452600] Rezervare: film=Interstellar, sala=Sala 2, data=2025-01-08, ora=17:00, rand=1, coloana=6, email=tlhchronomark@gmail.com
+[2025-11-30T12:11:08.130916700] Anulare rezervare: film=Interstellar, sala=Sala 2, data=2025-01-08, ora=17:00, rand=0, coloana=5, email=tlhchronomark@gmail.com

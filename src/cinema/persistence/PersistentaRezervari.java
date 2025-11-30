@@ -19,7 +19,6 @@ public class PersistentaRezervari {
     public static void incarcaRezervari(Sala sala, String film, LocalDate data, String oraFilm) {
         File file = new File(FILE_PATH);
         if (!file.exists() || file.length() == 0) {
-            DatabaseManager.clearAllRezervari();
             return;
         }
 
@@ -31,14 +30,14 @@ public class PersistentaRezervari {
                 String filmJson = (String) rez.get("film");
                 String oraJson = (String) rez.get("ora");
                 String salaJson = (String) rez.get("sala");
-                long ziJson = ((Number) rez.get("zi")).longValue();
-                long lunaJson = ((Number) rez.get("luna")).longValue();
+
+                // Verificăm data completă (an-lună-zi) în loc de doar zi și lună separate
+                String dataJson = (String) rez.get("data");
 
                 if (!filmJson.equals(film)) continue;
                 if (!oraJson.equals(oraFilm)) continue;
                 if (!salaJson.equals(sala.getNume())) continue;
-                if (ziJson != data.getDayOfMonth()) continue;
-                if (lunaJson != data.getMonthValue()) continue;
+                if (!dataJson.equals(data.toString())) continue; // Comparăm direct cu "2025-01-15"
 
                 int rand = ((Number) rez.get("rand")).intValue() - 1;
                 int coloana = ((Number) rez.get("coloana")).intValue() - 1;
@@ -75,8 +74,7 @@ public class PersistentaRezervari {
             rez.put("email", email);
             rez.put("film", film);
             rez.put("sala", sala.getNume());
-            rez.put("luna", data.getMonthValue());
-            rez.put("zi", data.getDayOfMonth());
+            rez.put("data", data.toString()); // Salvăm data completă ca "2025-01-15"
             rez.put("ora", oraFilm);
             rez.put("rand", rand);
             rez.put("coloana", coloana);
@@ -126,15 +124,13 @@ public class PersistentaRezervari {
                 String filmJson = (String) rez.get("film");
                 String oraJson = (String) rez.get("ora");
                 String salaJson = (String) rez.get("sala");
-                long ziJson = ((Number) rez.get("zi")).longValue();
-                long lunaJson = ((Number) rez.get("luna")).longValue();
+                String dataJson = (String) rez.get("data");
 
                 boolean deStergere = emailJson.equals(email) &&
                         filmJson.equals(film) &&
                         oraJson.equals(oraFilm) &&
                         salaJson.equals(sala.getNume()) &&
-                        ziJson == data.getDayOfMonth() &&
-                        lunaJson == data.getMonthValue();
+                        dataJson.equals(data.toString()); // Comparăm data completă
 
                 if (deStergere) {
                     int rand = ((Number) rez.get("rand")).intValue() - 1;
@@ -152,7 +148,6 @@ public class PersistentaRezervari {
                 }
             }
 
-
             try (Writer writer = new FileWriter(file)) {
                 writer.write(nouArray.toJSONString());
             }
@@ -163,7 +158,6 @@ public class PersistentaRezervari {
 
         return scauneSterse;
     }
-
 
     private static void logRezervare(String film, String sala, LocalDate data, String oraFilm,
                                      int rand, int coloana, String email) {
@@ -198,5 +192,4 @@ public class PersistentaRezervari {
             e.printStackTrace();
         }
     }
-
 }

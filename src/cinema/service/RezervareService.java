@@ -17,11 +17,17 @@ public class RezervareService {
     public void adaugaFilm(Film film) {
         filme.add(film);
         Map<String, Sala> mapZiOra = new HashMap<>();
-        for (Integer zi : film.getZile()) {
+
+        System.out.println("Adăugare film: " + film.getTitlu());
+
+        for (Film.DataRulare dr : film.getDateRulare()) {
             for (String ora : film.getOre()) {
-                mapZiOra.put(zi + "-" + ora, film.getSala().cloneSala());
+                String key = dr.getLuna() + "-" + dr.getZi() + "-" + ora;
+                mapZiOra.put(key, film.getSala().cloneSala());
+                System.out.println("  Date rulare: luna=" + dr.getLuna() + ", zi=" + dr.getZi() + ", ora=" + ora);
             }
         }
+
         saliPeZiOra.put(film.getTitlu(), mapZiOra);
     }
 
@@ -34,19 +40,24 @@ public class RezervareService {
     }
 
     public List<Film> getFilmePentruZi(LocalDate data) {
-        int zi = data.getDayOfMonth();
         List<Film> result = new ArrayList<>();
+        System.out.println("Căutare filme pentru data: " + data + " (luna=" + data.getMonthValue() + ", zi=" + data.getDayOfMonth() + ")");
+
         for (Film f : filme) {
-            if (f.getZile().contains(zi)) {
+            boolean ruleaza = f.ruleazaLaData(data);
+            System.out.println("  Film: " + f.getTitlu() + " - rulează: " + ruleaza);
+            if (ruleaza) {
                 result.add(f);
             }
         }
+
+        System.out.println("Găsite " + result.size() + " filme pentru " + data);
         return result;
     }
 
     public Sala getSala(Film film, String oraFilm, LocalDate data) {
         Map<String, Sala> mapZiOra = saliPeZiOra.get(film.getTitlu());
-        String key = data.getDayOfMonth() + "-" + oraFilm;
+        String key = data.getMonthValue() + "-" + data.getDayOfMonth() + "-" + oraFilm;
 
         if (!mapZiOra.containsKey(key)) {
             mapZiOra.put(key, film.getSala().cloneSala());
