@@ -358,6 +358,86 @@
       "randuri": 11,
       "coloane": 15
     }
+  },
+  {
+    "titlu": "9 (2009)",
+    "durata": 79,
+    "imaginePath": "imagini/9_2009_film_poster.jpg",
+    "ore": ["16:00", "19:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 2}, {"luna": 1, "zi": 5}, {"luna": 1, "zi": 8}, {"luna": 1, "zi": 12}, {"luna": 1, "zi": 15},
+      {"luna": 2, "zi": 3}, {"luna": 2, "zi": 6}, {"luna": 2, "zi": 9}, {"luna": 2, "zi": 13}, {"luna": 2, "zi": 16},
+      {"luna": 3, "zi": 2}, {"luna": 3, "zi": 5}, {"luna": 3, "zi": 9}, {"luna": 3, "zi": 12}, {"luna": 3, "zi": 15},
+      {"luna": 4, "zi": 3}, {"luna": 4, "zi": 6}, {"luna": 4, "zi": 10}, {"luna": 4, "zi": 13}, {"luna": 4, "zi": 16}
+    ],
+    "restrictieVarsta": 7,
+    "gen": "Animație, Aventură",
+    "sala": {
+      "nume": "Sala 1",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "The Nightmare Before Christmas",
+    "durata": 76,
+    "imaginePath": "imagini/The-Nightmare-Before-Christmas_film_poster.jpg",
+    "ore": ["17:00", "20:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 3}, {"luna": 1, "zi": 6}, {"luna": 1, "zi": 10}, {"luna": 1, "zi": 13}, {"luna": 1, "zi": 17},
+      {"luna": 2, "zi": 2}, {"luna": 2, "zi": 5}, {"luna": 2, "zi": 9}, {"luna": 2, "zi": 12}, {"luna": 2, "zi": 16},
+      {"luna": 3, "zi": 1}, {"luna": 3, "zi": 4}, {"luna": 3, "zi": 8}, {"luna": 3, "zi": 11}, {"luna": 3, "zi": 15},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 6}, {"luna": 4, "zi": 9}, {"luna": 4, "zi": 13}, {"luna": 4, "zi": 16}
+    ],
+    "restrictieVarsta": 7,
+    "gen": "Animație, Fantasy, Musical",
+    "sala": {
+      "nume": "Sala 2",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "Klaus",
+    "durata": 96,
+    "imaginePath": "imagini/Klaus_film_poster.jpg",
+    "ore": ["16:30", "19:30"],
+    "dateRulare": [
+      {"luna": 1, "zi": 2}, {"luna": 1, "zi": 5}, {"luna": 1, "zi": 9}, {"luna": 1, "zi": 12}, {"luna": 1, "zi": 16},
+      {"luna": 2, "zi": 1}, {"luna": 2, "zi": 4}, {"luna": 2, "zi": 8}, {"luna": 2, "zi": 11}, {"luna": 2, "zi": 15},
+      {"luna": 3, "zi": 1}, {"luna": 3, "zi": 4}, {"luna": 3, "zi": 8}, {"luna": 3, "zi": 11}, {"luna": 3, "zi": 15},
+      {"luna": 4, "zi": 2}, {"luna": 4, "zi": 5}, {"luna": 4, "zi": 9}, {"luna": 4, "zi": 12}, {"luna": 4, "zi": 16}
+    ],
+    "restrictieVarsta": 7,
+    "gen": "Animație, Comedie, Familie",
+    "sala": {
+      "nume": "Sala 3",
+      "randuri": 9,
+      "coloane": 11
+    }
+  },
+  {
+    "titlu": "The Wild Robot",
+    "durata": 104,
+    "imaginePath": "imagini/The-Wild-Robot_film_poster.jpeg",
+    "ore": ["17:00", "20:00"],
+    "dateRulare": [
+      {"luna": 1, "zi": 3}, {"luna": 1, "zi": 7}, {"luna": 1, "zi": 11}, {"luna": 1, "zi": 15}, {"luna": 1, "zi": 19},
+      {"luna": 2, "zi": 2}, {"luna": 2, "zi": 6}, {"luna": 2, "zi": 10}, {"luna": 2, "zi": 14}, {"luna": 2, "zi": 18},
+      {"luna": 3, "zi": 1}, {"luna": 3, "zi": 5}, {"luna": 3, "zi": 9}, {"luna": 3, "zi": 13}, {"luna": 3, "zi": 17},
+      {"luna": 4, "zi": 3}, {"luna": 4, "zi": 7}, {"luna": 4, "zi": 11}, {"luna": 4, "zi": 15}, {"luna": 4, "zi": 19}
+    ],
+    "restrictieVarsta": 7,
+    "gen": "Animație, Aventură, Familie",
+    "sala": {
+      "nume": "Sala 4",
+      "randuri": 9,
+      "coloane": 11
+    }
   }
+
+
+
+
 
 ]
