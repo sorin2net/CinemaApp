@@ -87,3 +87,7 @@
 [2025-11-30T11:53:49.921517500] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=2, coloana=5, email=tlhchronomark@gmail.com
 [2025-11-30T11:53:49.977750100] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=1, coloana=5, email=tlhchronomark@gmail.com
 [2025-11-30T11:53:50.055124900] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=0, coloana=5, email=tlhchronomark@gmail.com
+[2025-11-30T11:58:14.573264500] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=3, coloana=8, email=tlhchronomark@gmail.com
+[2025-11-30T11:58:14.673915500] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=2, coloana=8, email=tlhchronomark@gmail.com
+[2025-11-30T11:58:14.740031900] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=0, coloana=8, email=tlhchronomark@gmail.com
+[2025-11-30T11:58:14.808810800] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=1, coloana=8, email=tlhchronomark@gmail.com

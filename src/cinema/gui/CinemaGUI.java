@@ -64,7 +64,8 @@ public class CinemaGUI extends JFrame {
         topPanel.add(oreCombo);
 
         // luna
-        String[] luni = {"Septembrie", "Octombrie", "Noiembrie", "Decembrie"};
+        String[] luni = {"Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie",
+                "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"};
         lunaCombo = new JComboBox<>(luni);
         topPanel.add(new JLabel("Lună:") {{ setForeground(Color.WHITE); }});
         topPanel.add(lunaCombo);
@@ -130,7 +131,7 @@ public class CinemaGUI extends JFrame {
 
     private void actualizeazaZile() {
         ziCombo.removeAllItems();
-        int lunaIndex = lunaCombo.getSelectedIndex() + 9;
+        int lunaIndex = lunaCombo.getSelectedIndex() + 1; // 1 = Ianuarie, 12 = Decembrie
         YearMonth ym = YearMonth.of(2025, lunaIndex);
         for (int zi = 1; zi <= ym.lengthOfMonth(); zi++) {
             ziCombo.addItem(zi);
@@ -140,7 +141,7 @@ public class CinemaGUI extends JFrame {
     private void afiseazaFilme() {
         filmePanel.removeAll();
 
-        int lunaIndex = lunaCombo.getSelectedIndex() + 9;
+        int lunaIndex = lunaCombo.getSelectedIndex() + 1; // 1 = Ianuarie, 12 = Decembrie
         Integer zi = (Integer) ziCombo.getSelectedItem();
         if (zi == null) return;
 
