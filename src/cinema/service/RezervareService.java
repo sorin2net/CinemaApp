@@ -14,7 +14,6 @@ public class RezervareService {
 
     private final EmailService emailService = new EmailService();
 
-    // Adauga un film și creeaza clona salilor pentru fiecare zi si ora
     public void adaugaFilm(Film film) {
         filme.add(film);
         Map<String, Sala> mapZiOra = new HashMap<>();
@@ -48,22 +47,31 @@ public class RezervareService {
     public Sala getSala(Film film, String oraFilm, LocalDate data) {
         Map<String, Sala> mapZiOra = saliPeZiOra.get(film.getTitlu());
         String key = data.getDayOfMonth() + "-" + oraFilm;
+
         if (!mapZiOra.containsKey(key)) {
             mapZiOra.put(key, film.getSala().cloneSala());
         }
 
         Sala sala = mapZiOra.get(key);
+
+        // IMPORTANT: Resetăm toate scaunele înainte de a încărca rezervările
+        // Astfel eliminăm eventualele stări vechi
+        for (int r = 0; r < sala.getRanduri(); r++) {
+            for (int c = 0; c < sala.getColoane(); c++) {
+                sala.getScaun(r, c).reset();
+            }
+        }
+
+        // Acum încărcăm starea curentă din JSON
         PersistentaRezervari.incarcaRezervari(sala, film.getTitlu(), data, oraFilm);
         return sala;
     }
 
-    // Salvează rezervarile selectate pentru un film + trimite email
     public void salveazaRezervare(Film film, String oraFilm, LocalDate data, String email,
                                   Set<Scaun> scauneSelectate, Sala sala) {
 
         StringBuilder scauneStr = new StringBuilder();
 
-        //  Rezervam toate scaunele si salvam in baza de date
         for (Scaun scaun : scauneSelectate) {
             scaun.rezerva(email);
 
@@ -72,7 +80,7 @@ public class RezervareService {
             for (int r = 0; r < matrice.length; r++) {
                 for (int c = 0; c < matrice[r].length; c++) {
                     if (matrice[r][c] == scaun) {
-                        rand = r + 1;
+                        rand = r + 1;  // 1-based pentru persistență
                         coloana = c + 1;
                         break;
                     }
@@ -93,12 +101,10 @@ public class RezervareService {
                         film.getRestrictieVarsta()
                 );
 
-                // adaugam in string pentru email
                 scauneStr.append("R").append(rand).append("-C").append(coloana).append("; ");
             }
         }
 
-        //  Trimitem un singur email pentru toate scaunele
         emailService.trimiteConfirmare(
                 email,
                 film.getTitlu(),
@@ -107,5 +113,4 @@ public class RezervareService {
                 scauneStr.toString()
         );
     }
-
 }

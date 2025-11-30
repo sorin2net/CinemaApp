@@ -32,7 +32,7 @@ public class ServerCinema {
         ServerSocket serverSocket = new ServerSocket(port, 50, InetAddress.getByName("0.0.0.0"));
         System.out.println("Server Cinema rulează pe portul " + port);
 
-        // Afiasm IP-urile locale disponibile
+        // Afișăm IP-urile locale disponibile
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
@@ -55,14 +55,16 @@ public class ServerCinema {
 
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            clienti.add(out);
 
-            new Thread(() -> handleClient(in, out)).start();
+            synchronized (clienti) {
+                clienti.add(out);
+            }
+
+            new Thread(() -> handleClient(in, out, socket)).start();
         }
     }
 
-
-    private void handleClient(BufferedReader in, PrintWriter out) {
+    private void handleClient(BufferedReader in, PrintWriter out, Socket socket) {
         try {
             String line;
             while ((line = in.readLine()) != null) {
@@ -74,17 +76,23 @@ public class ServerCinema {
                     broadcastUpdateSalile();
                 } else if ("cerere_anulare".equals(msg.tip)) {
                     Mesaj raspuns = proceseazaAnulare(msg);
-
-
                     if (raspuns != null) {
                         out.println(gson.toJson(raspuns));
                         broadcastUpdateSalile();
                     }
                 }
-
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Client deconectat: " + socket.getInetAddress());
+        } finally {
+            synchronized (clienti) {
+                clienti.remove(out);
+            }
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -122,6 +130,9 @@ public class ServerCinema {
         raspuns.tip = "raspuns";
         raspuns.status = "ok";
         raspuns.mesaj = "Rezervare efectuată cu succes!";
+
+        System.out.println("[LOG] Rezervare efectuată: " + cerere.email + " - " + cerere.film + " - " + cerere.ora + " - " + scauneSelectate.size() + " scaun(e)");
+
         return raspuns;
     }
 
@@ -143,8 +154,10 @@ public class ServerCinema {
             return raspuns;
         }
 
+        // Obținem sala DUPĂ reset (pentru a sincroniza starea)
         Sala sala = service.getSala(filmObj, ora, data);
 
+        // Ștergem rezervarea din JSON și actualizăm scaunele
         Set<Scaun> scauneSterse = PersistentaRezervari.stergeRezervare(email, film, data, ora, sala);
 
         Mesaj raspuns = new Mesaj();
@@ -154,9 +167,10 @@ public class ServerCinema {
             raspuns.status = "ok";
             raspuns.mesaj = "Rezervare anulată cu succes!";
 
-
+            // Trimite email de confirmare anulare
             service.getEmailService().trimiteAnulare(email, film, sala.getNume(), ora, data);
-            System.out.println("[LOG] Rezervarea a fost ștearsă pentru " + email + " la " + film + " ora " + ora);
+
+            System.out.println("[LOG] Rezervare anulată: " + email + " - " + film + " - " + ora + " - " + scauneSterse.size() + " scaun(e)");
 
             return raspuns;
         } else {
@@ -166,19 +180,20 @@ public class ServerCinema {
         }
     }
 
-
-
-
-
     private void broadcastUpdateSalile() {
         Mesaj update = new Mesaj();
         update.tip = "update_sali";
         update.mesaj = "Actualizare scaune ocupate";
 
         String json = gson.toJson(update);
-        for (PrintWriter client : clienti) {
-            client.println(json);
+
+        synchronized (clienti) {
+            for (PrintWriter client : clienti) {
+                client.println(json);
+            }
         }
+
+        System.out.println("[LOG] Broadcast trimis către " + clienti.size() + " client(i)");
     }
 
     public static void main(String[] args) throws IOException {
@@ -199,7 +214,7 @@ public class ServerCinema {
                 film.setSala(sala);
                 service.adaugaFilm(film);
             }
-            System.out.println("Filmele au fost încărcate pe server.");
+            System.out.println("Filmele au fost încărcate pe server: " + filmeJson.size() + " filme");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Eroare la încărcarea resources/filme.json pe server!");

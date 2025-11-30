@@ -45,7 +45,7 @@ public class CinemaGUI extends JFrame {
 
         // ---------------- top panel ----------------
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.setBackground(new Color(45, 45, 45)); // dark mode
+        topPanel.setBackground(new Color(45, 45, 45));
         searchField = new JTextField(15);
         searchField.setBackground(new Color(60, 60, 60));
         searchField.setForeground(Color.WHITE);
@@ -74,22 +74,19 @@ public class CinemaGUI extends JFrame {
         topPanel.add(new JLabel("Zi:") {{ setForeground(Color.WHITE); }});
         topPanel.add(ziCombo);
 
-        add(topPanel, BorderLayout.NORTH);
-
-        //   butonul Rezervările mele
+        // butonul Rezervările mele
         JButton rezervarileMeleBtn = new JButton("Rezervările mele");
         rezervarileMeleBtn.setFont(new Font("Arial", Font.BOLD, 14));
         rezervarileMeleBtn.addActionListener(e -> deschideRezervarileMele());
         topPanel.add(rezervarileMeleBtn);
 
-        //  topPanel la frame
         add(topPanel, BorderLayout.NORTH);
 
         // ---------------- filme panel ----------------
         filmePanel = new JPanel();
-        filmePanel.setBackground(new Color(45, 45, 45)); // dark mode
+        filmePanel.setBackground(new Color(45, 45, 45));
         JScrollPane scrollFilme = new JScrollPane(filmePanel);
-        scrollFilme.getVerticalScrollBar().setUnitIncrement(20); // scroll mai rapid
+        scrollFilme.getVerticalScrollBar().setUnitIncrement(20);
         add(scrollFilme, BorderLayout.CENTER);
 
         // ---------------- listeners ----------------
@@ -106,24 +103,21 @@ public class CinemaGUI extends JFrame {
         String host = "192.168.1.141";
         int port = 12345;
         try {
-            client = new ClientCinema(host,port); // citeste host și port din config.properties
+            client = new ClientCinema(host, port);
 
-            // Callback pentru actualizare GUI cand vin mesaje de la server
-            new Thread(() -> {
-                try {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(client.getSocket().getInputStream()));
-                    String line;
-                    while ((line = in.readLine()) != null) {
-                        Mesaj msg = new com.google.gson.Gson().fromJson(line, Mesaj.class);
-                        if ("update_sali".equals(msg.tip)) {
-                            SwingUtilities.invokeLater(this::actualizeazaScauneDinServer);
-                        }
+            // Setează callback-ul pentru mesaje de la server
+            client.setOnMessageReceived(msg -> {
+                SwingUtilities.invokeLater(() -> {
+                    if ("update_sali".equals(msg.tip)) {
+                        // Actualizează GUI fără pop-up
+                        afiseazaFilme();
+                        System.out.println("GUI actualizat din cauza modificării scaunelor");
+                    } else if ("raspuns".equals(msg.tip) || "raspuns_anulare".equals(msg.tip)) {
+                        // Răspunsurile sunt gestionate de GUI, nu mai afișăm nimic aici
+                        afiseazaFilme();
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    System.out.println("Conexiune la server pierduta.");
-                }
-            }).start();
+                });
+            });
 
         } catch (Exception e) {
             System.out.println("Nu s-a putut conecta la server, rezervarea va fi locala.");
@@ -341,7 +335,7 @@ public class CinemaGUI extends JFrame {
         scroll.getVerticalScrollBar().setUnitIncrement(20);
         scauneFrame.add(scroll, BorderLayout.CENTER);
 
-        //  email + buton rezervare
+        // email + buton rezervare
         JPanel bottom = new JPanel();
         bottom.setBackground(new Color(45, 45, 45));
         JTextField emailField = new JTextField(20);
@@ -349,12 +343,17 @@ public class CinemaGUI extends JFrame {
         rezervaBtn.setFont(new Font("Arial", Font.BOLD, 16));
         rezervaBtn.setPreferredSize(new Dimension(120, 40));
 
-        //  trimitere rezervare la server
         rezervaBtn.addActionListener(e -> {
             String email = emailField.getText().trim();
             EmailService emailService = new EmailService();
+
             if (!emailService.esteEmailValid(email)) {
                 JOptionPane.showMessageDialog(scauneFrame, "Introduceți un email valid!");
+                return;
+            }
+
+            if (scauneSelectate.isEmpty()) {
+                JOptionPane.showMessageDialog(scauneFrame, "Selectați cel puțin un scaun!");
                 return;
             }
 
@@ -363,14 +362,33 @@ public class CinemaGUI extends JFrame {
                     .collect(Collectors.toSet());
 
             if (client != null) {
+                // Trimite la server
                 client.trimiteRezervare(film.getTitlu(), ora, data.toString(), scauneStr, email);
-                JOptionPane.showMessageDialog(scauneFrame, "Rezervare trimisă către server!");
-                scauneFrame.dispose();
+
+                // Afișează UN SINGUR pop-up
+                JOptionPane.showMessageDialog(
+                        scauneFrame,
+                        "Rezervare trimisă către server cu succes!",
+                        "Succes",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
             } else {
+                // Rezervare locală
                 service.salveazaRezervare(film, ora, data, email, scauneSelectate, sala);
-                JOptionPane.showMessageDialog(scauneFrame, "Rezervare efectuată local!");
-                scauneFrame.dispose();
+
+                JOptionPane.showMessageDialog(
+                        scauneFrame,
+                        "Rezervare efectuată local cu succes!",
+                        "Succes",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
             }
+
+            // Actualizează GUI
+            afiseazaFilme();
+
+            // Închide fereastra de scaune
+            scauneFrame.dispose();
         });
 
         bottom.add(new JLabel("Email:") {{ setForeground(Color.WHITE); }});
@@ -416,9 +434,7 @@ public class CinemaGUI extends JFrame {
             return;
         }
 
-        // Email service
         EmailService emailService = new EmailService();
-
 
         JFrame fereastra = new JFrame("Rezervările pentru " + email);
         fereastra.setSize(650, 500);
@@ -458,48 +474,80 @@ public class CinemaGUI extends JFrame {
             anulareBtn.setFont(new Font("Arial", Font.BOLD, 14));
 
             anulareBtn.addActionListener(ev -> {
-                AnulareRezervareFrame confirm = new AnulareRezervareFrame(
-                        "Sigur doriți să anulați rezervarea?\n",
-                        () -> {
-                            for (String loc : grupate.get(key)) {
-                                String[] rc = loc.replace("R", "").replace("C", "").split("-");
-                                int rand = Integer.parseInt(rc[0].trim());
-                                int coloana = Integer.parseInt(rc[1].trim());
+                int confirm = JOptionPane.showConfirmDialog(
+                        fereastra,
+                        "Sigur doriți să anulați rezervarea?",
+                        "Confirmare anulare",
+                        JOptionPane.YES_NO_OPTION
+                );
 
-                                try {
-                                    String[] keyParts = key.split(" - ");
-                                    String dataRez = keyParts[0];
-                                    String oraFilm = keyParts[1];
-                                    String titluFilm = keyParts[2];
+                if (confirm != JOptionPane.YES_OPTION) {
+                    return;
+                }
 
-                                    java.time.LocalDate dataF = java.time.LocalDate.parse(dataRez);
-                                    Set<String> scauneSet = new HashSet<>();
-                                    scauneSet.add("R" + rand + "-C" + coloana);
+                boolean success = false;
 
-                                    if (client != null) {
-                                        // trimite cerere de anulare la server
-                                        client.trimiteAnulare(email, titluFilm, oraFilm, dataF.toString(), scauneSet);
-                                        JOptionPane.showMessageDialog(fereastra, "Cerere de anulare trimisă către server!");
-                                    } else {
-                                        // fallback local
-                                        DatabaseManager.stergeRezervare(email, titluFilm, dataRez, oraFilm, rand, coloana);
-                                        service.getFilme().forEach(f -> {
-                                            if (f.getTitlu().equals(titluFilm)) {
-                                                PersistentaRezervari.stergeRezervare(email, titluFilm, dataF, oraFilm, f.getSala());
-                                                emailService.trimiteAnulare(email, titluFilm, f.getSala().getNume(), oraFilm, dataF);
-                                            }
-                                        });
-                                        JOptionPane.showMessageDialog(fereastra, "Rezervarea a fost anulată local!");
-                                    }
+                for (String loc : grupate.get(key)) {
+                    String[] rc = loc.replace("R", "").replace("C", "").split("-");
+                    int rand = Integer.parseInt(rc[0].trim());
+                    int coloana = Integer.parseInt(rc[1].trim());
 
-                                } catch (Exception ex) {
-                                    ex.printStackTrace();
+                    try {
+                        String[] keyParts = key.split(" - ");
+                        String dataRez = keyParts[0];
+                        String oraFilm = keyParts[1];
+                        String titluFilm = keyParts[2];
+
+                        LocalDate dataF = LocalDate.parse(dataRez);
+                        Set<String> scauneSet = new HashSet<>();
+                        scauneSet.add("R" + rand + "-C" + coloana);
+
+                        if (client != null) {
+                            // Trimite cerere la server
+                            client.trimiteAnulare(email, titluFilm, oraFilm, dataF.toString(), scauneSet);
+                            success = true;
+                        } else {
+                            // Fallback local
+                            DatabaseManager.stergeRezervare(email, titluFilm, dataRez, oraFilm, rand, coloana);
+
+                            // Găsim filmul și ștergem din JSON
+                            for (Film f : service.getFilme()) {
+                                if (f.getTitlu().equals(titluFilm)) {
+                                    PersistentaRezervari.stergeRezervare(email, titluFilm, dataF, oraFilm, f.getSala());
+                                    emailService.trimiteAnulare(email, titluFilm, f.getSala().getNume(), oraFilm, dataF);
+                                    success = true;
+                                    break;
                                 }
                             }
-                            fereastra.dispose();
                         }
-                );
-                confirm.setVisible(true);
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+                if (success) {
+                    // Afișează UN SINGUR pop-up
+                    JOptionPane.showMessageDialog(
+                            fereastra,
+                            client != null ? "Rezervare anulată cu succes!" : "Rezervare anulată local cu succes!",
+                            "Succes",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                    // Actualizează GUI-ul
+                    afiseazaFilme();
+
+                    // Închide fereastra de rezervări
+                    fereastra.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(
+                            fereastra,
+                            "Eroare la anularea rezervării!",
+                            "Eroare",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
             });
 
             card.add(anulareBtn, BorderLayout.EAST);
@@ -513,10 +561,4 @@ public class CinemaGUI extends JFrame {
 
         fereastra.setVisible(true);
     }
-
-
-
-
-
-
 }

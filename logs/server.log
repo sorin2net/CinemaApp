@@ -77,3 +77,13 @@
 [2025-11-30T00:51:24.815231] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=4, coloana=5, email=tlhchronomark@gmail.com
 [2025-11-30T00:51:24.863093300] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=1, coloana=5, email=tlhchronomark@gmail.com
 [2025-11-30T00:51:24.923759800] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=0, coloana=5, email=tlhchronomark@gmail.com
+[2025-11-30T11:52:51.945569400] Rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=3, coloana=6, email=tlhchronomark@gmail.com
+[2025-11-30T11:52:52.018187500] Rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=2, coloana=6, email=tlhchronomark@gmail.com
+[2025-11-30T11:52:52.077747100] Rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=1, coloana=6, email=tlhchronomark@gmail.com
+[2025-11-30T11:53:03.742040200] Rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=4, coloana=9, email=tlhchronomark@gmail.com
+[2025-11-30T11:53:03.831563200] Rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=3, coloana=9, email=tlhchronomark@gmail.com
+[2025-11-30T11:53:03.908422700] Rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=1, coloana=9, email=tlhchronomark@gmail.com
+[2025-11-30T11:53:03.975667200] Rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-09-01, ora=17:30, rand=2, coloana=9, email=tlhchronomark@gmail.com
+[2025-11-30T11:53:49.921517500] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=2, coloana=5, email=tlhchronomark@gmail.com
+[2025-11-30T11:53:49.977750100] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=1, coloana=5, email=tlhchronomark@gmail.com
+[2025-11-30T11:53:50.055124900] Anulare rezervare: film=Inception, sala=Sala 1, data=2025-09-01, ora=18:00, rand=0, coloana=5, email=tlhchronomark@gmail.com
