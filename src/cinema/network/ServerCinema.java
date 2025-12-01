@@ -28,11 +28,9 @@ public class ServerCinema {
     }
 
     public void start() throws IOException {
-        // Asculta pe toate interfetele (LAN și Internet)
         ServerSocket serverSocket = new ServerSocket(port, 50, InetAddress.getByName("0.0.0.0"));
         System.out.println("Server Cinema rulează pe portul " + port);
 
-        // Afișăm IP-urile locale disponibile
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
@@ -96,87 +94,194 @@ public class ServerCinema {
         }
     }
 
+    // METODĂ HELPER pentru a crea mesaje de eroare
+    private Mesaj createErrorResponse(String mesajEroare) {
+        Mesaj raspuns = new Mesaj();
+        raspuns.tip = "raspuns";
+        raspuns.status = "eroare";
+        raspuns.mesaj = mesajEroare;
+        return raspuns;
+    }
+
+    // METODĂ HELPER pentru a crea mesaje de succes
+    private Mesaj createSuccessResponse(String mesajSucces) {
+        Mesaj raspuns = new Mesaj();
+        raspuns.tip = "raspuns";
+        raspuns.status = "ok";
+        raspuns.mesaj = mesajSucces;
+        return raspuns;
+    }
+
+    // VERSIUNE ÎMBUNĂTĂȚITĂ cu validare și thread safety
     private synchronized Mesaj proceseazaRezervare(Mesaj cerere) {
+        // Validare input
+        if (cerere.film == null || cerere.film.trim().isEmpty()) {
+            return createErrorResponse("Nume film lipsă!");
+        }
+        if (cerere.ora == null || cerere.ora.trim().isEmpty()) {
+            return createErrorResponse("Ora lipsă!");
+        }
+        if (cerere.data == null || cerere.data.trim().isEmpty()) {
+            return createErrorResponse("Data lipsă!");
+        }
+        if (cerere.email == null || cerere.email.trim().isEmpty()) {
+            return createErrorResponse("Email lipsă!");
+        }
+        if (cerere.scaune == null || cerere.scaune.isEmpty()) {
+            return createErrorResponse("Nu ați selectat niciun scaun!");
+        }
+
+        // Căutare film
         Film film = service.getFilme().stream()
                 .filter(f -> f.getTitlu().equals(cerere.film))
                 .findFirst().orElse(null);
 
         if (film == null) {
-            Mesaj raspuns = new Mesaj();
-            raspuns.tip = "raspuns";
-            raspuns.status = "eroare";
-            raspuns.mesaj = "Film inexistent!";
-            return raspuns;
+            return createErrorResponse("Film inexistent: " + cerere.film);
         }
 
-        LocalDate data = LocalDate.parse(cerere.data);
-        Sala sala = service.getSala(film, cerere.ora, data);
+        // Parsare dată
+        LocalDate data;
+        try {
+            data = LocalDate.parse(cerere.data);
+        } catch (Exception e) {
+            return createErrorResponse("Format dată invalid: " + cerere.data);
+        }
 
+        // Obținere sală
+        Sala sala = service.getSala(film, cerere.ora, data);
+        if (sala == null) {
+            return createErrorResponse("Sala nu este disponibilă!");
+        }
+
+        // VALIDARE: Verificăm dacă scaunele sunt disponibile
         Set<Scaun> scauneSelectate = new HashSet<>();
+        List<String> scauneOcupate = new ArrayList<>();
+
         for (String s : cerere.scaune) {
-            String[] parts = s.replace("R", "").split("-C");
-            int rand = Integer.parseInt(parts[0]) - 1;
-            int col  = Integer.parseInt(parts[1]) - 1;
-            Scaun scaun = sala.getScaun(rand, col);
-            if (!scaun.esteRezervat()) {
-                scaun.rezerva(cerere.email);
-                scauneSelectate.add(scaun);
+            try {
+                String[] parts = s.replace("R", "").split("-C");
+                if (parts.length != 2) {
+                    return createErrorResponse("Format scaun invalid: " + s);
+                }
+
+                int rand = Integer.parseInt(parts[0].trim()) - 1;
+                int col = Integer.parseInt(parts[1].trim()) - 1;
+
+                // Verificare limite
+                if (rand < 0 || rand >= sala.getRanduri() || col < 0 || col >= sala.getColoane()) {
+                    return createErrorResponse("Scaun în afara limitelor: " + s);
+                }
+
+                Scaun scaun = sala.getScaun(rand, col);
+
+                if (scaun.esteRezervat()) {
+                    scauneOcupate.add(s);
+                } else {
+                    scauneSelectate.add(scaun);
+                }
+            } catch (NumberFormatException e) {
+                return createErrorResponse("Format scaun invalid: " + s);
+            } catch (Exception e) {
+                return createErrorResponse("Eroare la procesarea scaunului: " + s);
             }
         }
 
-        service.salveazaRezervare(film, cerere.ora, data, cerere.email, scauneSelectate, sala);
+        // Dacă există scaune deja ocupate, returnăm eroare
+        if (!scauneOcupate.isEmpty()) {
+            Mesaj raspuns = new Mesaj();
+            raspuns.tip = "raspuns";
+            raspuns.status = "eroare";
+            raspuns.mesaj = "Scaunele următoare sunt deja rezervate: " + String.join(", ", scauneOcupate);
+            raspuns.scauneOcupate = scauneOcupate; // Câmp nou în Mesaj
+            return raspuns;
+        }
 
-        Mesaj raspuns = new Mesaj();
-        raspuns.tip = "raspuns";
-        raspuns.status = "ok";
-        raspuns.mesaj = "Rezervare efectuată cu succes!";
+        // Rezervăm atomic toate scaunele
+        try {
+            for (Scaun scaun : scauneSelectate) {
+                scaun.rezerva(cerere.email);
+            }
 
-        System.out.println("[LOG] Rezervare efectuată: " + cerere.email + " - " + cerere.film + " - " + cerere.ora + " - " + scauneSelectate.size() + " scaun(e)");
+            service.salveazaRezervare(film, cerere.ora, data, cerere.email, scauneSelectate, sala);
 
-        return raspuns;
+            System.out.println("[LOG] Rezervare efectuată: " + cerere.email + " - " + cerere.film +
+                    " - " + cerere.ora + " - " + scauneSelectate.size() + " scaun(e)");
+
+            return createSuccessResponse("Rezervare efectuată cu succes! " + scauneSelectate.size() + " scaun(e) rezervat(e).");
+        } catch (Exception e) {
+            // Rollback - anulăm rezervările în caz de eroare
+            for (Scaun scaun : scauneSelectate) {
+                scaun.anuleazaRezervare();
+            }
+            e.printStackTrace();
+            return createErrorResponse("Eroare la salvarea rezervării: " + e.getMessage());
+        }
     }
 
     private synchronized Mesaj proceseazaAnulare(Mesaj cerere) {
-        LocalDate data = LocalDate.parse(cerere.data);
-        String email = cerere.email;
-        String film = cerere.film;
-        String ora = cerere.ora;
+        // Validare input
+        if (cerere.email == null || cerere.email.trim().isEmpty()) {
+            return createErrorResponse("Email lipsă!");
+        }
+        if (cerere.film == null || cerere.film.trim().isEmpty()) {
+            return createErrorResponse("Nume film lipsă!");
+        }
+        if (cerere.ora == null || cerere.ora.trim().isEmpty()) {
+            return createErrorResponse("Ora lipsă!");
+        }
+        if (cerere.data == null || cerere.data.trim().isEmpty()) {
+            return createErrorResponse("Data lipsă!");
+        }
+
+        LocalDate data;
+        try {
+            data = LocalDate.parse(cerere.data);
+        } catch (Exception e) {
+            return createErrorResponse("Format dată invalid: " + cerere.data);
+        }
+
+        String email = cerere.email.trim();
+        String film = cerere.film.trim();
+        String ora = cerere.ora.trim();
 
         Film filmObj = service.getFilme().stream()
                 .filter(f -> f.getTitlu().equals(film))
                 .findFirst().orElse(null);
 
         if (filmObj == null) {
-            Mesaj raspuns = new Mesaj();
-            raspuns.tip = "raspuns_anulare";
-            raspuns.status = "eroare";
-            raspuns.mesaj = "Film inexistent!";
-            return raspuns;
+            return createErrorResponse("Film inexistent: " + film);
         }
 
-        // Obținem sala DUPĂ reset (pentru a sincroniza starea)
-        Sala sala = service.getSala(filmObj, ora, data);
+        try {
+            // Obținem sala DUPĂ reset (pentru a sincroniza starea)
+            Sala sala = service.getSala(filmObj, ora, data);
 
-        // Ștergem rezervarea din JSON și actualizăm scaunele
-        Set<Scaun> scauneSterse = PersistentaRezervari.stergeRezervare(email, film, data, ora, sala);
+            // Ștergem rezervarea din JSON și actualizăm scaunele
+            Set<Scaun> scauneSterse = PersistentaRezervari.stergeRezervare(email, film, data, ora, sala);
 
-        Mesaj raspuns = new Mesaj();
-        raspuns.tip = "raspuns_anulare";
+            Mesaj raspuns = new Mesaj();
+            raspuns.tip = "raspuns_anulare";
 
-        if (!scauneSterse.isEmpty()) {
-            raspuns.status = "ok";
-            raspuns.mesaj = "Rezervare anulată cu succes!";
+            if (!scauneSterse.isEmpty()) {
+                raspuns.status = "ok";
+                raspuns.mesaj = "Rezervare anulată cu succes! " + scauneSterse.size() + " scaun(e) eliberat(e).";
 
-            // Trimite email de confirmare anulare
-            service.getEmailService().trimiteAnulare(email, film, sala.getNume(), ora, data);
+                // Trimite email de confirmare anulare
+                service.getEmailService().trimiteAnulare(email, film, sala.getNume(), ora, data);
 
-            System.out.println("[LOG] Rezervare anulată: " + email + " - " + film + " - " + ora + " - " + scauneSterse.size() + " scaun(e)");
+                System.out.println("[LOG] Rezervare anulată: " + email + " - " + film +
+                        " - " + ora + " - " + scauneSterse.size() + " scaun(e)");
 
-            return raspuns;
-        } else {
-            raspuns.status = "eroare";
-            raspuns.mesaj = "Nu există rezervare pentru acest film, ora și email.";
-            return raspuns;
+                return raspuns;
+            } else {
+                raspuns.status = "eroare";
+                raspuns.mesaj = "Nu există rezervare pentru acest film, ora și email.";
+                return raspuns;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return createErrorResponse("Eroare la anularea rezervării: " + e.getMessage());
         }
     }
 
@@ -211,7 +316,6 @@ public class ServerCinema {
                 Sala sala = new Sala(fj.sala.nume, fj.sala.randuri, fj.sala.coloane);
                 Film film = new Film(fj.titlu, fj.durata, fj.imaginePath, fj.ore, fj.restrictieVarsta, fj.gen);
 
-                // Convertim dateRulare din JSON în obiecte DataRulare
                 List<Film.DataRulare> dateRulare = new ArrayList<>();
                 for (DataRulareJson drj : fj.dateRulare) {
                     dateRulare.add(new Film.DataRulare(drj.luna, drj.zi));
@@ -236,7 +340,7 @@ public class ServerCinema {
         int durata;
         String imaginePath;
         List<String> ore;
-        List<DataRulareJson> dateRulare; // MODIFICAT
+        List<DataRulareJson> dateRulare;
         SalaJson sala;
         int restrictieVarsta;
         String gen;

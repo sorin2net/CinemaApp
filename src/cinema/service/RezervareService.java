@@ -7,16 +7,18 @@ import cinema.persistence.PersistentaRezervari;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RezervareService {
     private List<Film> filme = new ArrayList<>();
-    private Map<String, Map<String, Sala>> saliPeZiOra = new HashMap<>();
+    // SCHIMBAT: Folosim ConcurrentHashMap pentru thread safety
+    private Map<String, Map<String, Sala>> saliPeZiOra = new ConcurrentHashMap<>();
 
     private final EmailService emailService = new EmailService();
 
     public void adaugaFilm(Film film) {
         filme.add(film);
-        Map<String, Sala> mapZiOra = new HashMap<>();
+        Map<String, Sala> mapZiOra = new ConcurrentHashMap<>();
 
         System.out.println("Adăugare film: " + film.getTitlu());
 
@@ -32,7 +34,7 @@ public class RezervareService {
     }
 
     public List<Film> getFilme() {
-        return filme;
+        return new ArrayList<>(filme); // Returnăm o copie pentru thread safety
     }
 
     public EmailService getEmailService() {
@@ -55,27 +57,125 @@ public class RezervareService {
         return result;
     }
 
-    public Sala getSala(Film film, String oraFilm, LocalDate data) {
+    // VERSIUNE ÎMBUNĂTĂȚITĂ - Fix pentru bug-ul de sincronizare
+    public synchronized Sala getSala(Film film, String oraFilm, LocalDate data) {
         Map<String, Sala> mapZiOra = saliPeZiOra.get(film.getTitlu());
+        if (mapZiOra == null) {
+            System.err.println("EROARE: Nu există mapare pentru filmul " + film.getTitlu());
+            return null;
+        }
+
         String key = data.getMonthValue() + "-" + data.getDayOfMonth() + "-" + oraFilm;
 
+        // Dacă sala nu există pentru această combinație, o creăm
         if (!mapZiOra.containsKey(key)) {
-            mapZiOra.put(key, film.getSala().cloneSala());
+            Sala nouaSala = film.getSala().cloneSala();
+            mapZiOra.put(key, nouaSala);
+            System.out.println("Sala nouă creată pentru: " + key);
         }
 
         Sala sala = mapZiOra.get(key);
 
-        // IMPORTANT: Resetăm toate scaunele înainte de a încărca rezervările
-        // Astfel eliminăm eventualele stări vechi
+        // IMPORTANT FIX: Nu mai resetăm toate scaunele!
+        // În loc să resetăm, doar încărcăm starea din persistență
+        // Scaunele vor fi actualizate doar dacă există modificări în JSON
+
+        // Creăm un set cu scaunele care ar trebui să fie rezervate conform JSON
+        Set<String> scauneRezervateInJSON = getScauneRezervateFromJSON(film.getTitlu(), data, oraFilm, sala.getNume());
+
+        // Sincronizăm starea sălii cu JSON-ul
         for (int r = 0; r < sala.getRanduri(); r++) {
             for (int c = 0; c < sala.getColoane(); c++) {
-                sala.getScaun(r, c).reset();
+                Scaun scaun = sala.getScaun(r, c);
+                String scaunKey = "R" + (r + 1) + "-C" + (c + 1);
+
+                if (scauneRezervateInJSON.contains(scaunKey)) {
+                    // Scaunul trebuie să fie rezervat
+                    if (!scaun.esteRezervat()) {
+                        // Trebuie să îl rezervăm
+                        String email = getEmailPentruScaun(film.getTitlu(), data, oraFilm, r + 1, c + 1);
+                        if (email != null) {
+                            scaun.rezerva(email);
+                        }
+                    }
+                } else {
+                    // Scaunul trebuie să fie liber
+                    if (scaun.esteRezervat()) {
+                        scaun.anuleazaRezervare();
+                    }
+                }
             }
         }
 
-        // Acum încărcăm starea curentă din JSON
-        PersistentaRezervari.incarcaRezervari(sala, film.getTitlu(), data, oraFilm);
         return sala;
+    }
+
+    // Metodă helper pentru a obține scaunele rezervate din JSON
+    private Set<String> getScauneRezervateFromJSON(String film, LocalDate data, String ora, String numeSala) {
+        Set<String> scaune = new HashSet<>();
+
+        try {
+            java.io.File file = new java.io.File("data/rezervari.json");
+            if (!file.exists() || file.length() == 0) {
+                return scaune;
+            }
+
+            try (java.io.Reader reader = new java.io.FileReader(file)) {
+                org.json.simple.JSONArray rezervariArray = (org.json.simple.JSONArray) new org.json.simple.parser.JSONParser().parse(reader);
+
+                for (Object obj : rezervariArray) {
+                    org.json.simple.JSONObject rez = (org.json.simple.JSONObject) obj;
+                    String filmJson = (String) rez.get("film");
+                    String oraJson = (String) rez.get("ora");
+                    String salaJson = (String) rez.get("sala");
+                    String dataJson = (String) rez.get("data");
+
+                    if (filmJson.equals(film) && oraJson.equals(ora) &&
+                            salaJson.equals(numeSala) && dataJson.equals(data.toString())) {
+
+                        int rand = ((Number) rez.get("rand")).intValue();
+                        int coloana = ((Number) rez.get("coloana")).intValue();
+                        scaune.add("R" + rand + "-C" + coloana);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return scaune;
+    }
+
+    // Metodă helper pentru a obține email-ul pentru un anumit scaun
+    private String getEmailPentruScaun(String film, LocalDate data, String ora, int rand, int coloana) {
+        try {
+            java.io.File file = new java.io.File("data/rezervari.json");
+            if (!file.exists() || file.length() == 0) {
+                return null;
+            }
+
+            try (java.io.Reader reader = new java.io.FileReader(file)) {
+                org.json.simple.JSONArray rezervariArray = (org.json.simple.JSONArray) new org.json.simple.parser.JSONParser().parse(reader);
+
+                for (Object obj : rezervariArray) {
+                    org.json.simple.JSONObject rez = (org.json.simple.JSONObject) obj;
+                    String filmJson = (String) rez.get("film");
+                    String oraJson = (String) rez.get("ora");
+                    String dataJson = (String) rez.get("data");
+                    int randJson = ((Number) rez.get("rand")).intValue();
+                    int coloanaJson = ((Number) rez.get("coloana")).intValue();
+
+                    if (filmJson.equals(film) && oraJson.equals(ora) &&
+                            dataJson.equals(data.toString()) && randJson == rand && coloanaJson == coloana) {
+                        return (String) rez.get("email");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public void salveazaRezervare(Film film, String oraFilm, LocalDate data, String email,
