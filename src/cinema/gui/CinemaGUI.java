@@ -132,7 +132,7 @@ public class CinemaGUI extends JFrame {
     private void actualizeazaZile() {
         ziCombo.removeAllItems();
         int lunaIndex = lunaCombo.getSelectedIndex() + 1; // 1 = Ianuarie, 12 = Decembrie
-        YearMonth ym = YearMonth.of(2025, lunaIndex);
+        YearMonth ym = YearMonth.of(LocalDate.now().getYear(), lunaIndex);
         for (int zi = 1; zi <= ym.lengthOfMonth(); zi++) {
             ziCombo.addItem(zi);
         }
@@ -145,7 +145,7 @@ public class CinemaGUI extends JFrame {
         Integer zi = (Integer) ziCombo.getSelectedItem();
         if (zi == null) return;
 
-        LocalDate data = LocalDate.of(2025, lunaIndex, zi);
+        LocalDate data = LocalDate.of(LocalDate.now().getYear(), lunaIndex, zi);
         String text = searchField.getText().toLowerCase();
 
         // Filmele pentru ziua curenta

@@ -137,3 +137,18 @@
 [2025-12-01T16:22:03.232119700] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-12-01, ora=17:30, rand=4, coloana=9, email=tlhchronomark@gmail.com
 [2025-12-01T16:22:03.310280500] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-12-01, ora=17:30, rand=4, coloana=10, email=tlhchronomark@gmail.com
 [2025-12-01T16:22:03.376384600] Anulare rezervare: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2025-12-01, ora=17:30, rand=4, coloana=11, email=tlhchronomark@gmail.com
+[2026-01-04T16:55:54.544625400] REZERVARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=20:30, loc=R3-C8, email=rusnacu8@gmail.com
+[2026-01-04T16:55:54.652008900] REZERVARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=20:30, loc=R2-C8, email=rusnacu8@gmail.com
+[2026-01-04T16:55:54.735216600] REZERVARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=20:30, loc=R3-C7, email=rusnacu8@gmail.com
+[2026-01-04T16:55:54.802350] REZERVARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=20:30, loc=R2-C7, email=rusnacu8@gmail.com
+[2026-01-04T16:56:19.346352100] REZERVARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=20:30, loc=R4-C9, email=rusnacu8@gmail.com
+[2026-01-04T16:56:19.446129600] REZERVARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=20:30, loc=R3-C9, email=rusnacu8@gmail.com
+[2026-01-04T16:56:19.504656200] REZERVARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=20:30, loc=R5-C9, email=rusnacu8@gmail.com
+[2026-01-04T16:57:02.049544300] REZERVARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=17:00, loc=R6-C7, email=rusnacu8@gmail.com
+[2026-01-04T16:57:02.116225400] REZERVARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=17:00, loc=R5-C7, email=rusnacu8@gmail.com
+[2026-01-04T16:57:15.925477100] ANULARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=17:00, loc=R5-C7, email=rusnacu8@gmail.com
+[2026-01-04T16:57:15.996919100] ANULARE: film=3 idioti, sala=Sala 6, data=2025-01-04, ora=17:00, loc=R6-C7, email=rusnacu8@gmail.com
+[2026-01-04T17:09:16.519675600] REZERVARE: film=3 idioti, sala=Sala 6, data=2026-01-04, ora=20:30, loc=R4-C7, email=rusnacu8@gmail.com
+[2026-01-04T17:09:16.590100700] REZERVARE: film=3 idioti, sala=Sala 6, data=2026-01-04, ora=20:30, loc=R5-C8, email=rusnacu8@gmail.com
+[2026-01-04T17:09:16.675587100] REZERVARE: film=3 idioti, sala=Sala 6, data=2026-01-04, ora=20:30, loc=R6-C8, email=rusnacu8@gmail.com
+[2026-01-04T17:09:16.767327300] REZERVARE: film=3 idioti, sala=Sala 6, data=2026-01-04, ora=20:30, loc=R6-C7, email=rusnacu8@gmail.com

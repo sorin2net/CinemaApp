@@ -3,6 +3,8 @@ package cinema.persistence;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DatabaseManager {
 
@@ -98,6 +100,29 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+    // Adaugă această metodă în DatabaseManager.java
+    public static Set<String> getScauneOcupate(String titlu, String data, String ora) {
+        Set<String> scaune = new HashSet<>();
+        String sql = "SELECT rand, coloana FROM rezervari WHERE titlu = ? AND data = ? AND ora_film = ?";
 
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, titlu);
+            stmt.setString(2, data);
+            stmt.setString(3, ora);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int r = rs.getInt("rand");
+                    int c = rs.getInt("coloana");
+                    scaune.add("R" + r + "-C" + c);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return scaune;
+    }
 
 }

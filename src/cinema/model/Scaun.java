@@ -36,9 +36,5 @@ public class Scaun {
         this.emailRezervare = null;
     }
 
-    public void reset() {
-        this.rezervat = false;
-        this.emailRezervare = null;
-    }
 
 }
