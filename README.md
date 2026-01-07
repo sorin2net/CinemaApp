@@ -2,7 +2,7 @@
 
 A comprehensive cinema ticket booking system built with **Java Swing**, featuring real-time seat management, email notifications, and client-server architecture for synchronized multi-user reservations.
 
-<img src="imgs/main_panel.png" width="600">
+<img src="imgs/main_panel.png" width="800">
 
 ---
 
@@ -64,20 +64,24 @@ Aplicația utilizează design pattern-uri consacrate pentru a asigura o structur
 ## 📸 Screenshots
 
 ### Main Interface
-<img src="cale_catre_imagine_interfata_principala.png" width="700">
+<img src="imgs/main_interface.png" width="700">
 Browse movies with date and time filters, search functionality
 
 ### Seat Selection
-<img src="cale_catre_imagine_selectie_locuri.png" width="700">
+<img src="imgs/seats.png" width="700">
 Interactive seat map with real-time availability (Green: Available, Red: Reserved, Orange: Selected)
 
 ### User Reservations
-<img src="cale_catre_imagine_rezervari.png" width="700">
+<img src="imgs/rezervari.png" width="700">
 View and cancel personal bookings by email
 
 ### Email Confirmation
-<img src="cale_catre_imagine_confirmare_email.png" width="700">
+<img src="imgs/confirmare.png" width="700">
 Automatic email confirmation with booking details
+
+### Email Cancel Reservation
+<img src="imgs/anulare.png" width="700">
+Automatic email cancelation with booking details
 
 ## 📦 Prerequisites
 
