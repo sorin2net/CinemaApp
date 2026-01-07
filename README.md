@@ -177,7 +177,7 @@ appPassword=your-16-char-app-password
 ```
 ### Network Configuration
 ```
-String host = "192.168.1.141";  // Change to your server IP
+String host = "192.x.x.x";  // Change to your server IP
 int port = 12345;
 ```
 
@@ -259,4 +259,105 @@ CREATE TABLE rezervari (
     coloana INTEGER,         -- Column number
     email TEXT               -- User email
 );
+```
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+| :--- | :--- |
+| **Java 17+** | Core programming language |
+| **Swing** | GUI framework |
+| **SQLite** | Embedded database |
+| **Gson** | JSON serialization |
+| **Jakarta Mail** | Email functionality |
+| **TCP Sockets** | Network communication |
+| **Multithreading** | Concurrent client handling |
+
+## 📡 API Documentation
+
+### Message Protocol (JSON over TCP)
+Sistemul utilizează un protocol de comunicare bazat pe **JSON** transmis prin socket-uri **TCP**, asigurând o arhitectură client-server decuplată și eficientă.
+
+### Reservation Request
+Fiecare cerere de rezervare trimisă de client este procesată de server, verificând în baza de date disponibilitatea locurilor în timp real pentru a preveni suprapunerile.
+```
+{
+  "tip": "cerere_rezervare",
+  "film": "Movie Title",
+  "ora": "18:00",
+  "data": "2026-01-15",
+  "scaune": ["R5-C7", "R5-C8"],
+  "email": "user@example.com"
+}
+```
+### Reservation Response
+```
+{
+  "tip": "raspuns",
+  "status": "ok",
+  "mesaj": "Rezervare efectuată cu succes! 2 scaun(e) rezervat(e)."
+}
+```
+### Cancellation Request
+```
+{
+  "tip": "cerere_anulare",
+  "email": "user@example.com",
+  "film": "Movie Title",
+  "ora": "18:00",
+  "data": "2026-01-15",
+  "scaune": ["R5-C7"]
+}
+```
+### Broadcast Update
+```
+{
+  "tip": "update_sali",
+  "mesaj": "Actualizare scaune ocupate"
+}
+
+## 🎨 UI Color Scheme
+
+### Age Rating Colors
+- **3+** - `#4CAF50` (Green)
+- **7+** - `#FFEB3B` (Yellow)
+- **12+** - `#FF9800` (Orange)
+- **15+** - `#F44336` (Red)
+- **18+** - `#FFFFFF` (White)
+
+### Interface Colors
+- **Background** - `#2D2D2D` (Dark Gray)
+- **Panels** - `#3C3F41` (Medium Gray)
+- **Available Seat** - `#00FF00` (Green)
+- **Reserved Seat** - `#FF0000` (Red)
+- **Selected Seat** - `#FFA500` (Orange)
+
+## 🐛 Troubleshooting
+
+### Server Won't Start
+
+Error: Address already in use
+```
+### Solution: Kill the process using port 12345
+```
+# Linux/Mac
+lsof -i :12345
+kill -9 <PID>
+
+# Windows
+netstat -ano | findstr :12345
+taskkill /PID <PID> /F
+
+
+### Email Not Sending
+
+Error: Authentication failed
+
+**Solutions:**
+1. Verify App Password is correct (16 characters, no spaces)
+2. Check 2-Step Verification is enabled
+3. Ensure Gmail allows less secure apps (if using older accounts)
+
+### Client Can't Connect
+
+Connection refused
 ```
