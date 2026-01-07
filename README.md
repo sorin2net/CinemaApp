@@ -128,3 +128,30 @@ cinema-reservation-system/
 ```
 
 ### 4. Compile the Project
+```
+# Create output directory
+mkdir -p out
+
+# Compile all Java files
+find src -name "*.java" > sources.txt
+javac -d out -cp "lib/*" @sources.txt
+```
+
+## ⚙️ Configuration
+
+**Email Configuration** (`config/email.properties`)
+
+```
+fromEmail=your-email@gmail.com
+appPassword=your-16-char-app-password
+```
+
+### How to get Gmail App Password:
+
+1. **Enable 2-Step Verification** on your Google Account
+2. Visit [App Passwords](https://myaccount.google.com/apppasswords)
+3. Generate a new app password for **"Mail"**
+4. **Copy the 16-character password** (no spaces)
+
+### Movie Data Configuration (`resources/filme.json`)
+
