@@ -370,9 +370,6 @@ Connection refused
 * **Include unit tests for new features**
 * **Maintain backward compatibility**
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🧑‍💻 Author
 
