@@ -362,3 +362,21 @@ Error: Authentication failed
 ```
 Connection refused
 ```
+
+## Coding Standards
+
+* **Follow Java naming conventions**
+* **Add JavaDoc comments for public methods**
+* **Include unit tests for new features**
+* **Maintain backward compatibility**
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🧑‍💻 Author
+
+Your Name
+
+* **GitHub:** [@sorin2net](https://github.com/sorin2net)
+* **Email:** denisdumitriu95@gmail.com
