@@ -26,3 +26,25 @@ A comprehensive cinema ticket booking system built with **Java Swing**, featurin
 * 🛡️ **Input Validation** - Email format and reservation conflict checking
 * 📊 **Audit Trail** - Complete transaction logging in `logs/server.log`
 * 🎨 **Modern UI** - Dark-themed Swing interface with custom styling
+
+
+## 🏗️ Architecture
+
+The application follows a **client-server** model with layered architecture:
+
+### 💻 Client Layer
+* `CinemaGUI` - Main user interface
+* `ClientCinema` - Client-side business logic
+* `EmailService` - Notification handling
+
+### 🌐 Network I/O (TCP/JSON)
+* Communication protocol for real-time data exchange
+
+### ⚙️ Server Layer
+* `ServerCinema` - Main server controller
+* `RezervareService` - Reservation management logic
+* `DatabaseMgr` - Database connectivity and operations
+
+### 📂 Persistence Layer
+* `cinema.db` (SQLite) - Movie and reservation data
+* `server.log` (Audit Trail) - Transaction history
