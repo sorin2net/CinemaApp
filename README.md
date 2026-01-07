@@ -154,4 +154,109 @@ appPassword=your-16-char-app-password
 4. **Copy the 16-character password** (no spaces)
 
 ### Movie Data Configuration (`resources/filme.json`)
+```
+[
+  {
+    "titlu": "Movie Title",
+    "durata": 120,
+    "imaginePath": "poster.jpg",
+    "ore": ["18:00", "20:30"],
+    "restrictieVarsta": 12,
+    "gen": "Action",
+    "dateRulare": [
+      {"luna": 1, "zi": 15},
+      {"luna": 1, "zi": 16}
+    ],
+    "sala": {
+      "nume": "Sala 1",
+      "randuri": 10,
+      "coloane": 14
+    }
+  }
+]
+```
+### Network Configuration
+```
+String host = "192.168.1.141";  // Change to your server IP
+int port = 12345;
+```
 
+## 🎮 Usage
+### Starting the Server
+```
+java -cp "out:lib/*" cinema.network.ServerCinema
+```
+
+**Expected output:**
+```
+Server Cinema rulează pe portul 12345
+Server disponibil la: 192.x.x.x:12345
+Filmele au fost încărcate pe server: 5 filme
+```
+
+### Starting the Client
+```
+java -cp "out:lib/*" CinemaMainApp.Main
+```
+
+**Offline Mode:** If the server is unavailable, the app operates in local mode with reduced functionality.
+
+### Making a Reservation
+
+1. **Select Date** - Choose month and day from dropdown menus
+2. **Filter Showtime** - Optionally filter by specific time
+3. **Search Movie** - Use search bar to find specific titles
+4. **Select Seats** - Click on green seats to select (turns orange)
+5. **Enter Email** - Provide valid email address
+6. **Confirm** - Click "Rezervă" button
+
+### Viewing Reservations
+
+1. Click **"Rezervările mele"** button in top menu
+2. Enter your email address
+3. View grouped reservations by date/time
+4. Click **"Anulează"** to cancel any booking
+
+## 📂 Project Structure
+```
+src/
+├── cinema/
+│   ├── app/
+│   │   └── CinemaApp.java                 # Application entry point
+│   ├── gui/
+│   │   ├── CinemaGUI.java                 # Main interface
+│   │   └── AnulareRezervareFrame.java     # Cancellation dialog
+│   ├── model/
+│   │   ├── Film.java                      # Movie entity
+│   │   ├── Sala.java                      # Theater hall entity
+│   │   └── Scaun.java                     # Seat entity
+│   ├── network/
+│   │   ├── ServerCinema.java              # Server implementation
+│   │   ├── ClientCinema.java              # Client implementation
+│   │   └── Mesaj.java                     # Message protocol
+│   ├── persistence/
+│   │   ├── DatabaseManager.java           # SQLite operations
+│   │   └── PersistentaRezervari.java      # Reservation persistence
+│   └── service/
+│       ├── RezervareService.java          # Business logic
+│       ├── EmailService.java              # Email notifications
+│       └── LocalDateAdapter.java          # JSON date serialization
+└── CinemaMainApp/
+    └── Main.java                          # Main launcher
+```
+
+## 🗄️ Database Schema
+### `rezervari` Table
+```
+CREATE TABLE rezervari (
+    ora_rezervare TEXT,      -- Timestamp of booking (HH:mm)
+    titlu TEXT,              -- Movie title
+    gen TEXT,                -- Movie genre
+    varsta INTEGER,          -- Age restriction
+    data TEXT,               -- Showdate (YYYY-MM-DD)
+    ora_film TEXT,           -- Showtime (HH:mm)
+    rand INTEGER,            -- Row number
+    coloana INTEGER,         -- Column number
+    email TEXT               -- User email
+);
+```
