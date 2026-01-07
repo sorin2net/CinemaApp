@@ -65,19 +65,19 @@ Aplicația utilizează design pattern-uri consacrate pentru a asigura o structur
 
 ### Main Interface
 <img src="cale_catre_imagine_interfata_principala.png" width="700">
-**Browse movies with date and time filters, search functionality**
+Browse movies with date and time filters, search functionality
 
 ### Seat Selection
 <img src="cale_catre_imagine_selectie_locuri.png" width="700">
-**Interactive seat map with real-time availability (Green: Available, Red: Reserved, Orange: Selected)**
+Interactive seat map with real-time availability (Green: Available, Red: Reserved, Orange: Selected)
 
 ### User Reservations
 <img src="cale_catre_imagine_rezervari.png" width="700">
-**View and cancel personal bookings by email**
+View and cancel personal bookings by email
 
 ### Email Confirmation
 <img src="cale_catre_imagine_confirmare_email.png" width="700">
-**Automatic email confirmation with booking details**
+Automatic email confirmation with booking details
 
 ## 📦 Prerequisites
 
