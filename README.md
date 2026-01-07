@@ -2,7 +2,7 @@
 
 A comprehensive cinema ticket booking system built with **Java Swing**, featuring real-time seat management, email notifications, and client-server architecture for synchronized multi-user reservations.
 
-<img src="img/main_panel.png" width="600">
+<img src="imgs/main_panel.png" width="600">
 
 ---
 
