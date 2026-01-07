@@ -163,3 +163,51 @@
 [2026-01-07T05:13:53.711046600] REZERVARE: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2026-01-01, ora=20:30, loc=R7-C15, email=rusnacu8@gmail.com
 [2026-01-07T05:13:53.777901500] REZERVARE: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2026-01-01, ora=20:30, loc=R6-C12, email=rusnacu8@gmail.com
 [2026-01-07T05:13:53.844570] REZERVARE: film=Spider-Man Into the Spider-Verse, sala=Sala 3, data=2026-01-01, ora=20:30, loc=R5-C12, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.044006700] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R7-C4, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.101969400] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R1-C3, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.169200] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R1-C9, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.252697500] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R9-C9, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.301134400] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R1-C2, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.375322100] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R7-C3, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.436213900] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R9-C10, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.502153500] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R1-C7, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.569401] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R1-C4, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.652624200] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R9-C8, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.743766800] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R1-C8, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.811403600] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R5-C10, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.877578300] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R7-C2, email=rusnacu8@gmail.com
+[2026-01-07T05:20:15.937097400] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R1-C1, email=rusnacu8@gmail.com
+[2026-01-07T05:21:30.261758300] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R6-C8, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:21:30.319100600] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R6-C7, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:21:30.395024500] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R5-C8, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:21:30.494128] REZERVARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R5-C7, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:22:14.007366700] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R11-C11, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.065562800] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R1-C3, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.157506300] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R1-C2, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.239818900] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R11-C13, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.329783200] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R6-C15, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.405476900] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R7-C1, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.483084400] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R1-C9, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.563738900] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R1-C11, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.650372] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R8-C4, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.738652900] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R1-C4, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.833036800] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R11-C10, email=rusnacu8@gmail.com
+[2026-01-07T05:22:14.914019800] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R11-C1, email=rusnacu8@gmail.com
+[2026-01-07T05:22:15.022017800] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R7-C3, email=rusnacu8@gmail.com
+[2026-01-07T05:22:15.151029200] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R1-C10, email=rusnacu8@gmail.com
+[2026-01-07T05:22:15.239020400] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R1-C1, email=rusnacu8@gmail.com
+[2026-01-07T05:22:15.316066400] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R5-C15, email=rusnacu8@gmail.com
+[2026-01-07T05:22:15.398192] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R4-C6, email=rusnacu8@gmail.com
+[2026-01-07T05:22:15.491468200] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R7-C2, email=rusnacu8@gmail.com
+[2026-01-07T05:22:15.555347800] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R11-C12, email=rusnacu8@gmail.com
+[2026-01-07T05:22:15.631197400] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R7-C15, email=rusnacu8@gmail.com
+[2026-01-07T05:23:24.529396600] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R5-C3, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:23:24.637992200] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R7-C5, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:23:24.720612700] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R6-C4, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:23:24.796074500] REZERVARE: film=Oppenheimer, sala=Sala 1, data=2026-03-01, ora=18:00, loc=R7-C6, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:24:00.587442600] REZERVARE: film=Caroline, sala=Sala 5, data=2026-07-07, ora=17:00, loc=R1-C7, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:24:00.695882800] REZERVARE: film=Caroline, sala=Sala 5, data=2026-07-07, ora=17:00, loc=R1-C8, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:25:08.494857500] ANULARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R5-C7, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:25:08.578323200] ANULARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R5-C8, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:25:08.651001400] ANULARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R6-C7, email=dumitriudenisgabriel@gmail.com
+[2026-01-07T05:25:08.728479600] ANULARE: film=The Wild Robot, sala=Sala 4, data=2026-03-01, ora=17:00, loc=R6-C8, email=dumitriudenisgabriel@gmail.com
