@@ -73,7 +73,7 @@ Aplicația utilizează design pattern-uri consacrate pentru a asigura o structur
 
 ### User Reservations
 <img src="cale_catre_imagine_rezervari.png" width="700">
-*View and cancel personal bookings by email**
+**View and cancel personal bookings by email**
 
 ### Email Confirmation
 <img src="cale_catre_imagine_confirmare_email.png" width="700">
