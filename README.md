@@ -92,3 +92,39 @@ Automatic email confirmation with booking details
 ```bash
 git clone [https://github.com/sorin2net/CinemaApp/](https://github.com/sorin2net/CinemaApp/)
 ```
+
+### 2. Download Required Libraries
+
+Place the following JAR files in the `lib/` directory:
+
+* `gson-2.10.1.jar` - JSON serialization/deserialization
+* `sqlite-jdbc-3.50.3.0.jar` - SQLite database driver
+* `jakarta.mail-api-2.1.3.jar` - Email API
+* `jakarta.activation-api-2.1.3.jar` - Activation framework
+* `angus-mail-2.0.3.jar` - Email implementation
+* `json-simple-1.1.1.jar` - JSON parsing
+
+### 3. Project Structure Setup
+
+```text
+cinema-reservation-system/
+├── src/
+│   └── cinema/
+│       ├── app/
+│       ├── gui/
+│       ├── model/
+│       ├── network/
+│       ├── persistence/
+│       ├── service/
+│       └── CinemaMainApp/
+├── lib/                 # JAR dependencies
+├── resources/
+│   ├── filme.json       # Movie data configuration
+│   └── [movie-posters]/ # Movie poster images
+├── config/
+│   └── email.properties # Email configuration
+├── logs/                # Server audit logs
+└── data/                # SQLite database
+```
+
+### 4. Compile the Project
