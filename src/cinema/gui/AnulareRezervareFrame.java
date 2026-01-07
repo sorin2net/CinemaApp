@@ -16,20 +16,18 @@ public class AnulareRezervareFrame extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        // Panel principal
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        panel.setBackground(new Color(45, 45, 45)); // fundal întunecat
+        panel.setBackground(new Color(45, 45, 45));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panel);
 
-        // Label mesaj
+
         JLabel label = new JLabel(mesaj, SwingConstants.CENTER);
         label.setForeground(Color.WHITE);
         label.setFont(new Font("Arial", Font.BOLD, 16));
         panel.add(label, BorderLayout.CENTER);
 
-        // Panel pentru butoane
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(45, 45, 45));
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -50,7 +48,6 @@ public class AnulareRezervareFrame extends JFrame {
         buttonPanel.add(noButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Actiuni butoane
         yesButton.addActionListener(e -> {
             if (onYes != null) onYes.run();
             dispose();

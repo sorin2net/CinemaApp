@@ -10,12 +10,10 @@ public class DatabaseManager {
 
     private static final String DB_URL = "jdbc:sqlite:cinema.db";
     private static final String URL = "jdbc:sqlite:cinema.db";
-    // conexiune la baza de date
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
     }
 
-    // 2) Creare tabel
     public static void createTableIfNotExists() {
         String sql = """
             CREATE TABLE IF NOT EXISTS rezervari (
@@ -42,7 +40,6 @@ public class DatabaseManager {
 
     public static void insertRezervare(String titluFilm, String gen, int varsta,
                                        String data, String oraFilm, int rand, int coloana, String email) {
-        // Ora curentă a rezervării (HH:mm) pentru prima coloană
         String oraRezervare = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
 
         String sql = "INSERT INTO rezervari (ora_rezervare, titlu, gen, varsta, data, ora_film, rand, coloana, email) " +
@@ -100,7 +97,6 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
-    // Adaugă această metodă în DatabaseManager.java
     public static Set<String> getScauneOcupate(String titlu, String data, String ora) {
         Set<String> scaune = new HashSet<>();
         String sql = "SELECT rand, coloana FROM rezervari WHERE titlu = ? AND data = ? AND ora_film = ?";

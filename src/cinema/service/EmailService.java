@@ -33,7 +33,6 @@ public class EmailService {
         fromEmail = props.getProperty("fromEmail");
         appPassword = props.getProperty("appPassword");
 
-        //System.out.println("Email: " + fromEmail + ", Password: " + appPassword.substring(0,4) + "****"); // test
     }
 
 

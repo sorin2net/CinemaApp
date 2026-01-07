@@ -94,7 +94,6 @@ public class ServerCinema {
         }
     }
 
-    // METODĂ HELPER pentru a crea mesaje de eroare
     private Mesaj createErrorResponse(String mesajEroare) {
         Mesaj raspuns = new Mesaj();
         raspuns.tip = "raspuns";
@@ -103,7 +102,6 @@ public class ServerCinema {
         return raspuns;
     }
 
-    // METODĂ HELPER pentru a crea mesaje de succes
     private Mesaj createSuccessResponse(String mesajSucces) {
         Mesaj raspuns = new Mesaj();
         raspuns.tip = "raspuns";
@@ -112,9 +110,7 @@ public class ServerCinema {
         return raspuns;
     }
 
-    // VERSIUNE ÎMBUNĂTĂȚITĂ cu validare și thread safety
     private synchronized Mesaj proceseazaRezervare(Mesaj cerere) {
-        // Validare input
         if (cerere.film == null || cerere.film.trim().isEmpty()) {
             return createErrorResponse("Nume film lipsă!");
         }
@@ -131,7 +127,6 @@ public class ServerCinema {
             return createErrorResponse("Nu ați selectat niciun scaun!");
         }
 
-        // Căutare film
         Film film = service.getFilme().stream()
                 .filter(f -> f.getTitlu().equals(cerere.film))
                 .findFirst().orElse(null);
@@ -140,7 +135,6 @@ public class ServerCinema {
             return createErrorResponse("Film inexistent: " + cerere.film);
         }
 
-        // Parsare dată
         LocalDate data;
         try {
             data = LocalDate.parse(cerere.data);
@@ -148,13 +142,11 @@ public class ServerCinema {
             return createErrorResponse("Format dată invalid: " + cerere.data);
         }
 
-        // Obținere sală
         Sala sala = service.getSala(film, cerere.ora, data);
         if (sala == null) {
             return createErrorResponse("Sala nu este disponibilă!");
         }
 
-        // VALIDARE: Verificăm dacă scaunele sunt disponibile
         Set<Scaun> scauneSelectate = new HashSet<>();
         List<String> scauneOcupate = new ArrayList<>();
 
@@ -168,7 +160,6 @@ public class ServerCinema {
                 int rand = Integer.parseInt(parts[0].trim()) - 1;
                 int col = Integer.parseInt(parts[1].trim()) - 1;
 
-                // Verificare limite
                 if (rand < 0 || rand >= sala.getRanduri() || col < 0 || col >= sala.getColoane()) {
                     return createErrorResponse("Scaun în afara limitelor: " + s);
                 }
@@ -187,17 +178,15 @@ public class ServerCinema {
             }
         }
 
-        // Dacă există scaune deja ocupate, returnăm eroare
         if (!scauneOcupate.isEmpty()) {
             Mesaj raspuns = new Mesaj();
             raspuns.tip = "raspuns";
             raspuns.status = "eroare";
             raspuns.mesaj = "Scaunele următoare sunt deja rezervate: " + String.join(", ", scauneOcupate);
-            raspuns.scauneOcupate = scauneOcupate; // Câmp nou în Mesaj
+            raspuns.scauneOcupate = scauneOcupate;
             return raspuns;
         }
 
-        // Rezervăm atomic toate scaunele
         try {
             for (Scaun scaun : scauneSelectate) {
                 scaun.rezerva(cerere.email);
@@ -210,7 +199,6 @@ public class ServerCinema {
 
             return createSuccessResponse("Rezervare efectuată cu succes! " + scauneSelectate.size() + " scaun(e) rezervat(e).");
         } catch (Exception e) {
-            // Rollback - anulăm rezervările în caz de eroare
             for (Scaun scaun : scauneSelectate) {
                 scaun.anuleazaRezervare();
             }
@@ -220,7 +208,6 @@ public class ServerCinema {
     }
 
     private synchronized Mesaj proceseazaAnulare(Mesaj cerere) {
-        // Validare input
         if (cerere.email == null || cerere.email.trim().isEmpty()) {
             return createErrorResponse("Email lipsă!");
         }
@@ -254,10 +241,8 @@ public class ServerCinema {
         }
 
         try {
-            // Obținem sala DUPĂ reset (pentru a sincroniza starea)
             Sala sala = service.getSala(filmObj, ora, data);
 
-            // Ștergem rezervarea din JSON și actualizăm scaunele
             Set<Scaun> scauneSterse = PersistentaRezervari.stergeRezervare(email, film, data, ora, sala);
 
             Mesaj raspuns = new Mesaj();
@@ -267,7 +252,6 @@ public class ServerCinema {
                 raspuns.status = "ok";
                 raspuns.mesaj = "Rezervare anulată cu succes! " + scauneSterse.size() + " scaun(e) eliberat(e).";
 
-                // Trimite email de confirmare anulare
                 service.getEmailService().trimiteAnulare(email, film, sala.getNume(), ora, data);
 
                 System.out.println("[LOG] Rezervare anulată: " + email + " - " + film +

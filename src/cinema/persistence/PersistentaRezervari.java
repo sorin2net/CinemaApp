@@ -15,12 +15,10 @@ public class PersistentaRezervari {
                                          int rand, int coloana, String email,
                                          String gen, int varsta) {
         try {
-            // Sursa principală de adevăr: Baza de date
             DatabaseManager.insertRezervare(
                     film, gen, varsta, data.toString(), oraFilm, rand, coloana, email
             );
 
-            // Audit: Log în fișier text
             logRezervare(film, sala.getNume(), data, oraFilm, rand, coloana, email);
         } catch (Exception e) {
             System.err.println("Eroare la salvarea rezervării: " + e.getMessage());
@@ -35,10 +33,8 @@ public class PersistentaRezervari {
                     Scaun scaun = sala.getScaun(r, c);
 
                     if (scaun.esteRezervat() && email.equals(scaun.getEmailRezervare())) {
-                        // Ștergem din DB
                         DatabaseManager.stergeRezervare(email, film, data.toString(), oraFilm, r + 1, c + 1);
 
-                        // Eliberăm în memorie
                         scaun.anuleazaRezervare();
                         scauneSterse.add(scaun);
 

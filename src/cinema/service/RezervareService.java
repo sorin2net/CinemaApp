@@ -36,7 +36,6 @@ public class RezervareService {
 
         Sala sala = mapZiOra.get(key);
 
-        // Citim starea ocupării direct din SQLite
         Set<String> ocupateInDB = DatabaseManager.getScauneOcupate(film.getTitlu(), data.toString(), oraFilm);
 
         for (int r = 0; r < sala.getRanduri(); r++) {
@@ -70,7 +69,6 @@ public class RezervareService {
         for (Film f : filme) { if (f.ruleazaLaData(data)) result.add(f); }
         return result;
     }
-    // Adaugă această metodă în RezervareService.java
     public EmailService getEmailService() {
         return emailService;
     }

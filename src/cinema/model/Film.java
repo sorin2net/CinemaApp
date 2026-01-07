@@ -11,7 +11,7 @@ public class Film {
     private List<String> ore;
     private int restrictieVarsta;
     private String gen;
-    private List<DataRulare> dateRulare; // MODIFICAT: în loc de List<Integer> zile
+    private List<DataRulare> dateRulare;
     private Sala sala;
 
     public Film(String titlu, int durata, String imaginePath, List<String> ore, int restrictieVarsta, String gen) {
@@ -24,7 +24,6 @@ public class Film {
         this.dateRulare = new ArrayList<>();
     }
 
-    // Clasă internă pentru date de rulare
     public static class DataRulare {
         private int luna;
         private int zi;
@@ -50,7 +49,6 @@ public class Film {
         this.dateRulare = dateRulare;
     }
 
-    // Verifică dacă filmul rulează într-o anumită dată
     public boolean ruleazaLaData(LocalDate data) {
         if (dateRulare == null || dateRulare.isEmpty()) {
             System.out.println("    [DEBUG] " + titlu + " - dateRulare este null sau gol!");
@@ -65,7 +63,6 @@ public class Film {
         return false;
     }
 
-    // Metodă pentru compatibilitate cu codul vechi (deprecated)
     @Deprecated
     public List<Integer> getZile() {
         List<Integer> zile = new ArrayList<>();
@@ -77,7 +74,6 @@ public class Film {
 
     @Deprecated
     public void setZile(List<Integer> zile) {
-        // Pentru compatibilitate - nu se mai folosește
     }
 
     public Sala getSala() {

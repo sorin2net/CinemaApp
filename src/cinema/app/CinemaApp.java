@@ -23,15 +23,12 @@ public class CinemaApp {
             try {
                 DatabaseManager.createTableIfNotExists();
 
-                // Citim JSON-ul
                 String json = new String(Files.readAllBytes(Paths.get("resources/filme.json")));
                 Gson gson = new Gson();
 
-                // Mapam lista de filme din JSON
                 Type listaFilmeType = new TypeToken<List<FilmJson>>() {}.getType();
                 List<FilmJson> filmeJson = gson.fromJson(json, listaFilmeType);
 
-                // Convertim in obiecte Film și Sala
                 for (FilmJson fj : filmeJson) {
                     Sala sala = new Sala(fj.sala.nume, fj.sala.randuri, fj.sala.coloane);
                     Film film = new Film(
@@ -43,7 +40,6 @@ public class CinemaApp {
                             fj.gen
                     );
 
-                    // Convertim dateRulare din JSON în obiecte DataRulare
                     List<Film.DataRulare> dateRulare = new java.util.ArrayList<>();
 
                     System.out.println("Procesare film: " + fj.titlu);
@@ -67,19 +63,17 @@ public class CinemaApp {
                 JOptionPane.showMessageDialog(null, "Eroare la încărcarea fișierului filme.json");
             }
 
-            // Pornim GUI-ul
             CinemaGUI gui = new CinemaGUI(service);
             gui.setVisible(true);
         });
     }
 
-    // Clase interne pentru maparea JSON
     private static class FilmJson {
         String titlu;
         int durata;
         String imaginePath;
         List<String> ore;
-        List<DataRulareJson> dateRulare; // MODIFICAT
+        List<DataRulareJson> dateRulare;
         SalaJson sala;
         int restrictieVarsta;
         String gen;

@@ -4,7 +4,7 @@ public class Scaun {
     private int rand;
     private int numar;
     private boolean rezervat = false;
-    private String emailRezervare; // opțional, dacă vrei să salvezi cine a rezervat
+    private String emailRezervare;
 
     public Scaun(int rand, int numar) {
         this.rand = rand;

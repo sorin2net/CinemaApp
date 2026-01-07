@@ -16,7 +16,7 @@ public class ClientCinema {
     private Gson gson = new Gson();
     private String host;
     private int port;
-    private Consumer<Mesaj> onMessageReceived; // Callback pentru mesaje
+    private Consumer<Mesaj> onMessageReceived;
 
     public ClientCinema(String host, int port) throws IOException {
         this.host = host;
@@ -30,7 +30,6 @@ public class ClientCinema {
         new Thread(this::ascultaServer).start();
     }
 
-    // Setează callback-ul pentru mesaje primite
     public void setOnMessageReceived(Consumer<Mesaj> callback) {
         this.onMessageReceived = callback;
     }
@@ -67,12 +66,10 @@ public class ClientCinema {
 
                 System.out.println("Mesaj primit de la server: " + msg.tip + " - " + msg.mesaj);
 
-                // Notifică GUI-ul prin callback
                 if (onMessageReceived != null) {
                     onMessageReceived.accept(msg);
                 }
 
-                // Nu mai afișăm pop-up-uri aici - le gestionează GUI-ul
             }
         } catch (IOException e) {
             System.out.println("Conexiune închisă cu serverul.");
