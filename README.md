@@ -48,3 +48,42 @@ The application follows a **client-server** model with layered architecture:
 ### 📂 Persistence Layer
 * `cinema.db` (SQLite) - Movie and reservation data
 * `server.log` (Audit Trail) - Transaction history
+
+
+## 🧩 Key Design Patterns
+
+Aplicația utilizează design pattern-uri consacrate pentru a asigura o structură modulară și ușor de întreținut:
+
+* **MVC Pattern** - Separation of model, view, and controller logic
+* **Observer Pattern** - Real-time GUI updates via message callbacks
+* **Singleton Pattern** - Database connection management
+* **Repository Pattern** - Data access abstraction with `PersistentaRezervari`
+
+
+
+## 📸 Screenshots
+
+### Main Interface
+<img src="cale_catre_imagine_interfata_principala.png" width="700">
+*Browse movies with date and time filters, search functionality*
+
+### Seat Selection
+<img src="cale_catre_imagine_selectie_locuri.png" width="700">
+*Interactive seat map with real-time availability (Green: Available, Red: Reserved, Orange: Selected)*
+
+### User Reservations
+<img src="cale_catre_imagine_rezervari.png" width="700">
+*View and cancel personal bookings by email*
+
+### Email Confirmation
+<img src="cale_catre_imagine_confirmare_email.png" width="700">
+*Automatic email confirmation with booking details*
+
+## 📦 Prerequisites
+
+* **Java Development Kit (JDK) 17 or higher**
+* **Maven** (optional, for dependency management)
+* **Gmail Account** with **App Password** enabled
+* **Network Access** for client-server communication
+
+
