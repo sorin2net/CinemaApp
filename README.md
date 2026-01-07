@@ -314,6 +314,7 @@ Fiecare cerere de rezervare trimisă de client este procesată de server, verifi
   "tip": "update_sali",
   "mesaj": "Actualizare scaune ocupate"
 }
+```
 
 ## 🎨 UI Color Scheme
 
@@ -334,7 +335,7 @@ Fiecare cerere de rezervare trimisă de client este procesată de server, verifi
 ## 🐛 Troubleshooting
 
 ### Server Won't Start
-
+```
 Error: Address already in use
 ```
 ### Solution: Kill the process using port 12345
@@ -346,18 +347,18 @@ kill -9 <PID>
 # Windows
 netstat -ano | findstr :12345
 taskkill /PID <PID> /F
-
+```
 
 ### Email Not Sending
-
+```
 Error: Authentication failed
-
+```
 **Solutions:**
 1. Verify App Password is correct (16 characters, no spaces)
 2. Check 2-Step Verification is enabled
 3. Ensure Gmail allows less secure apps (if using older accounts)
 
 ### Client Can't Connect
-
+```
 Connection refused
 ```
